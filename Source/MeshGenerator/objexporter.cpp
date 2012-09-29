@@ -20,12 +20,16 @@ void ExportModel( string filepath, Mesh* model )
 
     myfile << endl;
 
+    // ----------------------- Write out vertices ------------------------------
     vector < Vertex* >& vertices = model->vertices;
     for( unsigned int i = 0; i < vertices.size(); i++)
         myfile << "v " << vertices[i]->position.x <<  " " << vertices[i]->position.y << " " <<  vertices[i]->position.z << endl;
 
      myfile << endl;
 
+     // ----------------------- Write out Normals ------------------------------
+
+     // ------------------------ Write out faces -------------------------------
       vector < Face* >& quads = model->quads;
 
       for( unsigned int i = 0; i < quads.size(); i++)
