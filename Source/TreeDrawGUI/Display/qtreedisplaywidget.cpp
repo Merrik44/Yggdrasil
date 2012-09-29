@@ -197,6 +197,20 @@ void QTreeDisplayWidget::GenerateMeshFromLST()
  ApplyLoopSubvision(model, 2);
 }
 
+void qtGluPerspective(double fovy,double aspect, double zNear, double zFar)
+{
+    // Start in projection mode.
+    glMatrixMode(GL_PROJECTION);
+    glLoadIdentity();
+    double xmin, xmax, ymin, ymax;
+    ymax = zNear * tan(fovy * M_PI / 360.0);
+    ymin = -ymax;
+    xmin = ymin * aspect;
+    xmax = ymax * aspect;
+    glFrustum(xmin, xmax, ymin, ymax, zNear, zFar);
+}
+
+
 void QTreeDisplayWidget::resizeGL(int w, int h)
 {
     glViewport(0, 0, w, h);
@@ -206,7 +220,7 @@ void QTreeDisplayWidget::resizeGL(int w, int h)
 
     glMatrixMode(GL_PROJECTION);
     glLoadIdentity();
-    gluPerspective(FieldOfView, w/(float)h, NearPlane, FarPlane);
+    qtGluPerspective(FieldOfView, w/(float)h, NearPlane, FarPlane);
     glMatrixMode(GL_MODELVIEW);
 }
 

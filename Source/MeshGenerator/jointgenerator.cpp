@@ -20,9 +20,6 @@ Vertex* weightedmMergeAwithedB( Vertex* A, Vertex* B, Mesh* model, Mesh* jointMo
 {
 
 
-    // AddPoint( B->position, GREEN);
-    //AddPoint( A->position, BLUE);
-
     // ------- Add A to B ---------
     B->position*= B->weight;
     B->normal*=B->weight;

@@ -1,8 +1,8 @@
 /****************************************************************************
 ** Meta object code from reading C++ file 'mainwindow.h'
 **
-** Created: Sat Sep 29 00:51:30 2012
-**      by: The Qt Meta Object Compiler version 62 (Qt 4.6.2)
+** Created: Sat Sep 29 03:57:25 2012
+**      by: The Qt Meta Object Compiler version 63 (Qt 4.8.1)
 **
 ** WARNING! All changes made in this file will be lost!
 *****************************************************************************/
@@ -10,8 +10,8 @@
 #include "mainwindow.h"
 #if !defined(Q_MOC_OUTPUT_REVISION)
 #error "The header file 'mainwindow.h' doesn't include <QObject>."
-#elif Q_MOC_OUTPUT_REVISION != 62
-#error "This file was generated using the moc from 4.6.2. It"
+#elif Q_MOC_OUTPUT_REVISION != 63
+#error "This file was generated using the moc from 4.8.1. It"
 #error "cannot be used with the include files from this version of Qt."
 #error "(The moc has changed too much.)"
 #endif
@@ -20,7 +20,7 @@ QT_BEGIN_MOC_NAMESPACE
 static const uint qt_meta_data_MainWindow[] = {
 
  // content:
-       4,       // revision
+       6,       // revision
        0,       // classname
        0,    0, // classinfo
       24,   14, // methods
@@ -87,9 +87,48 @@ static const char qt_meta_stringdata_MainWindow[] = {
     "on_pushButton_clicked()\0"
 };
 
+void MainWindow::qt_static_metacall(QObject *_o, QMetaObject::Call _c, int _id, void **_a)
+{
+    if (_c == QMetaObject::InvokeMetaMethod) {
+        Q_ASSERT(staticMetaObject.cast(_o));
+        MainWindow *_t = static_cast<MainWindow *>(_o);
+        switch (_id) {
+        case 0: _t->on_subdivisionSlider_valueChanged((*reinterpret_cast< int(*)>(_a[1]))); break;
+        case 1: _t->on_loadObjButton_clicked(); break;
+        case 2: _t->on_loadLstButton_clicked(); break;
+        case 3: _t->on_generateMeshButton_clicked(); break;
+        case 4: _t->on_countSlider_valueChanged((*reinterpret_cast< int(*)>(_a[1]))); break;
+        case 5: _t->on_exportObjButton_clicked(); break;
+        case 6: _t->on_texCheckBox_toggled((*reinterpret_cast< bool(*)>(_a[1]))); break;
+        case 7: _t->on_subDivPlus_clicked(); break;
+        case 8: _t->on_subDivPlus_2_clicked(); break;
+        case 9: _t->on_meshCheckBox_2_toggled((*reinterpret_cast< bool(*)>(_a[1]))); break;
+        case 10: _t->on_meshCheckBox_toggled((*reinterpret_cast< bool(*)>(_a[1]))); break;
+        case 11: _t->on_wireFrameCheckBox_toggled((*reinterpret_cast< bool(*)>(_a[1]))); break;
+        case 12: _t->on_segmentSlider_valueChanged((*reinterpret_cast< int(*)>(_a[1]))); break;
+        case 13: _t->on_meshCheckBox_3_toggled((*reinterpret_cast< bool(*)>(_a[1]))); break;
+        case 14: _t->on_simplifyCheckBox_toggled((*reinterpret_cast< bool(*)>(_a[1]))); break;
+        case 15: _t->on_simplifyCheckBox_2_toggled((*reinterpret_cast< bool(*)>(_a[1]))); break;
+        case 16: _t->on_loadLstButton_2_clicked(); break;
+        case 17: _t->on_loadLstButton_3_clicked(); break;
+        case 18: _t->on_segmentSlider_2_valueChanged((*reinterpret_cast< int(*)>(_a[1]))); break;
+        case 19: _t->on_simplifyCheckBox_3_clicked(); break;
+        case 20: _t->on_simplifyCheckBox_3_toggled((*reinterpret_cast< bool(*)>(_a[1]))); break;
+        case 21: _t->on_simplifyCheckBox_4_toggled((*reinterpret_cast< bool(*)>(_a[1]))); break;
+        case 22: _t->on_simplifyCheckBox_5_toggled((*reinterpret_cast< bool(*)>(_a[1]))); break;
+        case 23: _t->on_pushButton_clicked(); break;
+        default: ;
+        }
+    }
+}
+
+const QMetaObjectExtraData MainWindow::staticMetaObjectExtraData = {
+    0,  qt_static_metacall 
+};
+
 const QMetaObject MainWindow::staticMetaObject = {
     { &QMainWindow::staticMetaObject, qt_meta_stringdata_MainWindow,
-      qt_meta_data_MainWindow, 0 }
+      qt_meta_data_MainWindow, &staticMetaObjectExtraData }
 };
 
 #ifdef Q_NO_DATA_RELOCATION
@@ -115,33 +154,8 @@ int MainWindow::qt_metacall(QMetaObject::Call _c, int _id, void **_a)
     if (_id < 0)
         return _id;
     if (_c == QMetaObject::InvokeMetaMethod) {
-        switch (_id) {
-        case 0: on_subdivisionSlider_valueChanged((*reinterpret_cast< int(*)>(_a[1]))); break;
-        case 1: on_loadObjButton_clicked(); break;
-        case 2: on_loadLstButton_clicked(); break;
-        case 3: on_generateMeshButton_clicked(); break;
-        case 4: on_countSlider_valueChanged((*reinterpret_cast< int(*)>(_a[1]))); break;
-        case 5: on_exportObjButton_clicked(); break;
-        case 6: on_texCheckBox_toggled((*reinterpret_cast< bool(*)>(_a[1]))); break;
-        case 7: on_subDivPlus_clicked(); break;
-        case 8: on_subDivPlus_2_clicked(); break;
-        case 9: on_meshCheckBox_2_toggled((*reinterpret_cast< bool(*)>(_a[1]))); break;
-        case 10: on_meshCheckBox_toggled((*reinterpret_cast< bool(*)>(_a[1]))); break;
-        case 11: on_wireFrameCheckBox_toggled((*reinterpret_cast< bool(*)>(_a[1]))); break;
-        case 12: on_segmentSlider_valueChanged((*reinterpret_cast< int(*)>(_a[1]))); break;
-        case 13: on_meshCheckBox_3_toggled((*reinterpret_cast< bool(*)>(_a[1]))); break;
-        case 14: on_simplifyCheckBox_toggled((*reinterpret_cast< bool(*)>(_a[1]))); break;
-        case 15: on_simplifyCheckBox_2_toggled((*reinterpret_cast< bool(*)>(_a[1]))); break;
-        case 16: on_loadLstButton_2_clicked(); break;
-        case 17: on_loadLstButton_3_clicked(); break;
-        case 18: on_segmentSlider_2_valueChanged((*reinterpret_cast< int(*)>(_a[1]))); break;
-        case 19: on_simplifyCheckBox_3_clicked(); break;
-        case 20: on_simplifyCheckBox_3_toggled((*reinterpret_cast< bool(*)>(_a[1]))); break;
-        case 21: on_simplifyCheckBox_4_toggled((*reinterpret_cast< bool(*)>(_a[1]))); break;
-        case 22: on_simplifyCheckBox_5_toggled((*reinterpret_cast< bool(*)>(_a[1]))); break;
-        case 23: on_pushButton_clicked(); break;
-        default: ;
-        }
+        if (_id < 24)
+            qt_static_metacall(this, _c, _id, _a);
         _id -= 24;
     }
     return _id;

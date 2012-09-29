@@ -432,7 +432,7 @@ void Mesh::ConstructGraphFromFaces( vector < Face* >& faces)
 
 Mesh::~Mesh()
 {
-    cout << "BOOM! model was blown to bits (destroyed)"<< endl;
+ //   cout << "BOOM! model was blown to bits (destroyed)"<< endl;
     for (uint i = 0; i < vertices.size(); i++)
         delete vertices[i];
 
