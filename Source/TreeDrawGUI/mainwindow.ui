@@ -1,0 +1,138 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ui version="4.0">
+ <class>MainWindow</class>
+ <widget class="QMainWindow" name="MainWindow">
+  <property name="geometry">
+   <rect>
+    <x>0</x>
+    <y>0</y>
+    <width>400</width>
+    <height>300</height>
+   </rect>
+  </property>
+  <property name="windowTitle">
+   <string>MainWindow</string>
+  </property>
+  <widget class="QWidget" name="centralWidget"/>
+  <widget class="QMenuBar" name="menuBar">
+   <property name="geometry">
+    <rect>
+     <x>0</x>
+     <y>0</y>
+     <width>400</width>
+     <height>25</height>
+    </rect>
+   </property>
+   <widget class="QMenu" name="menuFile">
+    <property name="title">
+     <string>File</string>
+    </property>
+    <addaction name="actionOpen_XML_file"/>
+    <addaction name="actionSave_XML_file"/>
+    <addaction name="separator"/>
+    <addaction name="actionExit"/>
+   </widget>
+   <widget class="QMenu" name="menuDisplay">
+    <property name="title">
+     <string>Display</string>
+    </property>
+    <addaction name="actionDisplay_XML_file"/>
+    <addaction name="actionDisplay_LST_file"/>
+    <addaction name="separator"/>
+    <addaction name="actionGenerate_from_current"/>
+    <addaction name="actionExport_to_OBJ"/>
+    <addaction name="separator"/>
+    <addaction name="actionBlack_background"/>
+    <addaction name="actionWhite_background"/>
+   </widget>
+   <widget class="QMenu" name="menuEdit">
+    <property name="title">
+     <string>Edit</string>
+    </property>
+    <addaction name="actionUndo"/>
+    <addaction name="actionRedo"/>
+   </widget>
+   <addaction name="menuFile"/>
+   <addaction name="menuEdit"/>
+   <addaction name="menuDisplay"/>
+  </widget>
+  <widget class="QStatusBar" name="statusBar"/>
+  <action name="actionOpen_XML_file">
+   <property name="text">
+    <string>Open XML file</string>
+   </property>
+  </action>
+  <action name="actionSave_XML_file">
+   <property name="text">
+    <string>Save XML file</string>
+   </property>
+  </action>
+  <action name="actionExit">
+   <property name="text">
+    <string>Exit</string>
+   </property>
+  </action>
+  <action name="actionDisplay_XML_file">
+   <property name="text">
+    <string>Display XML file</string>
+   </property>
+  </action>
+  <action name="actionDisplay_LST_file">
+   <property name="text">
+    <string>Display LST file</string>
+   </property>
+  </action>
+  <action name="actionGenerate_from_current">
+   <property name="text">
+    <string>Generate from current sketch</string>
+   </property>
+  </action>
+  <action name="actionGenerate_output_for_XML_file">
+   <property name="text">
+    <string>Generate output for XML file</string>
+   </property>
+  </action>
+  <action name="actionUndo">
+   <property name="text">
+    <string>Undo</string>
+   </property>
+  </action>
+  <action name="actionRedo">
+   <property name="text">
+    <string>Redo</string>
+   </property>
+  </action>
+  <action name="actionExport_to_OBJ">
+   <property name="text">
+    <string>Export to OBJ</string>
+   </property>
+  </action>
+  <action name="actionBlack_background">
+   <property name="checkable">
+    <bool>true</bool>
+   </property>
+   <property name="checked">
+    <bool>true</bool>
+   </property>
+   <property name="text">
+    <string>Black background</string>
+   </property>
+  </action>
+  <action name="actionWhite_background">
+   <property name="checkable">
+    <bool>true</bool>
+   </property>
+   <property name="text">
+    <string>White background</string>
+   </property>
+  </action>
+  <action name="actionOpen_XML_file_2">
+   <property name="text">
+    <string>Open XML file</string>
+   </property>
+  </action>
+ </widget>
+ <layoutdefault spacing="6" margin="11"/>
+ <resources/>
+ <connections/>
+</ui>

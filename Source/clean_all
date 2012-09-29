@@ -1,0 +1,16 @@
+#! /bin/sh
+SCRIPT=`readlink -f $0`
+SCRIPTPATH=`dirname $SCRIPT`
+
+echo "Cleaning LStringDeriver..."
+cd $SCRIPTPATH"/LStringDeriver/Debug"
+make clean
+echo "Cleaning LStringVisualiser..."
+cd $SCRIPTPATH"/LStringVisualiser/Debug"
+make clean
+echo "Cleaning LSystemParameteriser..."
+cd $SCRIPTPATH"/LSystemParameteriser/Debug"
+make clean
+echo "Cleaning SketchConverter..."
+cd $SCRIPTPATH"/SketchConverter/Debug"
+rm tree3d

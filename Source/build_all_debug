@@ -1,0 +1,16 @@
+#! /bin/sh
+SCRIPT=`readlink -f $0`
+SCRIPTPATH=`dirname $SCRIPT`
+
+echo "Building LStringDeriver..."
+cd $SCRIPTPATH"/LStringDeriver/Debug"
+make
+echo "Building LStringVisualiser..."
+cd $SCRIPTPATH"/LStringVisualiser/Debug"
+make
+echo "Building LSystemParameteriser..."
+cd $SCRIPTPATH"/LSystemParameteriser/Debug"
+make
+echo "Building SketchConverter..."
+cd $SCRIPTPATH"/SketchConverter"
+./build

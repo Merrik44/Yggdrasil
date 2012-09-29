@@ -1,0 +1,2 @@
+#! /bin/sh
+g++ src/branch.cpp -I include/rapidxml-1.13/ src/main.cpp -o Debug/tree3d
