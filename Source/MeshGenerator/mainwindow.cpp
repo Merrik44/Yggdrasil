@@ -96,7 +96,7 @@ void MainWindow::on_exportObjButton_clicked()
 {
     std::string fileName = QFileDialog::getSaveFileName(this, tr("Save File"), "../obj models",  tr("Files (*.obj*)") ).toStdString();
     if( fileName != "")
-        glWidget->ExportModelAsObj(fileName+".obj");
+        glWidget->ExportModelAsObj(fileName);
 }
 
 
