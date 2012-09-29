@@ -11,6 +11,7 @@
 #include <string>
 #include "MeshGenerator/mesh.h"
 #include "MeshGenerator/lstskeleton.h"
+#include <QProgressDialog>
 
 
 class QTreeDisplayWidget : public QGLWidget
@@ -55,7 +56,8 @@ public:
     void setCurrent();
 
     void LoadLST( std::string filepath );
-    void GenerateMeshFromLST();
+    void GenerateMeshFromLST(QProgressDialog *progressBar);
+    void ApplySubdivisionToMesh( int numberOfSubdvisions,  QProgressDialog* progressBar );
     bool displayGeneratedMesh;
 
 protected:

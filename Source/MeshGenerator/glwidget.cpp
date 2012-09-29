@@ -186,40 +186,32 @@ void GLWidget::initializeGL()
     for( int i = 0; i < lstFileList.count(); i++ )
         cout << lstFileList.value(i).toStdString() << endl;
 
-    LoadLST("/home/richard/Desktop/treedraw_unified_build/Version1.4/treedraw/trunk/treefile14.lst" );
+    LoadLST("../lst files/treefile6.lst" );
     model = generateMesh( skeleton->branches);
-//ApplyLoopSubvision(model, 3);
-    //model = generateMesh( skeleton->root);
-    // model = new Model("../obj models/icosahedron.obj");
 
-    //  model = new Model("../obj models/TexturedTube.obj");
-    // model = new Model("../obj models/openBox.obj");
-    //setSubdivisionLevel(1 );
-
-    //  model->position.y -= 0.4f;
-    // model = new Model("../Obj/humanoid_quad.obj");
-//odel->scale = 0.1f;
-
-
-//    QGLFormat format;
-//    format.setDoubleBuffer(true);
-//    format.setDepth(false);
-//    format.setAlpha(false);
-//    format.setSampleBuffers(true);
-//    format.setSamples(4);
-//    this->setFormat(format);
 
     //qglClearColor(qtPurple.dark());
     glClearColor(0.98f,  0.98f,  0.98f, 1);
     glEnable(GL_DEPTH_TEST);
     // glEnable(GL_CULL_FACE);
     glShadeModel(GL_SMOOTH);
+
     glEnable(GL_LIGHTING);
     glEnable(GL_LIGHT0);
+    GLfloat light_ambient0[] = {1, 1, 1, 1.0};
+    GLfloat light_diffuse0[] = {1.0, 1.0, 1.0, 1.0};
+    GLfloat light_specular0[] = {1.0, 1.0, 1.0, 1.0};
+    /*GLfloat light_ambient0[] = {0.5, 0.5, 0.5, 1.0};
+    GLfloat light_diffuse0[] = {0.5, 0.5, 0.5, 1.0};
+    GLfloat light_specular0[] = {0.5, 0.5, 0.5, 1.0};*/
+    glLightfv(GL_LIGHT0, GL_AMBIENT, light_ambient0);
+    glLightfv(GL_LIGHT0, GL_DIFFUSE, light_diffuse0);
+    glLightfv(GL_LIGHT0, GL_SPECULAR, light_specular0);
+
     glEnable(GL_MULTISAMPLE);
-    glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
-    glEnable( GL_BLEND );
-            glFrontFace(GL_CCW);
+   // glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
+ //   glEnable( GL_BLEND );/*
+        //    glFrontFace(GL_CCW);*/
 
 
     static GLfloat lightPosition[4] = { 0.5, 5.0, 7.0, 1.0 };
@@ -253,13 +245,9 @@ void GLWidget::LoadLST( std::string filepath )
     if (listIndex < 0)
         listIndex = 0;
 
-
-
-    cout << "43" << listIndex << endl;
-   // cout << "sss" << filepath << endl;
     if( skeleton != NULL )
         delete skeleton;
-    //  cout << "sss" << filepath << endl;
+
     skeleton = new LstSkeleton(filepath);
   cout << "sss" << filepath << endl;
 }
@@ -333,10 +321,16 @@ void GLWidget::paintGL()
 
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
     glLoadIdentity();
+
+
     glTranslatef(xOffset, yOffset, -10);
     glRotatef(xRot / 16.0, 1.0, 0.0, 0.0);
     glRotatef(yRot / 16.0, 0.0, 1.0, 0.0);
     glRotatef(zRot / 16.0, 0.0, 0.0, 1.0);
+
+
+    GLfloat light_position0[] = {0,0, -1, 0.0};
+    glLightfv(GL_LIGHT0, GL_POSITION, light_position0);
 
 //    cout << "DDDDD" << endl;
 //    cout << zoom << endl;
@@ -345,6 +339,7 @@ void GLWidget::paintGL()
 //    cout << xRot << endl;
 //    cout << yRot << endl;
 
+    SetColour(LIGHT_GREY);
 
     if( model != NULL)
         model->Draw();

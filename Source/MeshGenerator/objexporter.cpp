@@ -39,7 +39,7 @@ void ExportModel( string filepath, Mesh* model )
      // ----------------------- Write out Normals ------------------------------
 
      myfile << "# vertex normals " << endl;
-myfile  << endl;
+    myfile  << endl;
 
      for( unsigned int i = 0; i < vertices.size(); i++)
          myfile << "vn " << vertices[i]->normal.x <<  " " << vertices[i]->normal.y << " " <<  vertices[i]->normal.z << endl;

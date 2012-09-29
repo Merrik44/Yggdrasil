@@ -187,14 +187,20 @@ void QTreeDisplayWidget::LoadLST( std::string filepath )
     lstGraph = new LstSkeleton(filepath);
 }
 
-void QTreeDisplayWidget::GenerateMeshFromLST()
+void QTreeDisplayWidget::GenerateMeshFromLST( QProgressDialog* progressBar)
 {
 
     if( model != NULL )
         delete model;
-    model = generateMesh( lstGraph->branches);
+    model = generateMesh( lstGraph->branches, progressBar);
     model->scale = 100;
- ApplyLoopSubvision(model, 2);
+
+}
+
+void QTreeDisplayWidget::ApplySubdivisionToMesh( int numberOfSubdvisions,  QProgressDialog* progressBar )
+{
+    if( model != NULL )
+        ApplyLoopSubvision(model, numberOfSubdvisions);;
 }
 
 void qtGluPerspective(double fovy,double aspect, double zNear, double zFar)

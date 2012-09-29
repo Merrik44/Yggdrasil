@@ -355,8 +355,19 @@ void MainWindow::generateSingleMesh(bool checked)
 
     displayWidget->displayGeneratedMesh = checked;
 
+
+
+
     // --------------- Generate the mesh ---------------------------------
     generateMeshFromLST(lastLSTFile);
+
+
+  //  connect(&p, SIGNAL(canceled()), this, SLOT(cancelGeneration()));
+
+
+ //   QCoreApplication::processEvents();
+  //  if (p.wasCanceled()) return;
+
 
     displayWidget->repaint();
     displayWidget->updateGL();
@@ -373,8 +384,28 @@ void MainWindow::generateMeshFromLST( std::string lstfile)
    // ss << lstfile;
    // ss << ".lst";
     //lstfile += lst;
+
+    QProgressDialog progbar(this);
+    //p.setCancelButton(NULL);
+    progbar.setRange(0, 100);
+    progbar.setModal(true);
+    progbar.show();
+    setCursor(QCursor(Qt::WaitCursor));
+    progbar.setCursor(QCursor(Qt::ArrowCursor));
+
+    progbar.setValue(0);
+    progbar.setLabelText("Parsing LST File");
+
     displayWidget->LoadLST(lstfile );
-    displayWidget->GenerateMeshFromLST();
+
+     progbar.setValue(100);
+     progbar.setLabelText("Generating Mesh");
+
+    displayWidget->GenerateMeshFromLST(&progbar);
+      progbar.setValue(100);
+
+    progbar.setLabelText("Applying Loop Sudivision");
+    displayWidget->ApplySubdivisionToMesh(1, &progbar);
 }
 
 void MainWindow::generateNewVariation()

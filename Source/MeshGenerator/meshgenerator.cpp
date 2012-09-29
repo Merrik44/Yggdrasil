@@ -40,6 +40,11 @@ void InterpolateTexCoordsAccrosRemainingFaces( Mesh* model )
        //   AddLine( face->vertices[2]->position,  face->vertices[0]->position, YELLOW);
 
         // find longest edge with tex coords
+        // ------- sort edges by length --------
+        SortByLength( face->edges );
+        reverse( face->edges.begin() , face->edges.end( ));
+
+
         for( uint j = 0; j < face->edges.size(); j++ )
         {
 
@@ -113,8 +118,8 @@ void InterpolateTexCoordsAccrosRemainingFaces( Mesh* model )
             Vector2f bc = texC - texB;
 
 
-            float length_bc = BC.length();
-            float length_ba = (lengthBA*length_bc)/lengthBC;
+            float length_bc = bc.length();
+            float length_ba = (lengthBA)*(length_bc/lengthBC);
 
             bc /= length_bc;
             bc *= length_ba;
@@ -127,8 +132,6 @@ void InterpolateTexCoordsAccrosRemainingFaces( Mesh* model )
             ba.y = bc.x*sinTheta + bc.y*cosTheta;
 
             texA = texB + ba;
-            //Vector2f zero(0,0);
-            //face->SetTextureCoords( texA, texB, texC, zero  );
             break;
         }
 
@@ -563,7 +566,7 @@ void MergeTwoBondaries(vector<Vertex*>& loopA, vector<Vertex*>& loopB )
 
 
 //MainWindow* mainWindowRef;
-Mesh* generateMesh( vector<BranchNode*>& branches)
+Mesh* generateMesh( vector<BranchNode*>& branches,  QProgressDialog* progressBar)
 {
     // ------------------ debug stuff ---------------
     countdown = Count;
@@ -596,7 +599,8 @@ Mesh* generateMesh( vector<BranchNode*>& branches)
         branchStack.pop();
 
         branchesProcessed++;
-       // mainWindowRef->progressBarUpdate(( branchesProcessed*100)/noOfBranches );
+        if(progressBar != NULL)
+            progressBar->setValue(( branchesProcessed*100)/noOfBranches );
 
         // ------- if the branch has no children, close tip ----
 
