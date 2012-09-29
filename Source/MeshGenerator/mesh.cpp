@@ -339,16 +339,29 @@ void Mesh::ReconstructMeshDataStructure( )
 
     //cout<< "normals" <<endl;
     // calculate Face Normals
+//    for ( int i =0; i < (int)triangles.size(); i++)
+//    {
+//        Face* face = triangles[i];
 
+//        cout << face<< endl;
+//         for ( int k =0; k < 3; k++)
+//         {
+//             cout << face->vertices[k]->position << endl;
+//            // AddPoint(face->vertices[k]->position , BLUE );
+//            // cout << face->vertices[k]->neighbours.size() << endl;
+//         }
+//    }
 
     // construct the data stucture
     ConstructGraphFromFaces(quads);
+
     ConstructGraphFromFaces(triangles);
 
 }
 
 void Mesh::ConstructGraphFromFaces( vector < Face* >& faces)
 {
+
     for ( int i =0; i < (int)faces.size(); i++)
     {
         Face* face = faces[i];
@@ -358,21 +371,28 @@ void Mesh::ConstructGraphFromFaces( vector < Face* >& faces)
         if(  face->vertices[3] == NULL)
             sides = 3 ;
 
+        //cout <<  "---aa---- "<< sides << endl;
         for( int j = 0; j< sides; j++ )
         {
             Vertex* A =  face->vertices[j];
             Vertex* B =  face->vertices[(j+1)%sides];
 
+
             // add face
             A->faces.push_back(face );
 
             //  add neigbours and construct edges
-            vector<Vertex*>::iterator result =   find( A->neighbours.begin(), A->neighbours.end(), B );             ;
+            vector<Vertex*>::iterator result =   find( A->neighbours.begin(), A->neighbours.end(), B );
+
+
+          //  cout <<  "---ss-rr-ss--" << endl;
+
             if( result == A->neighbours.end() )
             {
+            //    cout <<  "--ss-ss--ssr-- " <<  A->neighbours.size() << endl;
                 A->neighbours.push_back(B);
                 B->neighbours.push_back(A);
-
+//cout <<  "---ss--ssr--" << endl;
                 // create a new edge
                 Edge* edge = new Edge(A, B, face);
                 face->edges.push_back(edge);
@@ -380,9 +400,12 @@ void Mesh::ConstructGraphFromFaces( vector < Face* >& faces)
                 B->edges.push_back( edge );
                 edges.push_back(edge);
 
+
             }
             else
             {
+
+              //  cout <<  "---ss--ssr--" << endl;
                 // edge already exists, just need to find it and tell it about this face
                 for ( uint k =0; k < A->edges.size(); k++)
                 {
@@ -393,10 +416,15 @@ void Mesh::ConstructGraphFromFaces( vector < Face* >& faces)
                         face->edges.push_back(edge);
                     }
                 }
+
+               // cout <<  "---ss--ssr--" << endl;
             }
+
         }
 
+
     }
+
 
     for ( int i =0; i < (int)faces.size(); i++)
     {
@@ -427,6 +455,8 @@ void Mesh::ConstructGraphFromFaces( vector < Face* >& faces)
 
 
     }
+
+
 }
 
 
@@ -576,14 +606,14 @@ void Mesh::Draw()
                 glEnd();
             }
         }
-//        if( displayWireFrame)
-//        {
-//            SetColour(RED);
-//            for ( uint i =0; i < edges.size(); i++)
-//                DrawLine(edges[i]->vertices[0]->position*scale, edges[i]->vertices[1]->position*scale);
-//        }
-//        //            for ( uint i =0; i < vertices.size(); i++)
-//        //                DrawPoint(vertices[i]->position *scale);
+        if( displayWireFrame)
+        {
+            SetColour(RED);
+            for ( uint i =0; i < edges.size(); i++)
+                DrawLine(edges[i]->vertices[0]->position*scale, edges[i]->vertices[1]->position*scale);
+        }
+        //            for ( uint i =0; i < vertices.size(); i++)
+        //                DrawPoint(vertices[i]->position *scale);
 
 //        for ( uint i =0; i < vertices.size(); i++)
 //        {

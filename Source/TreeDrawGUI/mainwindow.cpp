@@ -405,7 +405,7 @@ void MainWindow::generateMeshFromLST( std::string lstfile)
       progbar.setValue(100);
 
     progbar.setLabelText("Applying Loop Sudivision");
-    displayWidget->ApplySubdivisionToMesh(1, &progbar);
+  //  displayWidget->ApplySubdivisionToMesh(1, &progbar);
 }
 
 void MainWindow::generateNewVariation()

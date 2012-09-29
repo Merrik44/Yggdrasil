@@ -35,9 +35,9 @@ void InterpolateTexCoordsAccrosRemainingFaces( Mesh* model )
                 face->texCoords[2] != Vector2f(0,0) || face->texCoords[3] != Vector2f(0,0)) // face is already parameterised so continue
             continue;
 
-       // AddLine( face->vertices[0]->position,  face->vertices[1]->position, YELLOW);
-       //  AddLine( face->vertices[1]->position,  face->vertices[2]->position, YELLOW);
-       //   AddLine( face->vertices[2]->position,  face->vertices[0]->position, YELLOW);
+        // AddLine( face->vertices[0]->position,  face->vertices[1]->position, YELLOW);
+        //  AddLine( face->vertices[1]->position,  face->vertices[2]->position, YELLOW);
+        //   AddLine( face->vertices[2]->position,  face->vertices[0]->position, YELLOW);
 
         // find longest edge with tex coords
         // ------- sort edges by length --------
@@ -74,7 +74,7 @@ void InterpolateTexCoordsAccrosRemainingFaces( Mesh* model )
                     if( oppositeFace->vertices[k] == face->vertices[a] )
                     {
                         face->texCoords[a] = oppositeFace->texCoords[k] ;
-                        AddPoint( oppositeFace->vertices[k]->position, RED);
+                      //  AddPoint( oppositeFace->vertices[k]->position, RED);
                     }
                 }
             }
@@ -106,8 +106,8 @@ void InterpolateTexCoordsAccrosRemainingFaces( Mesh* model )
             Vector3f CA =  vertA->position - vertC->position;
 
             float lengthBA = BA.length();
-           float lengthBC = BC.length();
-           float lengthCA = CA.length();
+            float lengthBC = BC.length();
+            float lengthCA = CA.length();
 
             BA/=lengthBA;
             BC /=lengthBC;
@@ -175,7 +175,7 @@ void CreateLoop( int sides, float radius, Matrix3f rotation, Vector3f offset, fl
     texLoops.push_back(texLoop);
 }
 
-void GenerateFaces(  Mesh* model, vector< vector< Vertex*>*>& vertexLoops, vector< vector< Vector2f>* >& texLoops  )
+void GenerateFaces(  Mesh* model, vector< vector< Vertex*>*>& vertexLoops, vector< vector< Vector2f>* >& texLoops, BranchNode* branch  )
 {
     int sides = noOfSides;
 
@@ -240,6 +240,21 @@ void GenerateFaces(  Mesh* model, vector< vector< Vertex*>*>& vertexLoops, vecto
 
             model->triangles.push_back( ABC );
             model->triangles.push_back( BCD );
+
+
+            if( m == 0 )
+            {
+                branch->startFaces.push_back(ABC);
+                branch->startFaces.push_back(BCD);
+            }
+
+
+            if( m != 0 && m ==  vertexLoops.size() -2)
+            {
+                branch->endFaces.push_back(ABC);
+                branch->endFaces.push_back(BCD);
+            }
+
         }
 
     }
@@ -276,8 +291,8 @@ void GenerateBranch( Mesh* model, BranchNode* branch )
     //float startRadius = branch->startRadius
 
     // ---------- Clamp the control factor ------------
-    float controlFactor = min(SubDivControl, 0.5f);
-    controlFactor = max( 0.01f, controlFactor);
+//    float controlFactor = min(SubDivControl, 0.5f);
+//    controlFactor = max( 0.01f, controlFactor);
 
     // ======================================
 
@@ -295,6 +310,8 @@ void GenerateBranch( Mesh* model, BranchNode* branch )
 
         CreateLoop( sides, radius, branch->rotation,offset, vTexCoordinate, model, vertexLoops, texLoops );
     }
+
+
     // ======================================
 
     // ---------- create the starting loop -------------
@@ -335,10 +352,11 @@ void GenerateBranch( Mesh* model, BranchNode* branch )
 
 
     // ------------- generate faces --------------
-    GenerateFaces(   model,vertexLoops, texLoops );
+    GenerateFaces(   model,vertexLoops, texLoops, branch );
 
-    model->ClearNeighourAndEdgeData();
-    model->ReconstructMeshDataStructure();
+   // model->ClearNeighourAndEdgeData();
+
+   //model->ReconstructMeshDataStructure();
 
 
 
@@ -346,7 +364,7 @@ void GenerateBranch( Mesh* model, BranchNode* branch )
     vector< Vertex*>& startVertices = branch->startVertices;
     vector< Vertex*>&  endVertices = branch->endVertices;
 
-    vector< Vertex*>  start =  *vertexLoops[0];
+    vector< Vertex*>  start = *vertexLoops[0];
     startVertices.clear();
     for( unsigned int i = 0; i < start.size(); i++)
         startVertices.push_back(start[i]);
@@ -355,6 +373,23 @@ void GenerateBranch( Mesh* model, BranchNode* branch )
     endVertices.clear();
     for( unsigned int i = 0; i < end.size(); i++)
         endVertices.push_back(end[i]);
+
+    vector< Vertex*>& SecondFromStart = branch->Vertices2ndFromStart;
+    vector< Vertex*>&  SecondFromEnd = branch->Vertices2ndFromEnd;
+
+    vector< Vertex*>  secondStart = *vertexLoops[1];
+    SecondFromStart.clear();
+    for( unsigned int i = 0; i < secondStart.size(); i++)
+        SecondFromStart.push_back(secondStart[i]);
+
+    vector< Vertex*>  secondEnd =  *vertexLoops[vertexLoops.size() - 2];
+    SecondFromEnd.clear();
+    for( unsigned int i = 0; i < secondEnd.size(); i++)
+        SecondFromEnd.push_back(secondEnd[i]);
+
+
+
+
 
     // ---- reverse loop joint creation algorithm so that all the boundaries have the same clockwise ordering ---
     std::reverse(endVertices.begin(), endVertices.end());
@@ -457,7 +492,7 @@ Vector3f TrimIncomingBranches( vector< vector< Vertex* >* >& boundaries, vector<
             newNormal.normalize();
 
 
-        // ---- update rotation matrix ----
+        // ------------ update rotation matrix ------------
         Vector3f axis = newNormal.crossProduct( oldNormal);
         axis.normalize();
         float dot = newNormal.dotProduct( oldNormal);
@@ -479,7 +514,7 @@ Vector3f TrimIncomingBranches( vector< vector< Vertex* >* >& boundaries, vector<
         //  Vector3f translation = direction* offsets[a]*1.01f;
         Vector3f maxTranslation = newNormal* maxOffset*1.01;
 
-        AddLine(geometricCenter+ maxTranslation, geometricCenter, BLACK );
+        //   AddLine(geometricCenter+ maxTranslation, geometricCenter, BLACK );
         for (unsigned int j = 0; j < loop.size(); j++)
         {
             Vertex* A = loop[j];
@@ -531,7 +566,7 @@ void MergeTwoBondaries(vector<Vertex*>& loopA, vector<Vertex*>& loopB )
             }
         }
 
-        // escape case
+        // ------------------- escape case-------------------------
         if(closestVertexPair[0] == -1 )
         {
             cout << "No closest vert found" << endl;
@@ -565,7 +600,6 @@ void MergeTwoBondaries(vector<Vertex*>& loopA, vector<Vertex*>& loopB )
 }
 
 
-//MainWindow* mainWindowRef;
 Mesh* generateMesh( vector<BranchNode*>& branches,  QProgressDialog* progressBar)
 {
     // ------------------ debug stuff ---------------
@@ -593,6 +627,7 @@ Mesh* generateMesh( vector<BranchNode*>& branches,  QProgressDialog* progressBar
     cout << "processing" << endl;
 
 
+
     while( branchStack.size() > 0 )
     {
         current = branchStack.top();
@@ -601,6 +636,7 @@ Mesh* generateMesh( vector<BranchNode*>& branches,  QProgressDialog* progressBar
         branchesProcessed++;
         if(progressBar != NULL)
             progressBar->setValue(( branchesProcessed*100)/noOfBranches );
+
 
         // ------- if the branch has no children, close tip ----
 
@@ -613,23 +649,27 @@ Mesh* generateMesh( vector<BranchNode*>& branches,  QProgressDialog* progressBar
             branchStack.push(current->children[i]);
         }
 
-
         // --------------- create the joint ---------------------------------
         if( current->children.size() != 0)
         {
-            model->ClearNeighourAndEdgeData();
-            model->ReconstructMeshDataStructure();
-
             // ----------- prepare the neccesary data for trimming ---------------
 
             vector< Vector3f > loopNormals;
             vector< float > offsets;
             vector< vector< Vertex* >* > boundaries;
+            vector< Face* > incomingBranchFaces;
+             vector< Vertex* > otherVertices;
 
 
             boundaries.push_back(&current->endVertices);
             loopNormals.push_back(-current->direction);
             offsets.push_back(current->endOffset );
+            for (unsigned int i = 0; i < current->endFaces.size(); i++)
+                incomingBranchFaces.push_back( current->endFaces[i] );
+            for (unsigned int i = 0; i < current->Vertices2ndFromEnd.size(); i++)
+                otherVertices.push_back(  current->Vertices2ndFromEnd[i] );
+
+
 
 
             for (unsigned int i = 0; i < current->children.size(); i++)
@@ -637,6 +677,11 @@ Mesh* generateMesh( vector<BranchNode*>& branches,  QProgressDialog* progressBar
                 boundaries.push_back( &current->children[i]->startVertices);
                 loopNormals.push_back(current->children[i]->direction);
                 offsets.push_back(current->children[i]->startOffset );
+                for (unsigned int f = 0; f < current->children[i]->startFaces.size(); f++)
+                    incomingBranchFaces.push_back( current->children[i]->startFaces[f] );
+                for (unsigned int f = 0; f < current->children[i]->Vertices2ndFromStart.size(); f++)
+                    otherVertices.push_back(  current->children[i]->Vertices2ndFromStart[f] );
+
             }
 
 
@@ -657,26 +702,53 @@ Mesh* generateMesh( vector<BranchNode*>& branches,  QProgressDialog* progressBar
 
                 // --------- Finally construct the joint --------
 
-                GenerateJoint(boundaries, geometricCenter,   model);
+                Mesh* jointMesh = GenerateJoint(boundaries, incomingBranchFaces, otherVertices, geometricCenter);
 
+                // --------- Triangles from joint into main model --------
+                for (unsigned int i = 0; i < jointMesh->triangles.size(); i++)
+                {
+                    bool newFace = true;
+                    for (unsigned int f = 0; f < incomingBranchFaces.size(); f++)
+                    {
+                        if ( incomingBranchFaces[f] == jointMesh->triangles[i] )
+                        {
+                            newFace = false;
+                            break;
+                        }
+
+                    }
+                   if(newFace)
+                       model->triangles.push_back( jointMesh->triangles[i] );
+
+                }
+
+
+                // ------------- Must clear these arrays before deleting the models as they exist in the main model ------
+
+                jointMesh->vertices.clear();
+                jointMesh->triangles.clear();
+                jointMesh->quads.clear();
+                delete jointMesh;
 
 
             }
+
         }
     }
+
+
 
     // ------ Store the mesh state for subdivision purposes -------
     model->ClearNeighourAndEdgeData();
 
+
+//  cout <<  "-43555------" << endl;
     model->ReconstructMeshDataStructure();
+  //  cout <<  "-43555------" << endl;
     model->CalculateNormals();
 
     InterpolateTexCoordsAccrosRemainingFaces( model ); //-------------- This should probs run till stabl!!!
     model->StoreMeshState();
-
-    // --------------- Clean the mesh ---------------
-
-    //model->StoreTextureCoordInVerticesAndMarkSeams();
 
 
     return model;

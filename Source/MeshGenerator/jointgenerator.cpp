@@ -16,7 +16,7 @@ bool enableProgressControl = false;
 
 
 
-Vertex* weightedmMergeAwithedB( Vertex* A, Vertex* B, Mesh* model, Mesh* jointModel )
+Vertex* weightedmMergeAwithedB( Vertex* A, Vertex* B, Mesh* jointModel )
 {
 
 
@@ -36,68 +36,8 @@ Vertex* weightedmMergeAwithedB( Vertex* A, Vertex* B, Mesh* model, Mesh* jointMo
     B->loopID += A->loopID;
 
 
-   // A->position = B->position;
 
 
-    ////////////////////////////////////////////////gafffffffffffffffffffffffffffffffffffffsorjgsoeg   Remember to add quads
-    // ----- update the faces that were pointing at A to point to B ----
-    for( uint j = 0; j < model->triangles.size(); j++)
-    {
-        Face* face = model->triangles[j];
-        for( uint k = 0; k < 4; k++)
-        {
-            if( face->vertices[k] == A)
-                face->vertices[k] = B;
-        }
-
-    }
-
-    for( uint j = 0; j < jointModel->triangles.size(); j++)
-    {
-        Face* face = jointModel->triangles[j];
-        for( uint k = 0; k < 4; k++)
-        {
-            if( face->vertices[k] == A)
-                face->vertices[k] = B;
-        }
-
-    }
-
-//    for( int j = B->neighbours.size() -1 ; j >=0; j--)
-//    {
-//        if( B->neighbours[j] == A )
-//            B->neighbours.erase(j + B->neighbours.begin());
-//    }
-
-//     for( int j = B->edges.size() -1 ; j >=0; j--)
-//     {
-//         if( B->edges[j]->vertices[0] == A )
-//               B->edges[j]->vertices[0] = B;
-
-//        if( B->edges[j]->vertices[1] == A )
-//             B->edges[j]->vertices[1] = B;
-
-//     }
-
-//    for( int j = model->vertices.size() -1 ; j >=0; j--)
-//    {
-//        if( model->vertices[j] == A )
-//        {
-//            //delete model->vertices[j];
-//            model->vertices.erase(model->vertices.begin() + j);
-//        }
-//    }
-
-//    for( int j = jointModel->vertices.size() -1 ; j >=0; j--)
-//    {
-//        if( jointModel->vertices[j] == A )
-//        {
-//           // delete jointModel->vertices[j];
-//            jointModel->vertices.erase(jointModel->vertices.begin() + j);
-//        }
-//    }
-
-//delete A;
     return B;
 }
 
@@ -179,9 +119,8 @@ bool DoStringsShareCharacters(string A, string B)
 
 int counter2 = 300;
 bool collapseCounter = false;
-bool CollapseJoint(Mesh* jointModel, Mesh* model)
+bool CollapseJoint(Mesh* jointModel, vector< Face* >& incomingBranchFaces)
 {
-
 
     //  cout << "s---" <<endl;
     bool AtleastOneCollapse = false;
@@ -238,52 +177,41 @@ bool CollapseJoint(Mesh* jointModel, Mesh* model)
 //       else
 //        {
             // ---- collapse ----
-            // continue;
-            B  = weightedmMergeAwithedB( A, B, model, jointModel );
+
+            B  = weightedmMergeAwithedB( A, B, jointModel );
             AtleastOneCollapse = true;
+
+
+            for( uint j = 0; j < jointModel->triangles.size(); j++)
+            {
+                Face* face = jointModel->triangles[j];
+
+                for( uint k = 0; k < 3; k++)
+                {
+
+                    if( face->vertices[k] == A)
+                        face->vertices[k] = B;
+                }
+
+            }
+
+            for( uint j = 0; j < incomingBranchFaces.size(); j++)
+            {
+                Face* face = incomingBranchFaces[j];
+
+                for( uint k = 0; k < 3; k++)
+                {
+
+                    if( face->vertices[k] == A)
+                        face->vertices[k] = B;
+                }
+
+            }
+
+
+
       //  }
        // cout << counter2 << endl;
-
-
-
-//        for( uint k = 0; k<  A->edges.size(); k++)
-//        {
-//            if( counter2 == 0)
-//            {
-
-//                AddLine(A->edges[k]->vertices[0]->position, A->edges[k]->vertices[1]->position, YELLOW);
-//            }
-//            if( A->edges[k]->vertices[0] == A )
-//            {
-//                A->edges[k]->vertices[0] = B;
-//                 if( counter2 == 0)
-//                 {
-//                      AddPoint(A->edges[k]->vertices[1]->position, GREEN);
-//                 }
-//            }
-
-//            if( A->edges[k]->vertices[1] == A )
-//            {
-//                A->edges[k]->vertices[1] = B;
-//                if( counter2 == 0)
-//                {
-//                    AddPoint(A->edges[k]->vertices[0]->position, GREEN);
-//                }
-//            }
-//        }
-
-        // ----- Find all Tris that were pointing to A and tell the to point at B ----
-//        for( uint k = 0; k<  A->faces.size(); k++)
-//        {
-//            for( int l = 0; l < 3; l++ )
-//            {
-//                if( A->faces[k]->vertices[l] == A )
-//                {
-//                    A->faces[k]->vertices[l] = B;
-//                }
-//            }
-//        }
-
 
 
         //
@@ -609,7 +537,7 @@ extern bool tightJoints;
 
 bool retriangulate = false;
 
-void GenerateJoint(vector< vector<Vertex*>* >& branches, Vector3f center, Mesh* model)
+Mesh* GenerateJoint(vector< vector<Vertex*>* >& branches, vector< Face* >& incomingBranchFaces, vector< Vertex* >& otherVertices, Vector3f center)
 {
     bool quit = false;
 
@@ -628,6 +556,14 @@ void GenerateJoint(vector< vector<Vertex*>* >& branches, Vector3f center, Mesh* 
     for (unsigned int k = 0; k < rootVertices.size(); k++)
         jointModel->vertices.push_back( rootVertices[k] );
 
+//    cout <<  "----------------------" << endl;
+//     for (unsigned int k = 0; k < incomingBranchFaces.size(); k++) // =========================================== This will be an issue if the branches are made from quads. Will have to handle the case to add them
+//         jointModel->triangles.push_back( incomingBranchFaces[k] );
+//     for (unsigned int k = 0; k < otherVertices.size(); k++)
+//         jointModel->vertices.push_back( otherVertices[k] );
+
+     jointModel->ClearNeighourAndEdgeData();
+     jointModel->ReconstructMeshDataStructure();
 
     // ------------------ initialize the visible vertices to everything -------------
     for (unsigned int k = 0; k < rootVertices.size(); k++)
@@ -637,7 +573,6 @@ void GenerateJoint(vector< vector<Vertex*>* >& branches, Vector3f center, Mesh* 
 
         rootVertices[k]->Id = k;
     }
-
 
 
     // ------------------- Initialize Edges----------------------------
@@ -659,6 +594,7 @@ void GenerateJoint(vector< vector<Vertex*>* >& branches, Vector3f center, Mesh* 
         }
 
     }
+
 
     // ------------------------- Begin triangulation-----------------------------
 
@@ -905,6 +841,7 @@ void GenerateJoint(vector< vector<Vertex*>* >& branches, Vector3f center, Mesh* 
     }
 
 
+
     jointModel->ReconstructMeshDataStructure();
     jointModel->CalculateNormals();
 
@@ -913,19 +850,41 @@ void GenerateJoint(vector< vector<Vertex*>* >& branches, Vector3f center, Mesh* 
         RetriangulateSharpEdges(jointModel );
     }
 
-//    int counter = Count;
+//    for( int n = 0; n < jointModel->vertices.size(); n++)
+//    {
+//        Vector3f randOS(1, 1, 1);
+//        randOS*= (Debug::RandomFloat() - 0.5f)*0.001f;
+//      //  cout <<
+//        AddText("V", jointModel->vertices[n]->position + randOS, MAGENTA );
+//    }
 
+//    cout << jointModel->triangles.size() << endl;
+//    for( int n = 0; n < jointModel->triangles.size(); n++)
+//    {
+//        Face* face= jointModel->triangles[n];
+
+//        Vector3f mid = face->vertices[0]->position + face->vertices[1]->position + face->vertices[2]->position;
+//        mid /=3;
+//        Vector3f randOS(1, 1, 1);
+//        randOS*= (Debug::RandomFloat() - 0.5f)*0.001f;
+//      //  cout <<
+//       // AddText("V", mid + randOS, MAGENTA );
+//        AddPoint( mid + randOS, MAGENTA );
+//    }
+
+
+//    int counter = Count;
     counter2 = Count;
     for( int n = 0; n < 20; n++)
     {
 //break; ///////////////////////////////////////////////////////////////// ----------------------------------------------
        // if( counter <= 0 )
        //     break;
-       model->ClearNeighourAndEdgeData();
+       //model->ClearNeighourAndEdgeData();
        jointModel->ClearNeighourAndEdgeData();
-       model->ReconstructMeshDataStructure();
+     //  model->ReconstructMeshDataStructure();
        jointModel->ReconstructMeshDataStructure();
-        bool unstable = CollapseJoint( jointModel, model );
+        bool unstable = CollapseJoint( jointModel, incomingBranchFaces );
        // cout << unstable << endl;
         if( unstable == false)
             break;
@@ -933,24 +892,20 @@ void GenerateJoint(vector< vector<Vertex*>* >& branches, Vector3f center, Mesh* 
         if( n == 10)
             cout << "warning: too many joint collapse" << endl;
     }
+
     // cout << "EEEEE" << endl;
     //  for( uint i = 0; i < jointModel->edges.size(); i++)
     // AddLine( jointModel->edges[i]->vertices[0]->position, jointModel->edges[i]->vertices[1]->position, RED);
 
 
-    // --------- Triangles from joint into main model --------
-    for (unsigned int i = 0; i < jointModel->triangles.size(); i++)
-        model->triangles.push_back( jointModel->triangles[i] );
-
-    // ------------- Must clear these arrays before deleting the models as they exist in the main model ------
-    jointModel->vertices.clear();
-    jointModel->triangles.clear();
-    jointModel->quads.clear();
-    delete jointModel;
 
     for (unsigned int i = 0; i < rootBoundaryLoops.size(); i++)
         delete rootBoundaryLoops[i];
 
     for (unsigned int i = 0; i < allEdgesCreated.size(); i++)
         delete allEdgesCreated[i];
+
+
+    return jointModel;
+
 }

@@ -4,7 +4,7 @@
 #include "mesh.h"
 #include "vector"
 
-void GenerateJoint( std::vector< std::vector<Vertex*>* >& branches, Vector3f center, Mesh* model);
+Mesh *GenerateJoint( std::vector< std::vector<Vertex*>* >& branches, std::vector<Face *> &incomingBranchFaces, std::vector< Vertex* >& otherVertices, Vector3f center);
 void SortByLength( std::vector< Edge*>& edges );
 
 #endif // JOINTGENERATOR_H

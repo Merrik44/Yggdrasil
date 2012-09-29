@@ -20,6 +20,12 @@ public:
     Vector3f direction;
     std::vector< Vertex*> startVertices;
     std::vector< Vertex*>  endVertices;
+    std::vector< Vertex*> Vertices2ndFromStart;
+    std::vector< Vertex*>  Vertices2ndFromEnd;
+
+
+    std::vector< Face*> startFaces;
+    std::vector< Face*>  endFaces;
 
     float startOffset;
     float endOffset;
