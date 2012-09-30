@@ -162,7 +162,7 @@ void GLWidget::loadGLTextures()
   QImage t;
   QImage b;
 
-  if ( !b.load( "../images/irish.jpg" ) )
+  if ( !b.load( "../images/bark.jpg" ) )
   {
     b = QImage( 16, 16, (QImage::Format)32 );
     b.fill( Qt::green );
@@ -186,10 +186,10 @@ void GLWidget::initializeGL()
     for( int i = 0; i < lstFileList.count(); i++ )
         cout << lstFileList.value(i).toStdString() << endl;
 
-    LoadLST("../lst files/treefile6.lst" );
+    LoadLST("../lst files/treefile35.lst" );
     model = generateMesh( skeleton->branches);
 
-
+  loadGLTextures();
     //qglClearColor(qtPurple.dark());
     glClearColor(0.98f,  0.98f,  0.98f, 1);
     glEnable(GL_DEPTH_TEST);
@@ -222,7 +222,7 @@ void GLWidget::initializeGL()
     glHint( GL_LINE_SMOOTH_HINT, GL_NICEST );
     glHint( GL_POLYGON_SMOOTH_HINT, GL_NICEST );
 
-    loadGLTextures();
+
 }
 //! [6]
 

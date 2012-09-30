@@ -9,6 +9,6 @@
 
 
 Mesh* generateMesh( std::vector< BranchNode*>& branches,  QProgressDialog* progressBar = NULL);
-Vertex* mergeAwithB2( Vertex* A, Vertex* B, int bWeight );
+Vertex* mergeAwithB2( Vertex* A, Vertex* B, std::vector<Face *> incomingBranchFace, int bWeight );
 
 #endif // MESHGENERATOR_H

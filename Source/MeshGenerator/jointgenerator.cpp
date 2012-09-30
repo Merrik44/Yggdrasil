@@ -850,27 +850,27 @@ Mesh* GenerateJoint(vector< vector<Vertex*>* >& branches, vector< Face* >& incom
         RetriangulateSharpEdges(jointModel );
     }
 
-//    for( int n = 0; n < jointModel->vertices.size(); n++)
-//    {
-//        Vector3f randOS(1, 1, 1);
-//        randOS*= (Debug::RandomFloat() - 0.5f)*0.001f;
-//      //  cout <<
-//        AddText("V", jointModel->vertices[n]->position + randOS, MAGENTA );
-//    }
+    for( int n = 0; n < jointModel->vertices.size(); n++)
+    {
+        Vector3f randOS(1, 1, 1);
+        randOS*= (Debug::RandomFloat() - 0.5f)*0.001f;
+      //  cout <<
+        AddPoint( jointModel->vertices[n]->position + randOS, MAGENTA );
+    }
 
 //    cout << jointModel->triangles.size() << endl;
-//    for( int n = 0; n < jointModel->triangles.size(); n++)
-//    {
-//        Face* face= jointModel->triangles[n];
+    for( int n = 0; n < incomingBranchFaces.size(); n++)
+    {
+        Face* face= incomingBranchFaces[n];
 
-//        Vector3f mid = face->vertices[0]->position + face->vertices[1]->position + face->vertices[2]->position;
-//        mid /=3;
-//        Vector3f randOS(1, 1, 1);
-//        randOS*= (Debug::RandomFloat() - 0.5f)*0.001f;
-//      //  cout <<
-//       // AddText("V", mid + randOS, MAGENTA );
-//        AddPoint( mid + randOS, MAGENTA );
-//    }
+        Vector3f mid = face->vertices[0]->position + face->vertices[1]->position + face->vertices[2]->position;
+        mid /=3;
+        Vector3f randOS(1, 1, 1);
+        randOS*= (Debug::RandomFloat() - 0.5f)*0.001f;
+      //  cout <<
+       // AddText("V", mid + randOS, MAGENTA );
+        AddPoint( mid + randOS, BLUE );
+    }
 
 
 //    int counter = Count;

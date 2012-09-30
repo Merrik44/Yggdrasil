@@ -74,7 +74,7 @@ void InterpolateTexCoordsAccrosRemainingFaces( Mesh* model )
                     if( oppositeFace->vertices[k] == face->vertices[a] )
                     {
                         face->texCoords[a] = oppositeFace->texCoords[k] ;
-                      //  AddPoint( oppositeFace->vertices[k]->position, RED);
+                        //  AddPoint( oppositeFace->vertices[k]->position, RED);
                     }
                 }
             }
@@ -249,7 +249,7 @@ void GenerateFaces(  Mesh* model, vector< vector< Vertex*>*>& vertexLoops, vecto
             }
 
 
-            if( m != 0 && m ==  vertexLoops.size() -2)
+            if( m ==  vertexLoops.size() -2)
             {
                 branch->endFaces.push_back(ABC);
                 branch->endFaces.push_back(BCD);
@@ -291,22 +291,48 @@ void GenerateBranch( Mesh* model, BranchNode* branch )
     //float startRadius = branch->startRadius
 
     // ---------- Clamp the control factor ------------
-//    float controlFactor = min(SubDivControl, 0.5f);
-//    controlFactor = max( 0.01f, controlFactor);
+    //    float controlFactor = min(SubDivControl, 0.5f);
+    //    controlFactor = max( 0.01f, controlFactor);
 
     // ======================================
+
+    Vector3f randomVec(1,1,1);
+    float r =(float)(random()%1000 - 500)/1000.0f;
+    if (r == 0)
+        r += 0.1f;
+    randomVec *=r;
+    Vector3f U = branch->direction.crossProduct(randomVec );
+    U.normalize();
+    Vector3f V = U.crossProduct(branch->direction);
+    V.normalize();
+
+   // cout << randomVec << " " << branch->direction << endl;
+    //cout << randomVec << " " << branch->direction << endl;
+
 
     for( int i = 0; i < noOfSegments+1; i++)
     {
         ratio = (float)i/((float)noOfSegments);
+        radius = branch->startRadius + (branch->endRadius - branch->startRadius )*ratio;
 
         float vTexCoordinate = 0;
         if(i%2 == 0 )
             vTexCoordinate = 0.5f;
 
         offset =  startPos + (endPos -  startPos)*ratio;
+        if( i != 0 && i != noOfSegments && i%2 == 1 && V.x != NAN)
+        {
+            float scale = 0.4f;
+            float randU =(float)(random()%100 - 50)/100.0f;
+            float randV =(float)(random()%100 - 50)/100.0f;
+            randU *= radius;
+            randV *= radius;
+            randU*=scale;
+            randV*=scale;
+            offset += U*randU + V*randV;
 
-        radius = branch->startRadius + (branch->endRadius - branch->startRadius )*ratio;
+        }
+
 
         CreateLoop( sides, radius, branch->rotation,offset, vTexCoordinate, model, vertexLoops, texLoops );
     }
@@ -354,9 +380,9 @@ void GenerateBranch( Mesh* model, BranchNode* branch )
     // ------------- generate faces --------------
     GenerateFaces(   model,vertexLoops, texLoops, branch );
 
-   // model->ClearNeighourAndEdgeData();
+    // model->ClearNeighourAndEdgeData();
 
-   //model->ReconstructMeshDataStructure();
+    //model->ReconstructMeshDataStructure();
 
 
 
@@ -396,25 +422,22 @@ void GenerateBranch( Mesh* model, BranchNode* branch )
 }
 
 
-Vertex* mergeAwithB2( Vertex* A, Vertex* B, int bWeight )
+Vertex* mergeAwithB2( Vertex* A, Vertex* B, vector< Face* > incomingBranchFace )
 {
     // ------- Add A to B ---------
-    B->position*=bWeight;
-    B->normal*=bWeight;
-
 
     B->position += A->position;
     B->normal += A->normal;
 
     // ------ Normalize B, which now represents the merged point-----
-    B->position /= bWeight +1;
-    B->normal /= bWeight +1;
+    B->position /=2;
+    B->normal /= 2;
 
 
     // ----- update the faces that were pointing at A to point to B ----
-    for( uint j = 0; j < A->faces.size(); j++)
+    for( uint j = 0; j < incomingBranchFace.size(); j++)
     {
-        Face* face = A->faces[j];
+        Face* face = incomingBranchFace[j];
         for( uint k = 0; k < 4; k++)
         {
             if( face->vertices[k] == A)
@@ -533,11 +556,11 @@ Vector3f TrimIncomingBranches( vector< vector< Vertex* >* >& boundaries, vector<
 }
 
 extern int faces, Count;
-void MergeTwoBondaries(vector<Vertex*>& loopA, vector<Vertex*>& loopB )
+void MergeTwoBondaries(vector<Vertex*>& loopA, vector<Vertex*>& loopB, std::vector<Face *> incomingBranchFaces )
 {
 
 
-    int counter =Count;
+    // int counter =Count;
     // cout <<  Count << endl;
     // make copies
     vector< Vertex* > loop1(loopA);
@@ -574,6 +597,7 @@ void MergeTwoBondaries(vector<Vertex*>& loopA, vector<Vertex*>& loopB )
         }
 
         // -- merge vertices ---
+        //   cout << "merg" << endl;
         int indexA = closestVertexPair[0];
         int indexB = closestVertexPair[1];
         Vertex* A = loop1[indexA ];
@@ -582,15 +606,12 @@ void MergeTwoBondaries(vector<Vertex*>& loopA, vector<Vertex*>& loopB )
         loop1.erase( loop1.begin() + indexA);
         loop2.erase( loop2.begin() + indexB);
 
-        //    AddLine(A->position, B->position, RED);
+        //AddLine(A->position, B->position, RED);
 
-        B = mergeAwithB2(A, B, 1);
+        B = mergeAwithB2(A, B, incomingBranchFaces);
         newLoop.push_back(B);
 
-        //        cout << counter << endl;
-        if( counter < 0)
-            return;
-        counter--;
+
 
     }
 
@@ -658,7 +679,7 @@ Mesh* generateMesh( vector<BranchNode*>& branches,  QProgressDialog* progressBar
             vector< float > offsets;
             vector< vector< Vertex* >* > boundaries;
             vector< Face* > incomingBranchFaces;
-             vector< Vertex* > otherVertices;
+            vector< Vertex* > otherVertices;
 
 
             boundaries.push_back(&current->endVertices);
@@ -669,6 +690,7 @@ Mesh* generateMesh( vector<BranchNode*>& branches,  QProgressDialog* progressBar
             for (unsigned int i = 0; i < current->Vertices2ndFromEnd.size(); i++)
                 otherVertices.push_back(  current->Vertices2ndFromEnd[i] );
 
+        //    cout << current->endFaces.size() << endl;
 
 
 
@@ -692,7 +714,7 @@ Mesh* generateMesh( vector<BranchNode*>& branches,  QProgressDialog* progressBar
             // --- If there is only one child, then simply merge the closest vertices ---
             if( current->children.size() == 1)
             {
-                MergeTwoBondaries( *boundaries[0], *boundaries[1] );
+                MergeTwoBondaries( *boundaries[0], *boundaries[1], incomingBranchFaces );
 
             }
 
@@ -717,8 +739,8 @@ Mesh* generateMesh( vector<BranchNode*>& branches,  QProgressDialog* progressBar
                         }
 
                     }
-                   if(newFace)
-                       model->triangles.push_back( jointMesh->triangles[i] );
+                    if(newFace)
+                        model->triangles.push_back( jointMesh->triangles[i] );
 
                 }
 
@@ -730,10 +752,12 @@ Mesh* generateMesh( vector<BranchNode*>& branches,  QProgressDialog* progressBar
                 jointMesh->quads.clear();
                 delete jointMesh;
 
+                // break;
 
             }
 
         }
+
     }
 
 
@@ -742,9 +766,9 @@ Mesh* generateMesh( vector<BranchNode*>& branches,  QProgressDialog* progressBar
     model->ClearNeighourAndEdgeData();
 
 
-//  cout <<  "-43555------" << endl;
+    //  cout <<  "-43555------" << endl;
     model->ReconstructMeshDataStructure();
-  //  cout <<  "-43555------" << endl;
+    //  cout <<  "-43555------" << endl;
     model->CalculateNormals();
 
     InterpolateTexCoordsAccrosRemainingFaces( model ); //-------------- This should probs run till stabl!!!
