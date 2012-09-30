@@ -37,12 +37,13 @@ MainWindow::MainWindow()
     optionP = -1;
     textureIndex = 37;
     storeRoot = 1;
+    subdivs = 0;
     brushSize->setCurrentIndex(2);
 
     QDir directory("./Resources/Textures/");
     QStringList textureList = directory.entryList(QStringList("*.raw"));
 
-   //  cout << "texture " << textureIndex << endl;
+    //  cout << "texture " << textureIndex << endl;
     // displayWidget->setTexture("./Resources/Textures/blank.jpg");
     if (textureList.size() > textureIndex && textureIndex >= 0)
     {
@@ -185,6 +186,34 @@ void MainWindow::generateFromXML()
     }
 }
 
+
+void MainWindow::displayAsCylinders()
+{
+ //   cout << "SS " << endl;
+    displayWidget->displayGeneratedMesh = false;
+    displayCylinderForm->setEnabled(false);
+    displayMesh->setEnabled(true);
+    displayWidget->repaint();
+    displayWidget->updateGL();
+}
+
+void MainWindow::displayAsMesh()
+{
+    displayWidget->displayGeneratedMesh = true;
+    // --------------- Generate the mesh ---------------------------------
+    generateMeshFromLST(lastLSTFile);
+
+
+    //  connect(&p, SIGNAL(canceled()), this, SLOT(cancelGeneration()));
+
+
+    //   QCoreApplication::processEvents();
+    //  if (p.wasCanceled()) return;
+displayMesh->setEnabled(false);
+displayCylinderForm->setEnabled(true);
+    displayWidget->repaint();
+    displayWidget->updateGL();
+}
 
 void MainWindow::cancelGeneration()
 {
@@ -346,32 +375,13 @@ void MainWindow::generateFromCurrent()
 
     setCursor(QCursor(Qt::ArrowCursor));
     newVariation->setEnabled(true);
-   // generateMesh->setEnabled(true);
+    displayAsCylinders();
+   // displayCylinderForm->setEnabled(true);
+  //   displayCylinderForm->setEnabled(true);
+    // generateMesh->setEnabled(true);
 
 }
 
-void MainWindow::generateSingleMesh(bool checked)
-{
-
-    displayWidget->displayGeneratedMesh = checked;
-
-
-
-
-    // --------------- Generate the mesh ---------------------------------
-    generateMeshFromLST(lastLSTFile);
-
-
-  //  connect(&p, SIGNAL(canceled()), this, SLOT(cancelGeneration()));
-
-
- //   QCoreApplication::processEvents();
-  //  if (p.wasCanceled()) return;
-
-
-    displayWidget->repaint();
-    displayWidget->updateGL();
-}
 
 void MainWindow::generateMeshFromLST( std::string lstfile)
 {
@@ -380,9 +390,9 @@ void MainWindow::generateMeshFromLST( std::string lstfile)
         return;
     cout << "ff " << lstfile << endl;
 
-  //  stringstream ss;
-   // ss << lstfile;
-   // ss << ".lst";
+    //  stringstream ss;
+    // ss << lstfile;
+    // ss << ".lst";
     //lstfile += lst;
 
     QProgressDialog progbar(this);
@@ -398,14 +408,16 @@ void MainWindow::generateMeshFromLST( std::string lstfile)
 
     displayWidget->LoadLST(lstfile );
 
-     progbar.setValue(100);
-     progbar.setLabelText("Generating Mesh");
+    progbar.setValue(100);
+    progbar.setLabelText("Generating Mesh");
+
 
     displayWidget->GenerateMeshFromLST(&progbar);
-      progbar.setValue(100);
+    progbar.setValue(100);
 
     progbar.setLabelText("Applying Loop Sudivision");
-  //  displayWidget->ApplySubdivisionToMesh(1, &progbar);
+    cout <<"sssss " <<  subdivs << endl;
+    displayWidget->ApplySubdivisionToMesh(subdivs, &progbar);
 }
 
 void MainWindow::generateNewVariation()
@@ -484,15 +496,15 @@ void MainWindow::generationOptions()
 {
     OptionsDialog options(this);
 
-    options.setValues(optionD, optionB, optionP, storeRoot, textureIndex);
+    options.setValues(optionD, optionB, optionP, storeRoot, textureIndex, subdivs);
 
-    connect(&options, SIGNAL(valuesAccepted(int,int,int,int,int)), this, SLOT(optionsAccepted(int,int,int,int,int)));
+    connect(&options, SIGNAL(valuesAccepted(int,int,int,int,int,int)), this, SLOT(optionsAccepted(int,int,int,int,int,int)));
 
     options.exec();
 
 }
 
-void MainWindow::optionsAccepted(int v1, int v2, int v3, int v4, int v5)
+void MainWindow::optionsAccepted(int v1, int v2, int v3, int v4, int v5, int subdValue)
 {
     optionD = v1;
     optionB = v2;
@@ -502,18 +514,30 @@ void MainWindow::optionsAccepted(int v1, int v2, int v3, int v4, int v5)
     else
         storeRoot = 0;
     textureIndex = v5;
+    subdivs =subdValue;
 }
 
 
 void MainWindow::exportToOBJ()
 {
     QString path = QFileDialog::getSaveFileName(
-                    this,
-                    "OBJ",
-                    QDir::currentPath(),
-                    "OBJ file (*.obj)");
+                this,
+                "OBJ",
+                QDir::currentPath(),
+                "OBJ file (*.obj)");
+
 
     displayWidget->exportToObj(path.toStdString());
+
+
+
+    QString fileName =  path.split("/").last();
+    path.replace( fileName, "Mesh_" + fileName );
+    displayWidget->exportMeshToObj(path.toStdString());
+
+
+
+
 }
 
 
@@ -662,10 +686,20 @@ void MainWindow::createActions()
     connect(newVariation, SIGNAL(triggered()), this, SLOT(generateNewVariation()));
     newVariation->setEnabled(false);
 
-    generateMesh = new QCheckBox(("&Generate Single Mesh"), this);
-    //generateMesh->setStatusTip(tr("Generate a new variation of the last type of tree you generated"));
-    connect(generateMesh, SIGNAL(toggled(bool)), this, SLOT(generateSingleMesh(bool)));
-    //generateMesh->setEnabled(false);
+
+    displayMesh = new QAction(("&Display Mesh Model"), this);
+    //newVariation->setShortcuts(QKeySequence(Qt::CTRL + Qt::Key_G));
+    displayMesh->setStatusTip(tr("Generate a new variation of the last type of tree you generated"));
+    connect(displayMesh, SIGNAL(triggered()), this, SLOT(displayAsMesh()));
+    displayMesh->setEnabled(false);
+
+    displayCylinderForm = new QAction(("&Display Cylinder Model"), this);
+    //newVariation->setShortcuts(QKeySequence(Qt::CTRL + Qt::Key_G));
+    displayCylinderForm->setStatusTip(tr("Generate a new variation of the last type of tree you generated"));
+    connect(displayCylinderForm, SIGNAL(triggered()), this, SLOT(displayAsCylinders()));
+    displayCylinderForm->setEnabled(false);
+
+
 
     undo = new QAction(QIcon("./Resources/Icons/Undo.png"),("&Undo"), this);
     undo->setStatusTip(tr("Undo your last action"));
@@ -754,7 +788,11 @@ void MainWindow::createToolBars()
     displayToolBar->setFloatable(false);
     displayToolBar->setMovable(false);
     displayToolBar->addAction(newVariation);
-    displayToolBar->addWidget(generateMesh);
+   // displayToolBar->addWidget(generateMesh);
+    displayToolBar->addAction(displayCylinderForm);
+    displayToolBar->addAction(displayMesh);
+
+
 
     //sketchToolBar->addWidget(brushSize);
     //displayToolBar->setGeometry(sketchToolBar->geometry());

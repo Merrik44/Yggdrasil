@@ -1,7 +1,7 @@
 /********************************************************************************
 ** Form generated from reading UI file 'mainwindow.ui'
 **
-** Created: Sat Sep 29 19:05:08 2012
+** Created: Sun Sep 30 22:39:15 2012
 **      by: Qt User Interface Compiler version 4.8.1
 **
 ** WARNING! All changes made in this file will be lost when recompiling UI file!
@@ -39,11 +39,13 @@ public:
     QAction *actionBlack_background;
     QAction *actionWhite_background;
     QAction *actionOpen_XML_file_2;
+    QAction *actionEE;
     QWidget *centralWidget;
     QMenuBar *menuBar;
     QMenu *menuFile;
     QMenu *menuDisplay;
     QMenu *menuEdit;
+    QMenu *menuSynthesise_Texture;
     QStatusBar *statusBar;
 
     void setupUi(QMainWindow *MainWindow)
@@ -80,6 +82,8 @@ public:
         actionWhite_background->setCheckable(true);
         actionOpen_XML_file_2 = new QAction(MainWindow);
         actionOpen_XML_file_2->setObjectName(QString::fromUtf8("actionOpen_XML_file_2"));
+        actionEE = new QAction(MainWindow);
+        actionEE->setObjectName(QString::fromUtf8("actionEE"));
         centralWidget = new QWidget(MainWindow);
         centralWidget->setObjectName(QString::fromUtf8("centralWidget"));
         MainWindow->setCentralWidget(centralWidget);
@@ -92,6 +96,8 @@ public:
         menuDisplay->setObjectName(QString::fromUtf8("menuDisplay"));
         menuEdit = new QMenu(menuBar);
         menuEdit->setObjectName(QString::fromUtf8("menuEdit"));
+        menuSynthesise_Texture = new QMenu(menuBar);
+        menuSynthesise_Texture->setObjectName(QString::fromUtf8("menuSynthesise_Texture"));
         MainWindow->setMenuBar(menuBar);
         statusBar = new QStatusBar(MainWindow);
         statusBar->setObjectName(QString::fromUtf8("statusBar"));
@@ -100,6 +106,7 @@ public:
         menuBar->addAction(menuFile->menuAction());
         menuBar->addAction(menuEdit->menuAction());
         menuBar->addAction(menuDisplay->menuAction());
+        menuBar->addAction(menuSynthesise_Texture->menuAction());
         menuFile->addAction(actionOpen_XML_file);
         menuFile->addAction(actionSave_XML_file);
         menuFile->addSeparator();
@@ -109,6 +116,7 @@ public:
         menuDisplay->addSeparator();
         menuDisplay->addAction(actionGenerate_from_current);
         menuDisplay->addAction(actionExport_to_OBJ);
+        menuDisplay->addAction(actionEE);
         menuDisplay->addSeparator();
         menuDisplay->addAction(actionBlack_background);
         menuDisplay->addAction(actionWhite_background);
@@ -132,13 +140,15 @@ public:
         actionGenerate_output_for_XML_file->setText(QApplication::translate("MainWindow", "Generate output for XML file", 0, QApplication::UnicodeUTF8));
         actionUndo->setText(QApplication::translate("MainWindow", "Undo", 0, QApplication::UnicodeUTF8));
         actionRedo->setText(QApplication::translate("MainWindow", "Redo", 0, QApplication::UnicodeUTF8));
-        actionExport_to_OBJ->setText(QApplication::translate("MainWindow", "Export to OBJ", 0, QApplication::UnicodeUTF8));
+        actionExport_to_OBJ->setText(QApplication::translate("MainWindow", "Export to Cylinder Model to OBJ", 0, QApplication::UnicodeUTF8));
         actionBlack_background->setText(QApplication::translate("MainWindow", "Black background", 0, QApplication::UnicodeUTF8));
         actionWhite_background->setText(QApplication::translate("MainWindow", "White background", 0, QApplication::UnicodeUTF8));
         actionOpen_XML_file_2->setText(QApplication::translate("MainWindow", "Open XML file", 0, QApplication::UnicodeUTF8));
+        actionEE->setText(QApplication::translate("MainWindow", "Export to Mesh Model to OBJ", 0, QApplication::UnicodeUTF8));
         menuFile->setTitle(QApplication::translate("MainWindow", "File", 0, QApplication::UnicodeUTF8));
         menuDisplay->setTitle(QApplication::translate("MainWindow", "Display", 0, QApplication::UnicodeUTF8));
         menuEdit->setTitle(QApplication::translate("MainWindow", "Edit", 0, QApplication::UnicodeUTF8));
+        menuSynthesise_Texture->setTitle(QApplication::translate("MainWindow", "Synthesise Texture", 0, QApplication::UnicodeUTF8));
     } // retranslateUi
 
 };

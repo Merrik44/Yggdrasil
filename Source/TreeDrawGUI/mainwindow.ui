@@ -41,6 +41,7 @@
     <addaction name="separator"/>
     <addaction name="actionGenerate_from_current"/>
     <addaction name="actionExport_to_OBJ"/>
+    <addaction name="actionEE"/>
     <addaction name="separator"/>
     <addaction name="actionBlack_background"/>
     <addaction name="actionWhite_background"/>
@@ -52,9 +53,15 @@
     <addaction name="actionUndo"/>
     <addaction name="actionRedo"/>
    </widget>
+   <widget class="QMenu" name="menuSynthesise_Texture">
+    <property name="title">
+     <string>Synthesise Texture</string>
+    </property>
+   </widget>
    <addaction name="menuFile"/>
    <addaction name="menuEdit"/>
    <addaction name="menuDisplay"/>
+   <addaction name="menuSynthesise_Texture"/>
   </widget>
   <widget class="QStatusBar" name="statusBar"/>
   <action name="actionOpen_XML_file">
@@ -104,7 +111,7 @@
   </action>
   <action name="actionExport_to_OBJ">
    <property name="text">
-    <string>Export to OBJ</string>
+    <string>Export to Cylinder Model to OBJ</string>
    </property>
   </action>
   <action name="actionBlack_background">
@@ -129,6 +136,11 @@
   <action name="actionOpen_XML_file_2">
    <property name="text">
     <string>Open XML file</string>
+   </property>
+  </action>
+  <action name="actionEE">
+   <property name="text">
+    <string>Export to Mesh Model to OBJ</string>
    </property>
   </action>
  </widget>

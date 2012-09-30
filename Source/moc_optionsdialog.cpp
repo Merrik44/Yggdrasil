@@ -1,7 +1,7 @@
 /****************************************************************************
 ** Meta object code from reading C++ file 'optionsdialog.h'
 **
-** Created: Sat Sep 29 19:07:38 2012
+** Created: Sun Sep 30 22:13:14 2012
 **      by: The Qt Meta Object Compiler version 63 (Qt 4.8.1)
 **
 ** WARNING! All changes made in this file will be lost!
@@ -23,7 +23,7 @@ static const uint qt_meta_data_OptionsDialog[] = {
        6,       // revision
        0,       // classname
        0,    0, // classinfo
-       9,   14, // methods
+      10,   14, // methods
        0,    0, // properties
        0,    0, // enums/sets
        0,    0, // constructors
@@ -31,28 +31,30 @@ static const uint qt_meta_data_OptionsDialog[] = {
        1,       // signalCount
 
  // signals: signature, parameters, type, tag, flags
-      50,   15,   14,   14, 0x05,
+      62,   15,   14,   14, 0x05,
 
  // slots: signature, parameters, type, tag, flags
-      92,   86,   14,   14, 0x0a,
-     106,   86,   14,   14, 0x0a,
-     120,   86,   14,   14, 0x0a,
-     140,  134,   14,   14, 0x0a,
-     154,  134,   14,   14, 0x0a,
-     168,  134,   14,   14, 0x0a,
-     182,   14,   14,   14, 0x0a,
-     188,   14,   14,   14, 0x0a,
+     108,  102,   14,   14, 0x0a,
+     122,  102,   14,   14, 0x0a,
+     136,  102,   14,   14, 0x0a,
+     156,  150,   14,   14, 0x0a,
+     170,  150,   14,   14, 0x0a,
+     184,  150,   14,   14, 0x0a,
+     198,  150,   14,   14, 0x0a,
+     217,   14,   14,   14, 0x0a,
+     223,   14,   14,   14, 0x0a,
 
        0        // eod
 };
 
 static const char qt_meta_stringdata_OptionsDialog[] = {
-    "OptionsDialog\0\0value1,value2,value3,value4,value5\0"
-    "valuesAccepted(int,int,int,int,int)\0"
+    "OptionsDialog\0\0"
+    "value1,value2,value3,value4,value5,subdivValue\0"
+    "valuesAccepted(int,int,int,int,int,int)\0"
     "state\0checked1(int)\0checked2(int)\0"
     "checked3(int)\0value\0updated1(int)\0"
-    "updated2(int)\0updated3(int)\0set()\0"
-    "close()\0"
+    "updated2(int)\0updated3(int)\0"
+    "updatedSubdiv(int)\0set()\0close()\0"
 };
 
 void OptionsDialog::qt_static_metacall(QObject *_o, QMetaObject::Call _c, int _id, void **_a)
@@ -61,15 +63,16 @@ void OptionsDialog::qt_static_metacall(QObject *_o, QMetaObject::Call _c, int _i
         Q_ASSERT(staticMetaObject.cast(_o));
         OptionsDialog *_t = static_cast<OptionsDialog *>(_o);
         switch (_id) {
-        case 0: _t->valuesAccepted((*reinterpret_cast< int(*)>(_a[1])),(*reinterpret_cast< int(*)>(_a[2])),(*reinterpret_cast< int(*)>(_a[3])),(*reinterpret_cast< int(*)>(_a[4])),(*reinterpret_cast< int(*)>(_a[5]))); break;
+        case 0: _t->valuesAccepted((*reinterpret_cast< int(*)>(_a[1])),(*reinterpret_cast< int(*)>(_a[2])),(*reinterpret_cast< int(*)>(_a[3])),(*reinterpret_cast< int(*)>(_a[4])),(*reinterpret_cast< int(*)>(_a[5])),(*reinterpret_cast< int(*)>(_a[6]))); break;
         case 1: _t->checked1((*reinterpret_cast< int(*)>(_a[1]))); break;
         case 2: _t->checked2((*reinterpret_cast< int(*)>(_a[1]))); break;
         case 3: _t->checked3((*reinterpret_cast< int(*)>(_a[1]))); break;
         case 4: _t->updated1((*reinterpret_cast< int(*)>(_a[1]))); break;
         case 5: _t->updated2((*reinterpret_cast< int(*)>(_a[1]))); break;
         case 6: _t->updated3((*reinterpret_cast< int(*)>(_a[1]))); break;
-        case 7: _t->set(); break;
-        case 8: _t->close(); break;
+        case 7: _t->updatedSubdiv((*reinterpret_cast< int(*)>(_a[1]))); break;
+        case 8: _t->set(); break;
+        case 9: _t->close(); break;
         default: ;
         }
     }
@@ -107,17 +110,17 @@ int OptionsDialog::qt_metacall(QMetaObject::Call _c, int _id, void **_a)
     if (_id < 0)
         return _id;
     if (_c == QMetaObject::InvokeMetaMethod) {
-        if (_id < 9)
+        if (_id < 10)
             qt_static_metacall(this, _c, _id, _a);
-        _id -= 9;
+        _id -= 10;
     }
     return _id;
 }
 
 // SIGNAL 0
-void OptionsDialog::valuesAccepted(int _t1, int _t2, int _t3, int _t4, int _t5)
+void OptionsDialog::valuesAccepted(int _t1, int _t2, int _t3, int _t4, int _t5, int _t6)
 {
-    void *_a[] = { 0, const_cast<void*>(reinterpret_cast<const void*>(&_t1)), const_cast<void*>(reinterpret_cast<const void*>(&_t2)), const_cast<void*>(reinterpret_cast<const void*>(&_t3)), const_cast<void*>(reinterpret_cast<const void*>(&_t4)), const_cast<void*>(reinterpret_cast<const void*>(&_t5)) };
+    void *_a[] = { 0, const_cast<void*>(reinterpret_cast<const void*>(&_t1)), const_cast<void*>(reinterpret_cast<const void*>(&_t2)), const_cast<void*>(reinterpret_cast<const void*>(&_t3)), const_cast<void*>(reinterpret_cast<const void*>(&_t4)), const_cast<void*>(reinterpret_cast<const void*>(&_t5)), const_cast<void*>(reinterpret_cast<const void*>(&_t6)) };
     QMetaObject::activate(this, &staticMetaObject, 0, _a);
 }
 QT_END_MOC_NAMESPACE

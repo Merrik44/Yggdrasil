@@ -75,11 +75,11 @@ GLWidget::GLWidget(QWidget *parent)
     qtPurple = QColor::fromCmykF(0.39, 0.39, 0.0, 0.0);
     zoom = 1;
 
-//    zoom = 0.0329676;
-//    xOffset = 0.45f;
-//yOffset = -0.790001f;
-//xRot = 656;
-//yRot = 3480;
+    //    zoom = 0.0329676;
+    //    xOffset = 0.45f;
+    //yOffset = -0.790001f;
+    //xRot = 656;
+    //yRot = 3480;
 
 
     skeleton = NULL;
@@ -159,21 +159,22 @@ void GLWidget::setZRotation(int angle)
 
 void GLWidget::loadGLTextures()
 {
-  QImage t;
-  QImage b;
+    QImage t;
+    QImage b;
 
-  if ( !b.load( "../images/bark.jpg" ) )
-  {
-    b = QImage( 16, 16, (QImage::Format)32 );
-    b.fill( Qt::green );
-  }
+    if ( !b.load( "../images/bark.jpg" ) )
+    {
+        b = QImage( 16, 16, (QImage::Format)32 );
+        b.fill( Qt::green );
+    }
 
-  t = QGLWidget::convertToGLFormat( b );
-  glGenTextures( 1, &texture[0] );
-  glBindTexture( GL_TEXTURE_2D, texture[0] );
-  glTexImage2D( GL_TEXTURE_2D, 0, 3, t.width(), t.height(), 0, GL_RGBA, GL_UNSIGNED_BYTE, t.bits() );
-  glTexParameteri( GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR );
-  glTexParameteri( GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR );
+    t = QGLWidget::convertToGLFormat( b );
+
+    glGenTextures( 1, &texture[0] );
+    glBindTexture( GL_TEXTURE_2D, texture[0] );
+    glTexImage2D( GL_TEXTURE_2D, 0, 3, t.width(), t.height(), 0, GL_RGBA, GL_UNSIGNED_BYTE, t.bits() );
+    glTexParameteri( GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR );
+    glTexParameteri( GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR );
     glEnable(GL_TEXTURE_2D);
     glBindTexture(GL_TEXTURE_2D, texture[0]);
 }
@@ -186,10 +187,10 @@ void GLWidget::initializeGL()
     for( int i = 0; i < lstFileList.count(); i++ )
         cout << lstFileList.value(i).toStdString() << endl;
 
-    LoadLST("../lst files/treefile35.lst" );
+    LoadLST("../lst files/EdgeCases/treefile59.lst" );
     model = generateMesh( skeleton->branches);
 
-  loadGLTextures();
+    loadGLTextures();
     //qglClearColor(qtPurple.dark());
     glClearColor(0.98f,  0.98f,  0.98f, 1);
     glEnable(GL_DEPTH_TEST);
@@ -209,9 +210,9 @@ void GLWidget::initializeGL()
     glLightfv(GL_LIGHT0, GL_SPECULAR, light_specular0);
 
     glEnable(GL_MULTISAMPLE);
-   // glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
- //   glEnable( GL_BLEND );/*
-        //    glFrontFace(GL_CCW);*/
+    // glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
+    //   glEnable( GL_BLEND );/*
+    //    glFrontFace(GL_CCW);*/
 
 
     static GLfloat lightPosition[4] = { 0.5, 5.0, 7.0, 1.0 };
@@ -249,7 +250,7 @@ void GLWidget::LoadLST( std::string filepath )
         delete skeleton;
 
     skeleton = new LstSkeleton(filepath);
-  cout << "sss" << filepath << endl;
+    cout << "sss" << filepath << endl;
 }
 
 void GLWidget::reloadLST( )
@@ -289,7 +290,7 @@ void GLWidget::GenerateMeshFromLST()
 
 
     setSubdivisionLevel(subdivisionLevel );
-   // updateGL();
+    // updateGL();
 }
 
 void DrawSquare()
@@ -332,12 +333,12 @@ void GLWidget::paintGL()
     GLfloat light_position0[] = {0,0, -1, 0.0};
     glLightfv(GL_LIGHT0, GL_POSITION, light_position0);
 
-//    cout << "DDDDD" << endl;
-//    cout << zoom << endl;
-//     cout << xOffset << endl;
-//    cout << yOffset << endl;
-//    cout << xRot << endl;
-//    cout << yRot << endl;
+    //    cout << "DDDDD" << endl;
+    //    cout << zoom << endl;
+    //     cout << xOffset << endl;
+    //    cout << yOffset << endl;
+    //    cout << xRot << endl;
+    //    cout << yRot << endl;
 
     SetColour(LIGHT_GREY);
 

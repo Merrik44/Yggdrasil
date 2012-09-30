@@ -11,6 +11,8 @@
 #include <math.h>
 #include "MeshGenerator/surfacesubdivision.h"
 #include "MeshGenerator/meshgenerator.h"
+#include "MeshGenerator/objexporter.h"
+
 
 
 using namespace std;
@@ -531,6 +533,11 @@ void QTreeDisplayWidget::exportToObj(const std::string &fileName)
         tree->writeToObj(fileName);
 }
 
+void QTreeDisplayWidget::exportMeshToObj(const std::string &fileName)
+{
+    if (model != 0)
+        ExportModel( fileName, model );
+}
 
 void QTreeDisplayWidget::setOutOfDate()
 {

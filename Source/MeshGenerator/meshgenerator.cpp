@@ -752,7 +752,7 @@ Mesh* generateMesh( vector<BranchNode*>& branches,  QProgressDialog* progressBar
                 jointMesh->quads.clear();
                 delete jointMesh;
 
-                // break;
+                //break;
 
             }
 

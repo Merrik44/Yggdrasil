@@ -48,6 +48,7 @@ public:
     void setSourceXMLFile(const std::string &fileName);
     void clearDisplay();
     void exportToObj(const std::string &fileName);
+    void exportMeshToObj(const string &fileName);
 
     void setBackgroundColour(int colour);
     void setTexture(const QString &path);

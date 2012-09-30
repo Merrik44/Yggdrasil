@@ -44,10 +44,11 @@ private slots:
     void generateFromCurrent();
     void generateNewVariation();
     void generationOptions();
-    void optionsAccepted(int v1, int v2, int v3, int v4, int v5);
-    void generateSingleMesh(bool checked);
+    void optionsAccepted(int v1, int v2, int v3, int v4, int v5, int subdValue);
     void generateMeshFromLST( std::string lstfile);
     void exportToOBJ();
+    void displayAsCylinders();
+    void displayAsMesh();
 
     void blackBackground();
     void whiteBackground();
@@ -77,10 +78,13 @@ private:
     QAction *generationOption;
     QAction *undo;
     QAction *redo;
-    QAction *newVariation;\
+    QAction *newVariation;
     QCheckBox *generateMesh;
-
     QAction *newSketch;
+    QAction *displayMesh;
+    QAction *displayCylinderForm;
+
+    //QAction *newSketch;
 
    // QCheckBox *pencilMode;
     QToolButton *lineMode;
@@ -93,7 +97,7 @@ private:
     std::string lastGeneratedFile;
     std::string lastLSTFile;
 
-    int optionD, optionB, optionP, textureIndex, storeRoot;
+    int optionD, optionB, optionP, textureIndex, storeRoot, subdivs;
     void errorMessage(const char* msg, const char* title);
 
     bool sketchWidgetCreated;

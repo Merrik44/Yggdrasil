@@ -66,6 +66,15 @@ OptionsDialog::OptionsDialog(QWidget *parent) :
     option3.setMinimumWidth(200);
     option3.setMaximumWidth(200);
 
+
+    subDivLabel.setText("Subdivisions applied to mesh");
+    subDivValue.setAlignment(Qt::AlignCenter);
+    subDivSlider.setOrientation(Qt::Horizontal);
+    subDivSlider.setEnabled(true);
+    subDivSlider.setRange(0 ,4);
+    subDivSlider.setMinimumWidth(200);
+    subDivSlider.setMaximumWidth(200);
+
     label4.setText("Replicate trunk exactly as drawn");
     enabled3.setChecked(true);
     enabled3.setText("");
@@ -79,7 +88,17 @@ OptionsDialog::OptionsDialog(QWidget *parent) :
     frameLayout->addWidget(&label2, 2, 1);
     //frameLayout->addWidget(&enabled2, 3, 0);
     frameLayout->addWidget(&option2, 3, 1);
+
+
+
     frameLayout->addWidget(&value2, 3, 2);
+
+
+
+    frameLayout->addWidget(&subDivLabel, 4, 1);
+    frameLayout->addWidget(&subDivSlider, 5, 1);
+    frameLayout->addWidget(&subDivValue, 5, 2);
+
 
     //frameLayout->addWidget(&label3, 4, 1);
     //frameLayout->addWidget(&enabled3, 5, 0);
@@ -102,6 +121,7 @@ OptionsDialog::OptionsDialog(QWidget *parent) :
     connect(&option1, SIGNAL(valueChanged(int)), this, SLOT(updated1(int)));
     connect(&option2, SIGNAL(valueChanged(int)), this, SLOT(updated2(int)));
     connect(&option3, SIGNAL(valueChanged(int)), this, SLOT(updated3(int)));
+    connect(&subDivSlider, SIGNAL(valueChanged(int)), this, SLOT(updatedSubdiv(int)));
 
 
     connect(&ok, SIGNAL(clicked()), this, SLOT(set()));
@@ -161,7 +181,7 @@ OptionsDialog::~OptionsDialog()
 }
 
 
-void OptionsDialog::setValues(int v1, int v2, int v3, int v4, int v5)
+void OptionsDialog::setValues(int v1, int v2, int v3, int v4, int v5, int subdivValue)
 {
     if (v1 > 0)
     {
@@ -207,6 +227,13 @@ void OptionsDialog::setValues(int v1, int v2, int v3, int v4, int v5)
         option3.setValue(-v3);
         value3.setEnabled(false);
     }
+    subDivSlider.setValue(subdivValue + 1);
+    subDivSlider.setValue(subdivValue - 1);
+    subDivSlider.setValue(subdivValue);
+  //      emit subDivSlider.valueChanged;
+      //  subDivValue.setText();
+        subDivValue.setEnabled(true);
+
 
     enabled4.setChecked(v4 != 0);
 
@@ -280,6 +307,15 @@ void OptionsDialog::updated3(int value)
     value3.setText(QString(val));
 }
 
+void OptionsDialog::updatedSubdiv(int value)
+{
+    char val[64];
+    sprintf(val,"%d",value);
+    subDivValue.setText(QString(val));
+}
+
+
+
 void OptionsDialog::set()
 {
     int v1 = -option1.value();
@@ -302,7 +338,7 @@ void OptionsDialog::set()
 
     int v5 = texGroup.checkedId();
 
-    emit valuesAccepted(v1, v2, v3, v4, v5);
+    emit valuesAccepted(v1, v2, v3, v4, v5, subDivSlider.value());
     this->done(0);
 }
 

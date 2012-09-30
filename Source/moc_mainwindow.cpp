@@ -1,7 +1,7 @@
 /****************************************************************************
 ** Meta object code from reading C++ file 'mainwindow.h'
 **
-** Created: Sun Sep 30 01:25:47 2012
+** Created: Sun Sep 30 22:32:35 2012
 **      by: The Qt Meta Object Compiler version 63 (Qt 4.8.1)
 **
 ** WARNING! All changes made in this file will be lost!
@@ -23,7 +23,7 @@ static const uint qt_meta_data_MainWindow[] = {
        6,       // revision
        0,       // classname
        0,    0, // classinfo
-      25,   14, // methods
+      26,   14, // methods
        0,    0, // properties
        0,    0, // enums/sets
        0,    0, // constructors
@@ -45,17 +45,18 @@ static const uint qt_meta_data_MainWindow[] = {
      185,   11,   11,   11, 0x08,
      207,   11,   11,   11, 0x08,
      230,   11,   11,   11, 0x08,
-     265,  250,   11,   11, 0x08,
-     310,  302,   11,   11, 0x08,
-     343,  335,   11,   11, 0x08,
-     376,   11,   11,   11, 0x08,
-     390,   11,   11,   11, 0x08,
+     275,  250,   11,   11, 0x08,
+     324,  316,   11,   11, 0x08,
+     357,   11,   11,   11, 0x08,
+     371,   11,   11,   11, 0x08,
+     392,   11,   11,   11, 0x08,
      408,   11,   11,   11, 0x08,
      426,   11,   11,   11, 0x08,
-     440,   11,   11,   11, 0x08,
-     456,   11,   11,   11, 0x08,
-     477,  472,   11,   11, 0x08,
-     499,   11,   11,   11, 0x08,
+     444,   11,   11,   11, 0x08,
+     458,   11,   11,   11, 0x08,
+     474,   11,   11,   11, 0x08,
+     495,  490,   11,   11, 0x08,
+     517,   11,   11,   11, 0x08,
 
        0        // eod
 };
@@ -68,10 +69,11 @@ static const char qt_meta_stringdata_MainWindow[] = {
     "displayXMLFile()\0displayLSTFile()\0"
     "generateFromXML()\0generateFromCurrent()\0"
     "generateNewVariation()\0generationOptions()\0"
-    "v1,v2,v3,v4,v5\0optionsAccepted(int,int,int,int,int)\0"
-    "checked\0generateSingleMesh(bool)\0"
+    "v1,v2,v3,v4,v5,subdValue\0"
+    "optionsAccepted(int,int,int,int,int,int)\0"
     "lstfile\0generateMeshFromLST(std::string)\0"
-    "exportToOBJ()\0blackBackground()\0"
+    "exportToOBJ()\0displayAsCylinders()\0"
+    "displayAsMesh()\0blackBackground()\0"
     "whiteBackground()\0setLineMode()\0"
     "setSelectMode()\0setPencilMode()\0text\0"
     "setBrushSize(QString)\0cancelGeneration()\0"
@@ -97,17 +99,18 @@ void MainWindow::qt_static_metacall(QObject *_o, QMetaObject::Call _c, int _id, 
         case 11: _t->generateFromCurrent(); break;
         case 12: _t->generateNewVariation(); break;
         case 13: _t->generationOptions(); break;
-        case 14: _t->optionsAccepted((*reinterpret_cast< int(*)>(_a[1])),(*reinterpret_cast< int(*)>(_a[2])),(*reinterpret_cast< int(*)>(_a[3])),(*reinterpret_cast< int(*)>(_a[4])),(*reinterpret_cast< int(*)>(_a[5]))); break;
-        case 15: _t->generateSingleMesh((*reinterpret_cast< bool(*)>(_a[1]))); break;
-        case 16: _t->generateMeshFromLST((*reinterpret_cast< std::string(*)>(_a[1]))); break;
-        case 17: _t->exportToOBJ(); break;
-        case 18: _t->blackBackground(); break;
-        case 19: _t->whiteBackground(); break;
-        case 20: _t->setLineMode(); break;
-        case 21: _t->setSelectMode(); break;
-        case 22: _t->setPencilMode(); break;
-        case 23: _t->setBrushSize((*reinterpret_cast< const QString(*)>(_a[1]))); break;
-        case 24: _t->cancelGeneration(); break;
+        case 14: _t->optionsAccepted((*reinterpret_cast< int(*)>(_a[1])),(*reinterpret_cast< int(*)>(_a[2])),(*reinterpret_cast< int(*)>(_a[3])),(*reinterpret_cast< int(*)>(_a[4])),(*reinterpret_cast< int(*)>(_a[5])),(*reinterpret_cast< int(*)>(_a[6]))); break;
+        case 15: _t->generateMeshFromLST((*reinterpret_cast< std::string(*)>(_a[1]))); break;
+        case 16: _t->exportToOBJ(); break;
+        case 17: _t->displayAsCylinders(); break;
+        case 18: _t->displayAsMesh(); break;
+        case 19: _t->blackBackground(); break;
+        case 20: _t->whiteBackground(); break;
+        case 21: _t->setLineMode(); break;
+        case 22: _t->setSelectMode(); break;
+        case 23: _t->setPencilMode(); break;
+        case 24: _t->setBrushSize((*reinterpret_cast< const QString(*)>(_a[1]))); break;
+        case 25: _t->cancelGeneration(); break;
         default: ;
         }
     }
@@ -145,9 +148,9 @@ int MainWindow::qt_metacall(QMetaObject::Call _c, int _id, void **_a)
     if (_id < 0)
         return _id;
     if (_c == QMetaObject::InvokeMetaMethod) {
-        if (_id < 25)
+        if (_id < 26)
             qt_static_metacall(this, _c, _id, _a);
-        _id -= 25;
+        _id -= 26;
     }
     return _id;
 }
