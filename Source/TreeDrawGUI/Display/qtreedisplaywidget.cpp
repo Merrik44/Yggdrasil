@@ -202,7 +202,7 @@ void QTreeDisplayWidget::GenerateMeshFromLST( QProgressDialog* progressBar)
 void QTreeDisplayWidget::ApplySubdivisionToMesh( int numberOfSubdvisions,  QProgressDialog* progressBar )
 {
     if( model != NULL )
-        ApplyLoopSubvision(model, numberOfSubdvisions);;
+        ApplyLoopSubvision(model, numberOfSubdvisions, progressBar);
 }
 
 void qtGluPerspective(double fovy,double aspect, double zNear, double zFar)

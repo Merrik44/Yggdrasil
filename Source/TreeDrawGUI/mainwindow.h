@@ -49,6 +49,7 @@ private slots:
     void exportToOBJ();
     void displayAsCylinders();
     void displayAsMesh();
+    void SynthesizeTexture();
 
     void blackBackground();
     void whiteBackground();
@@ -82,6 +83,7 @@ private:
     QCheckBox *generateMesh;
     QAction *newSketch;
     QAction *displayMesh;
+    QAction *texSynthOption;
     QAction *displayCylinderForm;
 
     //QAction *newSketch;

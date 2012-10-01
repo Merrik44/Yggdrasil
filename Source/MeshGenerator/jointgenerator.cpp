@@ -877,7 +877,7 @@ Mesh* GenerateJoint(vector< vector<Vertex*>* >& branches, vector< Face* >& incom
     counter2 = Count;
     for( int n = 0; n < 20; n++)
     {
-//break; ///////////////////////////////////////////////////////////////// ----------------------------------------------
+break; ///////////////////////////////////////////////////////////////// ----------------------------------------------
        // if( counter <= 0 )
        //     break;
        //model->ClearNeighourAndEdgeData();

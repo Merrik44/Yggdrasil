@@ -546,9 +546,9 @@ void Mesh::Draw()
                         //Vector3f normal = tri->vertices[k]->normal;
                         Vector3f normal ;
                        // if(smoothShading)
-                        normal = -tri->vertices[k]->normal;
+                      //  normal = -tri->vertices[k]->normal;
                         //else
-                          //  normal = tri->normal;
+                           normal = -tri->normal;
 
                         glNormal3f( normal.x, normal.y, normal.z );
 
@@ -722,6 +722,150 @@ void Mesh::StoreTextureCoordInVerticesAndMarkSeams()
         }
     }
 }
+
+void Mesh::Draw2()
+{
+    //CalculateNormals();
+    //DebugClear();
+    SetColour( LIGHT_GREY );
+    glPushMatrix();
+    {
+        glTranslatef( position.x,  position.y,  position.z);
+        if( displayMesh)
+        {
+            glBegin( GL_TRIANGLES );
+            {
+                for ( int j = 0; j < (int)triangles.size(); j++ ) // for each triangle
+                {
+                    Face* tri = triangles[j];
+
+                    //                    if( j==8 )
+                    //                    {
+                    //                    AddPoint(tri->vertices[0]->position, (Colours)0);
+                    //                    AddPoint(tri->vertices[1]->position, (Colours)1);
+                    //                    AddPoint(tri->vertices[2]->position, (Colours)2);
+
+                    //                    for( int n = 0; n < 3; n++)
+                    //                    {
+                    //                        Vector3f A = tri->edges[n]->vertices[0]->position;
+                    //                        Vector3f B = tri->edges[n]->vertices[1]->position;
+                    //                        AddLine( A, (A+B)/2, (Colours)n);
+                    //                 }
+                    //                    }
+
+                    //                    if(  tri->normal == Vector3f(0, 0, 0)  )
+                    //                    {
+                    //                       AddPoint(tri->vertices[0]->position, GREEN);
+                    //                       AddPoint(tri->vertices[1]->position, RED);
+                    //                       AddPoint(tri->vertices[2]->position, BLUE);
+
+                    ////                       cout<< "triangles[i]->vertices[0]" << endl;
+                    ////                       cout<< tri->vertices[0]->position << endl;
+                    ////                       cout<< tri->vertices[1]->position << endl;
+                    ////                       cout<< tri->vertices[2]->position << endl;
+                    //                    }
+
+
+                    for ( int k = 0; k < 3; k++ )
+                    {
+
+                        //Vector3f normal = tri->vertices[k]->normal;
+                        Vector3f normal ;
+                        if(smoothShading)
+                            normal = tri->vertices[k]->normal;
+                        else
+                            normal = tri->normal;
+
+                        glNormal3f( normal.x, normal.y, normal.z );
+
+
+                        if( display4Texture)
+                        {
+
+                            Vector2f texCoord = tri->texCoords[k];
+                            glTexCoord2f(texCoord.x, texCoord.y);
+                        }
+
+                        Vector3f vert = tri->vertices[k]->position;
+
+                        vert *= scale;
+                        vert+=position;
+                        glVertex3f( vert.x, vert.y, vert.z );
+
+                        //                        Vector3f texDirY;
+                        //                        texDirY.y = texCoord.y;
+                        //texDirY*=0.05;
+                        //                        AddRay(vert, texDirY, CYAN);
+
+                        //                          Vector3f texDirX;
+                        //                          texDirX.x = texCoord.x;
+                        //                        //cout << texCoord << endl;
+                        //                          texDirX*=0.05;
+
+                        //                          AddRay(vert, texDirX, CYAN);
+
+                        //                        Vector3f offset = Vector3f(1, 1, 1);
+                        //                        offset *= Debug::RandomFloat()*0.02f;
+                        //                           AddText(texCoord.x, vert + offset, CYAN);
+
+
+                        // cout << vert << endl;
+                    }
+                }
+            }
+            glEnd();
+
+            glBegin( GL_QUADS );
+            {
+                for ( int j = 0; j < (int)quads.size(); j++ ) // for each triangle
+                {
+                    const Face* quad = quads[j];
+
+
+                    for ( int k = 0; k < 4; k++ )
+                    {
+
+                        if( display4Texture)
+                        {
+
+                            Vector2f texCoord = quad->texCoords[k];
+                            glTexCoord2f(texCoord.x, texCoord.y);
+                        }
+
+                        Vector3f normal ;
+                        if(smoothShading)
+                            normal = quad->vertices[k]->normal;
+                        else
+                            normal = quad->normal;
+                        glNormal3f( normal.x, normal.y, normal.z ); // this needs to be fixed
+                        // glTexCoord2f( pTri->m_s[k], pTri->m_t[k] );
+                        Vector3f vert = quad->vertices[k]->position;
+                        vert *= scale;
+                        vert+=position;
+                        glVertex3f( vert.x, vert.y, vert.z );
+
+
+                    }
+                }
+
+                glEnd();
+            }
+        }
+        if( displayWireFrame)
+        {
+            SetColour(RED);
+            for ( uint i =0; i < edges.size(); i++)
+                DrawLine(edges[i]->vertices[0]->position*scale, edges[i]->vertices[1]->position*scale);
+        }
+        //            for ( uint i =0; i < vertices.size(); i++)
+        //                DrawPoint(vertices[i]->position *scale);
+        // SetColour(RED);
+        //for ( uint i =0; i < vertices.size(); i++)
+        // DrawRay(vertices[i]->position,vertices[i]->normal*0.05f );
+    }
+    glPopMatrix();
+}
+
 
 
 void Mesh::FillMissingFaces()

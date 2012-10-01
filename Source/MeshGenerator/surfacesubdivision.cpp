@@ -47,11 +47,14 @@ Vertex*  CreateMidPoint( Edge* edge, int verticesArrayIndex)
 
 
 //extern MainWindow* mainWindowRef;
-void ApplyLoopSubvision( Mesh* model, int levels)
+void ApplyLoopSubvision( Mesh* model, int levels, QProgressDialog*  progBar)
 {
     if( levels == 0)
         return;
 
+//    int noOfIters = model->triangles*pow(4, levels ) + model->quadss*pow(4, levels );
+//    int iterCount = 0;
+//    int updateCountDown = 0;
 
     vector< Vertex*>& vertices = model->vertices;
     vector< Face*>& triangles = model->triangles;
@@ -59,6 +62,11 @@ void ApplyLoopSubvision( Mesh* model, int levels)
 
     for( int n = 0; n < levels; n++ )
     {
+
+       if(progBar != NULL )
+       {
+       progBar->setValue(0);
+           }
 
       //  mainWindowRef->progressBarUpdate(((n+1)*100)/(levels));
        // mainWindowRef.
@@ -94,6 +102,8 @@ void ApplyLoopSubvision( Mesh* model, int levels)
             }
 
         }
+
+         if(progBar != NULL ) progBar->setValue(30);
 
         // step 2: create the new faces. NB Specifically for triangles/loop
 
@@ -142,7 +152,6 @@ void ApplyLoopSubvision( Mesh* model, int levels)
                 Face* newFace = new Face(A, B, C);
 
                 newFace->SetTextureCoords(texCoordA,texCoordB,texCoordC, texCoordD );
-                newFace->calculateNormal();
                 triangles.push_back(newFace);
 
             }
@@ -156,6 +165,9 @@ void ApplyLoopSubvision( Mesh* model, int levels)
             }
 
         }
+
+        if(progBar != NULL ) progBar->setValue(60);
+
         //  cout << "step2"  << endl;
         // Vertex points are constructed for each old vertex. A given vertex has n neighbor vertices.
         // The new vertex point is one minus n times s times the old vertex, plus s times the sum of the
@@ -214,9 +226,17 @@ void ApplyLoopSubvision( Mesh* model, int levels)
             }
 
         }
+          if(progBar != NULL )
+          {
+              progBar->setValue(80);
+              progBar->repaint();
+          }
+
         model->ClearNeighourAndEdgeData();
         model->ReconstructMeshDataStructure();
 
     }
-model->CalculateNormals();
+    model->CalculateNormals();
+
+    if(progBar != NULL ) progBar->setValue(100);
 }

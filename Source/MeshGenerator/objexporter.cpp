@@ -61,6 +61,8 @@ myfile  << endl;
            for( unsigned int j = 0; j < 4; j++)
            {
                myfile << "vt " << face->texCoords[j].x <<  " " << face->texCoords[j].y << endl;
+           //     myfile << "#  " << (face->vertices[j]->index + 1) <<  " "<< endl;
+
            }
        }
 
@@ -70,6 +72,7 @@ myfile  << endl;
            for( unsigned int j = 0; j < 3; j++)
            {
                myfile << "vt " << face->texCoords[j].x <<  " " << face->texCoords[j].y << endl;
+               // myfile << "#  " << (face->vertices[j]->index + 1) <<  " "<< endl;
            }
        }
 
@@ -101,6 +104,8 @@ myfile  << endl;
 
 
           myfile << endl;
+
+        //   myfile << "#  " << (face->vertices[j]->index + 1) <<  " "<< endl;
       }
 
 

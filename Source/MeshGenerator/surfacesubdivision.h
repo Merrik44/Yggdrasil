@@ -2,6 +2,7 @@
 #define SURFACESUBDIVISION_H
 
 #include "mesh.h"
+#include <QProgressDialog>
 
 class SurfaceSubdivision
 {
@@ -11,7 +12,7 @@ public:
 
 
 
-void ApplyLoopSubvision( Mesh* model,  int levels);
+void ApplyLoopSubvision( Mesh* model,  int levels, QProgressDialog *progBar);
 
 
 #endif // SURFACESUBDIVISION_H

@@ -268,8 +268,8 @@ void GenerateBranch( Mesh* model, BranchNode* branch )
     int sides = noOfSides;
 
     // ------- If the branch has no children, then merge the tip points --------
-    //    if( branch->children.size() == 0)
-    //        branch->endRadius = 0;
+//        if( branch->children.size() == 0)
+//            branch->endRadius = 0;
 
 
     // ------- generate boundary loop vertices -------
@@ -320,18 +320,18 @@ void GenerateBranch( Mesh* model, BranchNode* branch )
             vTexCoordinate = 0.5f;
 
         offset =  startPos + (endPos -  startPos)*ratio;
-        if( i != 0 && i != noOfSegments && i%2 == 1 && V.x != NAN)
-        {
-            float scale = 0.4f;
-            float randU =(float)(random()%100 - 50)/100.0f;
-            float randV =(float)(random()%100 - 50)/100.0f;
-            randU *= radius;
-            randV *= radius;
-            randU*=scale;
-            randV*=scale;
-            offset += U*randU + V*randV;
+//        if( i != 0 && i != noOfSegments && i%2 == 1 && V.x != NAN)
+//        {
+//            float scale = 0.4f;
+//            float randU =(float)(random()%100 - 50)/100.0f;
+//            float randV =(float)(random()%100 - 50)/100.0f;
+//            randU *= radius;
+//            randV *= radius;
+//            randU*=scale;
+//            randV*=scale;
+//            offset += U*randU + V*randV;
 
-        }
+//        }
 
 
         CreateLoop( sides, radius, branch->rotation,offset, vTexCoordinate, model, vertexLoops, texLoops );

@@ -187,41 +187,32 @@ void GLWidget::initializeGL()
     for( int i = 0; i < lstFileList.count(); i++ )
         cout << lstFileList.value(i).toStdString() << endl;
 
-    LoadLST("../lst files/EdgeCases/treefile59.lst" );
+    LoadLST("../lst files/EdgeCases/treefile20.lst" );
     model = generateMesh( skeleton->branches);
+   // app
 
     loadGLTextures();
     //qglClearColor(qtPurple.dark());
-    glClearColor(0.98f,  0.98f,  0.98f, 1);
-    glEnable(GL_DEPTH_TEST);
-    // glEnable(GL_CULL_FACE);
-    glShadeModel(GL_SMOOTH);
 
-    glEnable(GL_LIGHTING);
-    glEnable(GL_LIGHT0);
-    GLfloat light_ambient0[] = {1, 1, 1, 1.0};
-    GLfloat light_diffuse0[] = {1.0, 1.0, 1.0, 1.0};
-    GLfloat light_specular0[] = {1.0, 1.0, 1.0, 1.0};
-    /*GLfloat light_ambient0[] = {0.5, 0.5, 0.5, 1.0};
-    GLfloat light_diffuse0[] = {0.5, 0.5, 0.5, 1.0};
-    GLfloat light_specular0[] = {0.5, 0.5, 0.5, 1.0};*/
-    glLightfv(GL_LIGHT0, GL_AMBIENT, light_ambient0);
-    glLightfv(GL_LIGHT0, GL_DIFFUSE, light_diffuse0);
-    glLightfv(GL_LIGHT0, GL_SPECULAR, light_specular0);
-
-    glEnable(GL_MULTISAMPLE);
-    // glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
-    //   glEnable( GL_BLEND );/*
-    //    glFrontFace(GL_CCW);*/
+     glClearColor(0.98f,  0.98f,  0.98f, 1);
+     glEnable(GL_DEPTH_TEST);
+     // glEnable(GL_CULL_FACE);
+     glShadeModel(GL_SMOOTH);
+     glEnable(GL_LIGHTING);
+     glEnable(GL_LIGHT0);
+     glEnable(GL_MULTISAMPLE);
+     glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
+     glEnable( GL_BLEND );
 
 
-    static GLfloat lightPosition[4] = { 0.5, 5.0, 7.0, 1.0 };
-    glLightfv(GL_LIGHT0, GL_POSITION, lightPosition);
+     static GLfloat lightPosition[4] = { 0.5, 5.0, 7.0, 1.0 };
+     glLightfv(GL_LIGHT0, GL_POSITION, lightPosition);
 
-    glEnable( GL_LINE_SMOOTH );
-    glEnable( GL_POLYGON_SMOOTH );
-    glHint( GL_LINE_SMOOTH_HINT, GL_NICEST );
-    glHint( GL_POLYGON_SMOOTH_HINT, GL_NICEST );
+     glEnable( GL_LINE_SMOOTH );
+     glEnable( GL_POLYGON_SMOOTH );
+     glHint( GL_LINE_SMOOTH_HINT, GL_NICEST );
+     glHint( GL_POLYGON_SMOOTH_HINT, GL_NICEST );
+
 
 
 }
@@ -280,7 +271,7 @@ void GLWidget::setSubdivisionLevel( int level )
     model->ReconstructMeshDataStructure();
     model->CalculateNormals();
 
-    ApplyLoopSubvision(model, level);
+    ApplyLoopSubvision(model, level, NULL);
     updateGL();
 }
 void GLWidget::GenerateMeshFromLST()
@@ -323,6 +314,8 @@ void GLWidget::paintGL()
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
     glLoadIdentity();
 
+//    GLfloat light_position0[] = {10, -10, 0.0};
+  //  glLightfv(GL_LIGHT0, GL_POSITION, light_position0);
 
     glTranslatef(xOffset, yOffset, -10);
     glRotatef(xRot / 16.0, 1.0, 0.0, 0.0);
@@ -330,8 +323,7 @@ void GLWidget::paintGL()
     glRotatef(zRot / 16.0, 0.0, 0.0, 1.0);
 
 
-    GLfloat light_position0[] = {0,0, -1, 0.0};
-    glLightfv(GL_LIGHT0, GL_POSITION, light_position0);
+
 
     //    cout << "DDDDD" << endl;
     //    cout << zoom << endl;
@@ -340,10 +332,10 @@ void GLWidget::paintGL()
     //    cout << xRot << endl;
     //    cout << yRot << endl;
 
-    SetColour(LIGHT_GREY);
+    //SetColour(LIGHT_GREY);
 
     if( model != NULL)
-        model->Draw();
+        model->Draw2();
 
     if( skeleton != NULL)
         skeleton->Draw();

@@ -215,6 +215,14 @@ displayCylinderForm->setEnabled(true);
     displayWidget->updateGL();
 }
 
+
+void MainWindow::SynthesizeTexture()
+{
+    QString loadpath = QFileDialog::getOpenFileName( this, "",QDir::currentPath(),  "");
+    QString savePath = "/Resources/Textures";
+    cout << "Synthesize sample " <<  loadpath.toStdString() <<endl;
+}
+
 void MainWindow::cancelGeneration()
 {
     setCursor(QCursor(Qt::ArrowCursor));
@@ -408,16 +416,18 @@ void MainWindow::generateMeshFromLST( std::string lstfile)
 
     displayWidget->LoadLST(lstfile );
 
-    progbar.setValue(100);
+    progbar.setValue(99);
     progbar.setLabelText("Generating Mesh");
 
 
     displayWidget->GenerateMeshFromLST(&progbar);
-    progbar.setValue(100);
+    progbar.setValue(99);
+
 
     progbar.setLabelText("Applying Loop Sudivision");
-    cout <<"sssss " <<  subdivs << endl;
+
     displayWidget->ApplySubdivisionToMesh(subdivs, &progbar);
+    progbar.setValue(99);
 }
 
 void MainWindow::generateNewVariation()
@@ -526,14 +536,22 @@ void MainWindow::exportToOBJ()
                 QDir::currentPath(),
                 "OBJ file (*.obj)");
 
-
-    displayWidget->exportToObj(path.toStdString());
-
-
-
+    QString meshPath = path;
+    QString cylinderPath = path;
+  //  QString folder = path;
     QString fileName =  path.split("/").last();
-    path.replace( fileName, "Mesh_" + fileName );
-    displayWidget->exportMeshToObj(path.toStdString());
+   // folder.replace( fileName, "");
+    fileName = fileName.split(".").first();
+
+
+    //system("mkdir ")
+    cylinderPath.replace( fileName,  fileName  + "_cyl");
+    displayWidget->exportToObj(cylinderPath.toStdString());
+
+
+
+    meshPath.replace( fileName,  fileName  + "_mesh_" + subdivs);
+    displayWidget->exportMeshToObj(meshPath.toStdString());
 
 
 
@@ -675,7 +693,7 @@ void MainWindow::createActions()
     connect(generate, SIGNAL(triggered()), this, SLOT(generateFromCurrent()));
     generate->setEnabled(false);
 
-    generationOption = new QAction(("&Generation Options"), this);
+    generationOption = new QAction(("&Options"), this);
     generationOption->setShortcut(QKeySequence(Qt::CTRL + Qt::Key_O));
     generationOption->setStatusTip(tr("Choose settings for the tree generation process"));
     connect(generationOption, SIGNAL(triggered()), this, SLOT(generationOptions()));
@@ -756,6 +774,11 @@ void MainWindow::createActions()
     brushLabel->setText(" Brush size:  ");
 
 
+    texSynthOption = new QAction(("&Synthesize Texture"), this);
+  //  texSynthOption->setShortcut(QKeySequence(Qt::CTRL + Qt::Key_O));
+    texSynthOption->setStatusTip(tr("Synthesize a new texture from a sample"));
+    connect(texSynthOption, SIGNAL(triggered()), this, SLOT(SynthesizeTexture()));
+
 }
 
 /*void MainWindow::createMenus()
@@ -782,6 +805,8 @@ void MainWindow::createToolBars()
     sketchToolBar->addSeparator();
     sketchToolBar->addWidget(brushLabel);
     sketchToolBar->addWidget(brushSize);
+     sketchToolBar->addSeparator();
+    sketchToolBar->addAction(texSynthOption);
 
 
     displayToolBar = new QToolBar("Display Toolbar");
@@ -815,7 +840,7 @@ void MainWindow::setupWidgets()
     connect(sketchWidget, SIGNAL(sketchChanged()), this, SLOT(sketchChanged()));
     connect(sketchWidget, SIGNAL(sketchEmpty()), this, SLOT(sketchEmpty()));
     connect(sketchWidget,SIGNAL(sketchNonEmpty()), this, SLOT(sketchNonEmpty()));
-    sketchWidget->setMinimumSize(650, 600);
+    sketchWidget->setMinimumSize(700, 600);
     displayWidget = new QTreeDisplayWidget(frame);
     displayWidget->setMinimumSize(650, 600);
     frameLayout->addWidget(sketchToolBar, 0, 0);

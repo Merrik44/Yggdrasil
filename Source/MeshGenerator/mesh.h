@@ -316,6 +316,7 @@ public:
     Mesh( std::string fileName);
     ~Mesh();
     void Draw();
+    void Draw2();
     void Load( std::string fileName);
     void ReconstructMeshDataStructure();
     void ClearNeighourAndEdgeData();
