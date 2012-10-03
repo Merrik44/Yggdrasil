@@ -1,6 +1,6 @@
 #include "optionsdialog.h"
 #include "iostream"
-
+#include "TextureSynthesis/texturesynthesisdialog.h"
 const int TEX_DISPLAY_SIZE = 96;
 const int TEX_PER_ROW = 3;
 
@@ -14,16 +14,25 @@ OptionsDialog::OptionsDialog(QWidget *parent) :
     layout->addWidget(&settingsHeading, 0, 0);
     layout->addLayout(frameLayout, 1, 0);
     layout->addWidget(&textureHeading, 0, 1);
+    
     layout->addWidget(&texArea, 1, 1);
+    
+    layout->addWidget(&generateTexture,2,1);
+    
 
     layout->setRowMinimumHeight(1, 10);
-    layout->addWidget(&ok, 2, 0);
+    layout->addWidget(&ok, 3, 0);
     layout->setAlignment(&ok, Qt::AlignRight);
-    layout->addWidget(&cancel, 2, 1);
+    layout->addWidget(&cancel, 3, 1);
 
     layout->setSpacing(20);
     //frameLayout->setMargin(1);
 
+    generateTexture.setText("Generate new texture");
+    textureDialog = new TextureSynthesisDialog();
+    connect(&generateTexture, SIGNAL(triggered()), this, SLOT(showTextureDialog()));
+    //generateTexture.setMaximumWidth(80);
+    
     ok.setText("Ok");
     ok.setMaximumWidth(80);
     cancel.setText("Cancel");
@@ -127,7 +136,7 @@ OptionsDialog::OptionsDialog(QWidget *parent) :
     connect(&ok, SIGNAL(clicked()), this, SLOT(set()));
     connect(&cancel, SIGNAL(clicked()), this, SLOT(close()));
 
-
+    
 
     texLayout = new QGridLayout();
     texLayout->setSizeConstraint(QLayout::SetMinAndMaxSize);
@@ -180,6 +189,10 @@ OptionsDialog::~OptionsDialog()
     delete layout;
 }
 
+void OptionsDialog::showTextureDialog()
+{
+    textureDialog->exec();
+}
 
 void OptionsDialog::setValues(int v1, int v2, int v3, int v4, int v5, int subdivValue)
 {

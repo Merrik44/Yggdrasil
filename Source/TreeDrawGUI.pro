@@ -44,7 +44,14 @@ SOURCES += TreeDrawGUI/main.cpp \
     MeshGenerator/jointgenerator.cpp \
     MeshGenerator/glwidget.cpp \
     MeshGenerator/generator.cpp \
-    MeshGenerator/debug.cpp
+    MeshGenerator/debug.cpp \
+    TextureSynthesis/vector2.cpp \
+    TextureSynthesis/texturesynthesis.cpp \
+    TextureSynthesis/texture.cpp \
+    TextureSynthesis/pixelcoherence.cpp \
+    TextureSynthesis/indexedtexture.cpp \
+    TextureSynthesis/coherenttexture.cpp \
+    TextureSynthesis/texturesynthesisdialog.cpp
 HEADERS += TreeDrawGUI/mainwindow.h \
     TreeDrawGUI/sketchwidget.h \
     TreeDrawGUI/branch.h \
@@ -84,10 +91,18 @@ HEADERS += TreeDrawGUI/mainwindow.h \
     MeshGenerator/glwidget.h \
     MeshGenerator/generator.h \
     MeshGenerator/debug.h \
-    MeshGenerator/branchnode.h
+    MeshGenerator/branchnode.h \
+    TextureSynthesis/vector2.h \
+    TextureSynthesis/texturesynthesis.h \
+    TextureSynthesis/texture.h \
+    TextureSynthesis/pixelcoherence.h \
+    TextureSynthesis/indexedtexture.h \
+    TextureSynthesis/coherenttexture.h \
+    TextureSynthesis/texturesynthesisdialog.h
 INCLUDEPATH += /QTreeWidget/
 INCLUDEPATH += /TreeDrawGUI/
-FORMS += TreeDrawGUI/mainwindow.ui
+FORMS += TreeDrawGUI/mainwindow.ui \
+    TextureSynthesis/texturesynthesisdialog.ui
 OTHER_FILES += ../Desktop/save.png \
     images/save.png
 CONFIG += CONSOLE

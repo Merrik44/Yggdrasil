@@ -4,6 +4,8 @@
 #include <QDialog>
 #include <QtGui>
 
+class TextureSynthesisDialog;
+
 class OptionsDialog : public QDialog
 {
     Q_OBJECT
@@ -26,7 +28,8 @@ public slots:
 
     void set();
     void close();
-
+    
+    void showTextureDialog();
 
 
 private:
@@ -37,8 +40,9 @@ private:
     QGridLayout *frameLayout;
     QGridLayout *layout;
 
-    QPushButton ok,cancel;
-
+    QPushButton ok, cancel, generateTexture;
+    
+    TextureSynthesisDialog * textureDialog;
 
     QScrollArea texArea;
     QGridLayout *texLayout;
@@ -48,7 +52,6 @@ private:
     QLabel settingsHeading;
 
     int textureIndex;
-
 
 
 
