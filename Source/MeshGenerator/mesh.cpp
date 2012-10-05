@@ -64,7 +64,7 @@ void Mesh::Load( std::string fileName)
             }
             else if( token == "vt")  // tex coord
             {
-                float a, b,c ;
+                float a, b ;
                 sstream >> token;
                 a = atof(token.c_str());
                 sstream >> token;
@@ -73,6 +73,7 @@ void Mesh::Load( std::string fileName)
 
 
                 textureCoords.push_back( Vector2f(a,b));
+
             }
             else if( token == "f")  // face
             {
@@ -87,9 +88,10 @@ void Mesh::Load( std::string fileName)
 
                 qToken = QString(token.c_str());
                 components = qToken.split(QRegExp("/"));
-                if(components.count() == 3 )
+                if(components.count() >= 2)
                 {
-                    cout<< components.value(1).toInt()-1 << endl;
+                   // cout << "dd  dd  " << components
+                    //cout<< components.value(1).toInt()-1 << endl;
                     texA = textureCoords[ components.value(1).toInt()-1];
                 }
 
@@ -100,18 +102,19 @@ void Mesh::Load( std::string fileName)
                 sstream >> token;
                 qToken = QString(token.c_str());
                 components = qToken.split(QRegExp("/"));
-                if(components.count() == 3 )
+                if(components.count() >= 2)
                     texB = textureCoords[ components.value(1).toInt()-1];
-                cout<< components.value(1).toInt()-1 << endl;
+               // cout<< components.value(1).toInt()-1 << endl;
                 b = atof(token.c_str()) - 1;
                 Vertex*  vertB = vertices[b];
 
                 sstream >> token;
                 qToken = QString(token.c_str());
                 components = qToken.split(QRegExp("/"));
-                if(components.count() == 3 )
+
+                if(components.count() >= 2 )
                     texC = textureCoords[ components.value(1).toInt()-1];
-                cout<< components.value(1).toInt()-1 << endl;
+
                 c = atof(token.c_str()) - 1;
                 Vertex*  vertC = vertices[c];
 
@@ -121,9 +124,9 @@ void Mesh::Load( std::string fileName)
                     sstream >> token;
                     qToken = QString(token.c_str());
                     components = qToken.split(QRegExp("/"));
-                    if(components.count() == 3 )
+                    if(components.count() >= 2)
                         texD = textureCoords[ components.value(1).toInt()-1];
-                    cout << texA  << texB  << texC  << texD << endl;
+
                     d = atof(token.c_str()) - 1;
                     Vertex*  vertD = vertices[d];
 
@@ -135,6 +138,7 @@ void Mesh::Load( std::string fileName)
                 {
                     Face* face = new Face(vertA, vertB, vertC);
                     face->SetTextureCoords(texA, texB, texC, texD);
+                    //   cout << texA  << texB  << texC  << texD << endl;
                     triangles.push_back(face);
                 }
 
@@ -725,6 +729,7 @@ void Mesh::StoreTextureCoordInVerticesAndMarkSeams()
 
 void Mesh::Draw2()
 {
+    //cout << "drawing " << endl;
     //CalculateNormals();
     //DebugClear();
     SetColour( LIGHT_GREY );
@@ -765,16 +770,18 @@ void Mesh::Draw2()
                     ////                       cout<< tri->vertices[2]->position << endl;
                     //                    }
 
-
+                    //  Vector3f mid;
                     for ( int k = 0; k < 3; k++ )
                     {
 
                         //Vector3f normal = tri->vertices[k]->normal;
                         Vector3f normal ;
                         if(smoothShading)
-                            normal = tri->vertices[k]->normal;
+                            normal = -tri->vertices[k]->normal;
                         else
                             normal = tri->normal;
+
+
 
                         glNormal3f( normal.x, normal.y, normal.z );
 
@@ -788,9 +795,12 @@ void Mesh::Draw2()
 
                         Vector3f vert = tri->vertices[k]->position;
 
+
                         vert *= scale;
                         vert+=position;
                         glVertex3f( vert.x, vert.y, vert.z );
+
+                      //  mid += vert;
 
                         //                        Vector3f texDirY;
                         //                        texDirY.y = texCoord.y;
@@ -811,6 +821,8 @@ void Mesh::Draw2()
 
                         // cout << vert << endl;
                     }
+                   // mid/=3;
+                  //  AddRay(mid, tri->normal*0.05f, YELLOW);
                 }
             }
             glEnd();

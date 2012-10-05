@@ -1,8 +1,8 @@
 /********************************************************************************
 ** Form generated from reading UI file 'mainwindow.ui'
 **
-** Created: Fri Sep 28 23:43:59 2012
-**      by: Qt User Interface Compiler version 4.6.2
+** Created: Wed Oct 3 18:06:44 2012
+**      by: Qt User Interface Compiler version 4.8.1
 **
 ** WARNING! All changes made in this file will be lost when recompiling UI file!
 ********************************************************************************/
@@ -165,8 +165,8 @@ public:
         countSlider->setObjectName(QString::fromUtf8("countSlider"));
         countSlider->setGeometry(QRect(580, 320, 331, 29));
         countSlider->setMinimum(0);
-        countSlider->setMaximum(150);
-        countSlider->setValue(50);
+        countSlider->setMaximum(60);
+        countSlider->setValue(0);
         countSlider->setOrientation(Qt::Horizontal);
         meshCheckBox_3 = new QCheckBox(centralWidget);
         meshCheckBox_3->setObjectName(QString::fromUtf8("meshCheckBox_3"));

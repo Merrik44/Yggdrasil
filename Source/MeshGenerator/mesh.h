@@ -197,8 +197,8 @@ public:
         if (A!=B && B!=C && C!=A) // check fot=r zero area case
         {
 
-        normal = -(A - B ).crossProduct( C- B);
-        normal.normalize();
+            normal = -(A - B ).crossProduct( C- B);
+            normal.normalize();
         }
         else
         {
@@ -207,6 +207,25 @@ public:
             std::cout << "warning: zero area face" << std::endl;
 
         }
+    }
+
+    // calculates the faces winding such that its normal points away from the center vector
+    void UpdateWinding(Vector3f center)
+    {
+        calculateNormal();
+        Vector3f centroid = vertices[0]->position + vertices[1]->position +vertices[2]->position;
+        centroid /= 3;
+        Vector3f centerVec = center - centroid;
+        centerVec.normalize();
+        float dot = centerVec.dotProduct(normal);
+        if( dot <= 0 )
+             return;
+        // --- poly gon is inward facing so needs to be flipped --
+        normal = - normal;
+        Vertex* temp = vertices[0];
+        vertices[0] = vertices[1];
+        vertices[1] = temp;
+
     }
 
     void SetVertices( Vertex* a, Vertex* b, Vertex* c, Vertex* d = NULL  )

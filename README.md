@@ -1,4 +1,0 @@
-Yggdrasil
-=========
-
-Procedural Tree Generator

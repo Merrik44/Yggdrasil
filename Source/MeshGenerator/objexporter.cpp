@@ -88,7 +88,7 @@ myfile  << endl;
           Face* face =quads[i];
           int vtIndex = i*4 + 1;
           for( unsigned int j = 0; j < 4; j++)
-              myfile << (face->vertices[j]->index + 1)  << "/" <<  (face->vertices[j]->index +1) << "/" << (vtIndex + j) << " ";
+              myfile << (face->vertices[j]->index + 1)   << "/" << (vtIndex + j) << "/" <<  (face->vertices[j]->index +1) <<  " ";
 
           myfile << endl;
       }
@@ -100,7 +100,7 @@ myfile  << endl;
           Face* face =tris[i];
           int vtIndex = quads.size()*4 + i*3 + 1;
           for( unsigned int j = 0; j < 3; j++)
-              myfile << (face->vertices[j]->index + 1)  << "/" <<  (face->vertices[j]->index +1) << "/" << (vtIndex + j) << " ";
+              myfile << (face->vertices[j]->index + 1)   << "/" << (vtIndex + j) << "/" <<  (face->vertices[j]->index +1) <<  " ";
 
 
           myfile << endl;

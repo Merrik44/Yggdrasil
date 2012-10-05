@@ -238,7 +238,7 @@ void GenerateFaces(  Mesh* model, vector< vector< Vertex*>*>& vertexLoops, vecto
                 BCD->SetTextureCoords( texB,texC, texD, zero);
             }
 
-            model->triangles.push_back( ABC );
+           model->triangles.push_back( ABC );
             model->triangles.push_back( BCD );
 
 
@@ -472,12 +472,14 @@ Vector3f TrimIncomingBranches( vector< vector< Vertex* >* >& boundaries, vector<
         // --------------off set everything-----------
 
         vector< Vertex* >& loop = *boundaries[a];
+        Vector3f maxTranslation = loopNormals[a]* maxOffset*1.01;
 
         for (uint i = 0; i < loop.size(); i++)
         {
             Vertex* vertex = loop[i];
             vertex->finalPosition = vertex->position;
-            // vertex->position += maxTranslation;
+
+            //vertex->position += maxTranslation;
         }
     }
 
@@ -501,6 +503,20 @@ Vector3f TrimIncomingBranches( vector< vector< Vertex* >* >& boundaries, vector<
 
     // ---------- calculate geometric center -----------
     geometricCenter /= boundaries.size();
+
+//    // ----- reset positions -----
+//    for (int a = 0; a < length; a++)
+//    {
+//        // --------------off set everything-----------
+
+//        vector< Vertex* >& loop = *boundaries[a];
+
+//        for (uint i = 0; i < loop.size(); i++)
+//        {
+//            Vertex* vertex = loop[i];
+//            vertex->position = vertex->finalPosition;
+//        }
+//    }
 
     // ----------- rotate loops so that they are orthoganal to the geo center -------------------
     for (unsigned int i = 0; i < boundaries.size(); i++)
@@ -552,6 +568,75 @@ Vector3f TrimIncomingBranches( vector< vector< Vertex* >* >& boundaries, vector<
     }
 
     return geometricCenter;
+
+}
+
+
+Vector3f TrimIncomingBranches2( vector< vector< Vertex* >* >& boundaries, vector< Vector3f >& loopNormals, vector< float >& offsets, Vector3f center )
+{
+
+    int length = loopNormals.size();
+
+    // --------------- find the furthest offset ------------
+
+    float maxOffset = 0;
+
+    for (int a = 0; a < length; a++)
+        maxOffset = max(maxOffset,offsets[a]);
+
+    maxOffset *= 1.55f; // make it a little larger fo luck
+
+
+    // --------------- for each branch ------------
+    for (int a = 0; a < length; a++)
+    {
+        // --------------off set everything-----------
+
+        vector< Vertex* >& loop = *boundaries[a];
+
+        for (uint i = 0; i < loop.size(); i++)
+        {
+            Vertex* vertex = loop[i];
+            vertex->finalPosition = vertex->position;
+
+            //vertex->position += maxTranslation;
+        }
+    }
+    // ----------- loops centers -----------------
+    vector<Vector3f> loopCenters;
+    for (unsigned int i = 0; i < boundaries.size(); i++)
+    {
+        Vector3f loopCenter;
+        vector< Vertex* >& loop = *boundaries[i];
+        for (unsigned int j = 0; j < loop.size(); j++)
+            loopCenter += loop[j]->position;
+
+        loopCenter /= loop.size();
+        loopCenters.push_back(loopCenter);
+    }
+
+    // ----------- rotate loops so that they are orthoganal to the geo center -------------------
+    for (unsigned int i = 0; i < boundaries.size(); i++)
+    {
+
+        vector< Vertex* >& loop = *boundaries[i];
+
+        //  Vector3f translation = direction* offsets[a]*1.01f;
+        Vector3f maxTranslation = loopNormals[i]* maxOffset*1.01;
+        maxTranslation -= ( loopCenters[i] -center );
+
+        //   AddLine(geometricCenter+ maxTranslation, geometricCenter, BLACK );
+        for (unsigned int j = 0; j < loop.size(); j++)
+        {
+            Vertex* A = loop[j];
+            A->position += maxTranslation;
+
+        }
+
+
+    }
+
+    return center;
 
 }
 
@@ -615,8 +700,6 @@ void MergeTwoBondaries(vector<Vertex*>& loopA, vector<Vertex*>& loopB, std::vect
 
     }
 
-    // ---- project onto sphere ---
-    //  for
 
 }
 
@@ -709,7 +792,7 @@ Mesh* generateMesh( vector<BranchNode*>& branches,  QProgressDialog* progressBar
 
             // --------- Trim the branches so that the dont intersect --------
 
-            Vector3f geometricCenter = TrimIncomingBranches(boundaries, loopNormals, offsets);
+            Vector3f geometricCenter = TrimIncomingBranches2(boundaries, loopNormals, offsets, current->endPosition);
 
             // --- If there is only one child, then simply merge the closest vertices ---
             if( current->children.size() == 1)
@@ -724,7 +807,7 @@ Mesh* generateMesh( vector<BranchNode*>& branches,  QProgressDialog* progressBar
 
                 // --------- Finally construct the joint --------
 
-                Mesh* jointMesh = GenerateJoint(boundaries, incomingBranchFaces, otherVertices, geometricCenter);
+                Mesh* jointMesh = GenerateJoint2(boundaries, incomingBranchFaces, otherVertices, geometricCenter);
 
                 // --------- Triangles from joint into main model --------
                 for (unsigned int i = 0; i < jointMesh->triangles.size(); i++)
@@ -752,27 +835,27 @@ Mesh* generateMesh( vector<BranchNode*>& branches,  QProgressDialog* progressBar
                 jointMesh->quads.clear();
                 delete jointMesh;
 
-                //break;
+             //   break;
 
             }
 
         }
 
     }
-
-
+     cout << "complete" << endl;
 
     // ------ Store the mesh state for subdivision purposes -------
     model->ClearNeighourAndEdgeData();
 
-
-    //  cout <<  "-43555------" << endl;
     model->ReconstructMeshDataStructure();
-    //  cout <<  "-43555------" << endl;
+     cout << "rec" << endl;
     model->CalculateNormals();
 
+  cout << "nor" << endl;
     InterpolateTexCoordsAccrosRemainingFaces( model ); //-------------- This should probs run till stabl!!!
+      cout << "texCorrd" << endl;
     model->StoreMeshState();
+
 
 
     return model;

@@ -187,7 +187,7 @@ void GLWidget::initializeGL()
     for( int i = 0; i < lstFileList.count(); i++ )
         cout << lstFileList.value(i).toStdString() << endl;
 
-    LoadLST("../lst files/EdgeCases/treefile20.lst" );
+    LoadLST("../lst files/treefile91.lst" );
     model = generateMesh( skeleton->branches);
    // app
 
@@ -196,13 +196,14 @@ void GLWidget::initializeGL()
 
      glClearColor(0.98f,  0.98f,  0.98f, 1);
      glEnable(GL_DEPTH_TEST);
-     // glEnable(GL_CULL_FACE);
+   //  glEnable(GL_CULL_FACE);
      glShadeModel(GL_SMOOTH);
      glEnable(GL_LIGHTING);
      glEnable(GL_LIGHT0);
      glEnable(GL_MULTISAMPLE);
      glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
      glEnable( GL_BLEND );
+    // glFrontFace(GL_CW);
 
 
      static GLfloat lightPosition[4] = { 0.5, 5.0, 7.0, 1.0 };
@@ -316,7 +317,8 @@ void GLWidget::paintGL()
 
 //    GLfloat light_position0[] = {10, -10, 0.0};
   //  glLightfv(GL_LIGHT0, GL_POSITION, light_position0);
-
+    static GLfloat lightPosition[4] = { 0.5, 5.0, 7.0, 1.0 };
+    glLightfv(GL_LIGHT0, GL_POSITION, lightPosition);
     glTranslatef(xOffset, yOffset, -10);
     glRotatef(xRot / 16.0, 1.0, 0.0, 0.0);
     glRotatef(yRot / 16.0, 0.0, 1.0, 0.0);

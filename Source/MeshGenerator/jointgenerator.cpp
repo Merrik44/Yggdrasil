@@ -133,15 +133,15 @@ bool CollapseJoint(Mesh* jointModel, vector< Face* >& incomingBranchFaces)
 
         if(collapseCounter)
         {
-        counter2--;
-        if( counter2 < 0)
-            break;
+            counter2--;
+            if( counter2 < 0)
+                break;
 
-        if( counter2 == 0 )
-        {
-            for (uint r = 0; r < jointModel->edges.size(); r++ )
-                 AddLine(jointModel->edges[r]->vertices[0]->position, jointModel->edges[r]->vertices[1]->position, CYAN);
-        }}
+            if( counter2 == 0 )
+            {
+                for (uint r = 0; r < jointModel->edges.size(); r++ )
+                    AddLine(jointModel->edges[r]->vertices[0]->position, jointModel->edges[r]->vertices[1]->position, CYAN);
+            }}
 
         Edge* edge = jointModel->edges[i];
 
@@ -166,52 +166,52 @@ bool CollapseJoint(Mesh* jointModel, vector< Face* >& incomingBranchFaces)
         if( faceB->markedForDeletion )
             continue;
 
-//
-//        if( counter2 == 0)
-//        {
-//
-//         //   AddPoint(B->position, BLACK);
-//            AddLine( A->position, B->position, GREEN);
-//          //  break;
-//        }
-//       else
-//        {
-            // ---- collapse ----
+        //
+        //        if( counter2 == 0)
+        //        {
+        //
+        //         //   AddPoint(B->position, BLACK);
+        //            AddLine( A->position, B->position, GREEN);
+        //          //  break;
+        //        }
+        //       else
+        //        {
+        // ---- collapse ----
 
-            B  = weightedmMergeAwithedB( A, B, jointModel );
-            AtleastOneCollapse = true;
+        B  = weightedmMergeAwithedB( A, B, jointModel );
+        AtleastOneCollapse = true;
 
 
-            for( uint j = 0; j < jointModel->triangles.size(); j++)
+        for( uint j = 0; j < jointModel->triangles.size(); j++)
+        {
+            Face* face = jointModel->triangles[j];
+
+            for( uint k = 0; k < 3; k++)
             {
-                Face* face = jointModel->triangles[j];
 
-                for( uint k = 0; k < 3; k++)
-                {
-
-                    if( face->vertices[k] == A)
-                        face->vertices[k] = B;
-                }
-
+                if( face->vertices[k] == A)
+                    face->vertices[k] = B;
             }
 
-            for( uint j = 0; j < incomingBranchFaces.size(); j++)
+        }
+
+        for( uint j = 0; j < incomingBranchFaces.size(); j++)
+        {
+            Face* face = incomingBranchFaces[j];
+
+            for( uint k = 0; k < 3; k++)
             {
-                Face* face = incomingBranchFaces[j];
 
-                for( uint k = 0; k < 3; k++)
-                {
-
-                    if( face->vertices[k] == A)
-                        face->vertices[k] = B;
-                }
-
+                if( face->vertices[k] == A)
+                    face->vertices[k] = B;
             }
 
+        }
 
 
-      //  }
-       // cout << counter2 << endl;
+
+        //  }
+        // cout << counter2 << endl;
 
 
         //
@@ -223,7 +223,7 @@ bool CollapseJoint(Mesh* jointModel, vector< Face* >& incomingBranchFaces)
             if( jointModel->edges[k]->vertices[1] == A )
                 jointModel->edges[k]->vertices[1] = B;
         }
-          //   AddLine(jointModel->edges[r]->vertices[0]->position, jointModel->edges[r]->vertices[1]->position, CYAN);
+        //   AddLine(jointModel->edges[r]->vertices[0]->position, jointModel->edges[r]->vertices[1]->position, CYAN);
 
         if( edge->faces[0]->markedForDeletion == false)
         {
@@ -242,9 +242,9 @@ bool CollapseJoint(Mesh* jointModel, vector< Face* >& incomingBranchFaces)
         }
 
         //jointModel->ClearNeighourAndEdgeData();
-      //  jointModel->ReconstructMeshDataStructure();
-     if( counter2 == 0)
-        break;
+        //  jointModel->ReconstructMeshDataStructure();
+        if( counter2 == 0)
+            break;
 
     }
 
@@ -271,12 +271,12 @@ bool CollapseJoint(Mesh* jointModel, vector< Face* >& incomingBranchFaces)
 
 void RetriangulateSharpEdges(Mesh* jointModel)
 {
-  //  int counter = Count;
+    //  int counter = Count;
     for ( int m =0; m < 30; m++ )
     {
-        float gratesAbs = 1;
+        float gratesAbs = -1;
         Edge* sharpestEdge = NULL;
- //cout << "dpt "  << endl;
+        //cout << "dpt "  << endl;
         for (uint i = 0; i < jointModel->edges.size(); i++ )
         {
             Edge* edge = jointModel->edges[i];
@@ -290,20 +290,10 @@ void RetriangulateSharpEdges(Mesh* jointModel)
             //            continue;
 
             float dot =( A->normal.dotProduct(B->normal ));
-           //
+            //
 
-            if(dot < gratesAbs)
+            if(dot > gratesAbs)
             {
-                //                Vertex* c = NULL;
-                //                Vertex* d = NULL;
-                //                for ( int j = 0; j < 3; j++  )
-                //                {
-                //                    if( A->vertices[j] != a && A->vertices[j] != b )
-                //                        c = A->vertices[j];
-
-                //                    if( B->vertices[j] != a && B->vertices[j] != b )
-                //                        d = B->vertices[j];
-                //                }
                 gratesAbs = dot;
                 sharpestEdge = edge;
             }
@@ -311,14 +301,14 @@ void RetriangulateSharpEdges(Mesh* jointModel)
 
         if( sharpestEdge != NULL)
         {
-//cout << "dpt " << gratesAbs << endl;
+            //cout << "dpt " << gratesAbs << endl;
             Edge* edge = sharpestEdge;
             Face* A = edge->faces[0];
             Face* B = edge->faces[1];
-              AddLine(edge->vertices[0]->position,  edge->vertices[1]->position,  MAGENTA);
+            AddLine(edge->vertices[0]->position,  edge->vertices[1]->position,  MAGENTA);
             // AddPoint( (A->vertices[0]->position + A->vertices[1]->position + A->vertices[2]->position )/3.0f, MAGENTA );
             // AddPoint( (B->vertices[0]->position + B->vertices[1]->position + B->vertices[2]->position )/3.0f, MAGENTA );
-//break;
+            //break;
             Vertex* a = edge->vertices[0];
             Vertex* b = edge->vertices[1];
             Vertex* c = NULL;
@@ -336,23 +326,23 @@ void RetriangulateSharpEdges(Mesh* jointModel)
             Vector3f cb = b->position - c->position;
 
             Vector3f norm1= cd.crossProduct(ca);
-                    norm1.normalize();
-              Vector3f norm2= cb.crossProduct(cd);
+            norm1.normalize();
+            Vector3f norm2= cb.crossProduct(cd);
 
-              norm2.normalize();
+            norm2.normalize();
 
-              float newdot =norm1.dotProduct(norm2);
-              cout << newdot << endl;
+            float newdot =norm1.dotProduct(norm2);
+            cout << newdot << endl;
 
-              if(newdot < gratesAbs)
-              {
-                  for (uint i = 0; i < jointModel->edges.size(); i++ )
-                  {
-                      if( jointModel->edges[i] ==sharpestEdge );
-                        jointModel->edges.erase(jointModel->edges.begin() + i);
-                  }
-                  continue;
-              }
+            if(newdot < gratesAbs)
+            {
+                for (uint i = 0; i < jointModel->edges.size(); i++ )
+                {
+                    if( jointModel->edges[i] ==sharpestEdge );
+                    jointModel->edges.erase(jointModel->edges.begin() + i);
+                }
+                continue;
+            }
             //AddLine(c->position, d->position, RED);
 
             // ----- change faces-------
@@ -556,14 +546,14 @@ Mesh* GenerateJoint(vector< vector<Vertex*>* >& branches, vector< Face* >& incom
     for (unsigned int k = 0; k < rootVertices.size(); k++)
         jointModel->vertices.push_back( rootVertices[k] );
 
-//    cout <<  "----------------------" << endl;
-//     for (unsigned int k = 0; k < incomingBranchFaces.size(); k++) // =========================================== This will be an issue if the branches are made from quads. Will have to handle the case to add them
-//         jointModel->triangles.push_back( incomingBranchFaces[k] );
-//     for (unsigned int k = 0; k < otherVertices.size(); k++)
-//         jointModel->vertices.push_back( otherVertices[k] );
+    //    cout <<  "----------------------" << endl;
+    //     for (unsigned int k = 0; k < incomingBranchFaces.size(); k++) // =========================================== This will be an issue if the branches are made from quads. Will have to handle the case to add them
+    //         jointModel->triangles.push_back( incomingBranchFaces[k] );
+    //     for (unsigned int k = 0; k < otherVertices.size(); k++)
+    //         jointModel->vertices.push_back( otherVertices[k] );
 
-     jointModel->ClearNeighourAndEdgeData();
-     jointModel->ReconstructMeshDataStructure();
+    jointModel->ClearNeighourAndEdgeData();
+    jointModel->ReconstructMeshDataStructure();
 
     // ------------------ initialize the visible vertices to everything -------------
     for (unsigned int k = 0; k < rootVertices.size(); k++)
@@ -685,7 +675,7 @@ Mesh* GenerateJoint(vector< vector<Vertex*>* >& branches, vector< Face* >& incom
 
                 if (v3 == NULL)
                 {
-                //    cout << "no vert found" << endl;
+                    //    cout << "no vert found" << endl;
                     continue;
                 }
                 atLeastOnVertexFound = true;
@@ -841,7 +831,7 @@ Mesh* GenerateJoint(vector< vector<Vertex*>* >& branches, vector< Face* >& incom
     }
 
 
-
+    jointModel->ClearNeighourAndEdgeData();
     jointModel->ReconstructMeshDataStructure();
     jointModel->CalculateNormals();
 
@@ -850,45 +840,38 @@ Mesh* GenerateJoint(vector< vector<Vertex*>* >& branches, vector< Face* >& incom
         RetriangulateSharpEdges(jointModel );
     }
 
-//    for( int n = 0; n < jointModel->vertices.size(); n++)
-//    {
-//        Vector3f randOS(1, 1, 1);
-//        randOS*= (Debug::RandomFloat() - 0.5f)*0.001f;
-//      //  cout <<
-//        AddPoint( jointModel->vertices[n]->position + randOS, MAGENTA );
-//    }
+    //    for( int n = 0; n < jointModel->vertices.size(); n++)
+    //    {
+    //        Vector3f randOS(1, 1, 1);
+    //        randOS*= (Debug::RandomFloat() - 0.5f)*0.001f;
+    //      //  cout <<
+    //        AddPoint( jointModel->vertices[n]->position + randOS, MAGENTA );
+    //    }
 
-////    cout << jointModel->triangles.size() << endl;
-//    for( int n = 0; n < incomingBranchFaces.size(); n++)
-//    {
-//        Face* face= incomingBranchFaces[n];
+    ////    cout << jointModel->triangles.size() << endl;
+    //    for( int n = 0; n < incomingBranchFaces.size(); n++)
+    //    {
+    //        Face* face= incomingBranchFaces[n];
 
-//        Vector3f mid = face->vertices[0]->position + face->vertices[1]->position + face->vertices[2]->position;
-//        mid /=3;
-//        Vector3f randOS(1, 1, 1);
-//        randOS*= (Debug::RandomFloat() - 0.5f)*0.001f;
-//      //  cout <<
-//       // AddText("V", mid + randOS, MAGENTA );
-//        AddPoint( mid + randOS, BLUE );
-//    }
+    //        Vector3f mid = face->vertices[0]->position + face->vertices[1]->position + face->vertices[2]->position;
+    //        mid /=3;
+    //        Vector3f randOS(1, 1, 1);
+    //        randOS*= (Debug::RandomFloat() - 0.5f)*0.001f;
+    //      //  cout <<
+    //       // AddText("V", mid + randOS, MAGENTA );
+    //        AddPoint( mid + randOS, BLUE );
+    //    }
 
 
-//    int counter = Count;
+    //    int counter = Count;
     counter2 = Count;
     for( int n = 0; n < 20; n++)
     {
-break; ///////////////////////////////////////////////////////////////// ----------------------------------------------
-       // if( counter <= 0 )
-       //     break;
-       //model->ClearNeighourAndEdgeData();
-       jointModel->ClearNeighourAndEdgeData();
-     //  model->ReconstructMeshDataStructure();
-       jointModel->ReconstructMeshDataStructure();
+        jointModel->ClearNeighourAndEdgeData();
+        jointModel->ReconstructMeshDataStructure();
         bool unstable = CollapseJoint( jointModel, incomingBranchFaces );
-       // cout << unstable << endl;
         if( unstable == false)
             break;
-
         if( n == 10)
             cout << "warning: too many joint collapse" << endl;
     }
@@ -906,6 +889,233 @@ break; ///////////////////////////////////////////////////////////////// -------
         delete allEdgesCreated[i];
 
 
+    return jointModel;
+
+}
+
+Vector3f GetHullCenter(vector< Face* >& hull)
+{
+    Vector3f center;
+    for(int i = 0; i < hull.size(); i++)
+    {
+        Face* face = hull[i];
+        for(int j = 0; j < 3; j++)
+            center += face->vertices[j]->position;
+    }
+    center /= hull.size()*3;
+    return center;
+}
+
+
+Mesh* GenerateJoint2(vector< vector<Vertex*>* >& branches, vector< Face* >& incomingBranchFaces, vector< Vertex* >& otherVertices, Vector3f center)
+{
+    faces = Count;
+
+    // ------------------- data structures -----------------
+    vector< vector<Vertex*>* > rootBoundaryLoops; // dont forget to delete the internal vector
+    vector<Vertex*> rootVertices;
+
+    // ----------------- get the root vertices and the the root loops ----------------
+    getRootBoundaryLoopsAndRootVertices(branches, rootBoundaryLoops, rootVertices);
+
+    Mesh* jointModel = new Mesh();
+    for (unsigned int k = 0; k < rootVertices.size(); k++)
+        jointModel->vertices.push_back( rootVertices[k] );
+
+
+    jointModel->ClearNeighourAndEdgeData();
+    jointModel->ReconstructMeshDataStructure();
+
+    // ------------------ initialize the visible vertices to everything -------------
+    for (unsigned int k = 0; k < rootVertices.size(); k++)
+    {
+        rootVertices[k]->calculateVisible(rootVertices);
+
+
+        rootVertices[k]->Id = k;
+    }
+
+
+    // ------------------- Initialize Edges----------------------------
+    stringstream sstream;
+    for (unsigned int i = 0; i < rootBoundaryLoops.size(); i++)
+    {
+        vector<Vertex*>& loop = *rootBoundaryLoops[i];
+        for (unsigned int k = 0; k < loop.size(); k++)
+        {
+            // get the vertices
+            Vertex* v1 = loop[k];
+            v1->loopIndex = i;
+            sstream << k;
+            sstream >> v1->loopID;
+        }
+
+    }
+
+
+
+
+    // ----------- Initialize Polyhedron --------------
+
+
+
+    vector<Vertex*> initialPolyhedron;
+    for(int i = 0; i < 4; i++)
+    {
+        int loopIndex = i%rootBoundaryLoops.size();
+        int index = i - loopIndex;
+        Vertex* vert = (*rootBoundaryLoops[loopIndex])[index];
+        initialPolyhedron.push_back(vert);
+    }
+
+
+    Face* face;
+    face = new Face( initialPolyhedron[0], initialPolyhedron[1], initialPolyhedron[2] );
+    jointModel->triangles.push_back(face);
+    face = new Face( initialPolyhedron[3], initialPolyhedron[1], initialPolyhedron[2] );
+    jointModel->triangles.push_back(face);
+    face = new Face( initialPolyhedron[0], initialPolyhedron[3], initialPolyhedron[2] );
+    jointModel->triangles.push_back(face);
+    face = new Face( initialPolyhedron[0], initialPolyhedron[1], initialPolyhedron[3] );
+    jointModel->triangles.push_back(face);
+
+    //  cout << "DD DD " << rootVertices.size()<< endl;
+
+    // --------- earse vertices from initial polyhedron -----------
+    for( int i = rootVertices.size() - 1; i >= 0; i--)
+    {
+        for(int j = 0; j < 4; j++)
+        {
+            if( rootVertices[i] == initialPolyhedron[j] )
+                rootVertices.erase(rootVertices.begin() + i);
+        }
+    }
+
+    jointModel->ClearNeighourAndEdgeData();
+    jointModel->ReconstructMeshDataStructure();
+
+    Vector3f hullCenter = GetHullCenter( jointModel->triangles );
+    for(int i = 0; i < jointModel->triangles.size(); i++)
+    {
+        jointModel->triangles[i]->UpdateWinding(hullCenter);
+    }
+
+
+
+    // --------------- create convex hull -----------------
+    // cout << "DD DD " << rootVertices.size()<< endl;
+    for(int i = 0; i < rootVertices.size(); i++)
+    {
+        Vertex* vertexToAdd = rootVertices[i];
+         AddPoint( vertexToAdd->position, MAGENTA);
+
+        faces--;
+
+       // if( faces <= 0 )
+        //    continue;
+
+
+        for( int j = jointModel->triangles.size() - 1; j >= 0; j--)
+        {
+
+            Face* faceToTest = jointModel->triangles[j];
+            Vector3f centroid = faceToTest->vertices[0]->position + faceToTest->vertices[1]->position +faceToTest->vertices[2]->position;
+            centroid /= 3;
+            //   AddPoint(centroid, RED);
+            Vector3f ray = centroid - vertexToAdd->position;
+            if( faces == 1  )
+            {
+              //  AddRay(centroid, faceToTest->normal*0.1f, YELLOW);
+
+
+            }
+
+            ray.normalize();
+            float dot = ray.dotProduct(faceToTest->normal);
+            if( dot >= 0 )
+                continue;
+
+            jointModel->triangles.erase( jointModel->triangles.begin() + j);
+        }
+        jointModel->ClearNeighourAndEdgeData();
+        jointModel->ReconstructMeshDataStructure();
+
+        for(int j = 0; j < jointModel->edges.size(); j++)
+        {
+
+            Edge* edge = jointModel->edges[j];
+            if( edge->faces[0] != NULL && edge->faces[1] != NULL)
+            {
+                continue;
+            }
+            if( edge->vertices[0]->index == edge->vertices[1]->index)
+                continue;
+
+            if( faces == 1 )
+            {
+                AddLine( edge->vertices[1]->position,  edge->vertices[0]->position, CYAN );
+                AddLine( vertexToAdd->position,  edge->vertices[0]->position, GREEN );
+                AddLine( edge->vertices[1]->position,  vertexToAdd->position, GREEN );
+            }
+            Face* newFace = new Face(edge->vertices[0], edge->vertices[1], vertexToAdd );
+
+
+            jointModel->triangles.push_back(newFace);
+
+            Vector3f hullCenter = GetHullCenter( jointModel->triangles );
+             newFace->UpdateWinding(hullCenter);
+        }
+
+    }
+
+
+    // --------------- remove illegal triangles ----------------
+    for( int j = jointModel->triangles.size() - 1; j >= 0; j--)
+    {
+        Face* faceToTest = jointModel->triangles[j];
+        if( faceToTest->vertices[0]->loopIndex == faceToTest->vertices[1]->loopIndex && faceToTest->vertices[0]->loopIndex == faceToTest->vertices[2]->loopIndex)
+            jointModel->triangles.erase( jointModel->triangles.begin() + j);
+
+    }
+
+    if( tightJoints )
+    {
+        for (unsigned int i = 0; i <branches.size(); i++)
+        {
+            vector< Vertex*>&  loop = *branches[i];
+            for (unsigned int j = 0; j <loop.size(); j++)
+                loop[j]->position = loop[j]->finalPosition;
+        }
+    }
+
+
+//    if( retriangulate)
+//    {
+//        RetriangulateSharpEdges(jointModel );
+//    }
+
+//    for( int n = 0; n < 20; n++)
+//    {
+//        jointModel->ClearNeighourAndEdgeData();
+//        jointModel->ReconstructMeshDataStructure();
+//        bool unstable = CollapseJoint( jointModel, incomingBranchFaces );
+//        if( unstable == false)
+//            break;
+//        if( n == 10)
+//            cout << "warning: too many joint collapse" << endl;
+//    }
+
+    jointModel->ClearNeighourAndEdgeData();
+    jointModel->ReconstructMeshDataStructure();
+
+
+
+
+    for (unsigned int i = 0; i < rootBoundaryLoops.size(); i++)
+        delete rootBoundaryLoops[i];
+
+    //for( int j = jointModel->triangles.size() - 1; j >= 0; j--)
+    //  cout <<  jointModel->triangles[j]->vertices[0] << " " <<  jointModel->triangles[j]->vertices[1] << " " <<  jointModel->triangles[j]->vertices[2] <<  endl;
     return jointModel;
 
 }
