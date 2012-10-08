@@ -90,7 +90,7 @@ void Mesh::Load( std::string fileName)
                 components = qToken.split(QRegExp("/"));
                 if(components.count() >= 2)
                 {
-                   // cout << "dd  dd  " << components
+                    // cout << "dd  dd  " << components
                     //cout<< components.value(1).toInt()-1 << endl;
                     texA = textureCoords[ components.value(1).toInt()-1];
                 }
@@ -104,7 +104,7 @@ void Mesh::Load( std::string fileName)
                 components = qToken.split(QRegExp("/"));
                 if(components.count() >= 2)
                     texB = textureCoords[ components.value(1).toInt()-1];
-               // cout<< components.value(1).toInt()-1 << endl;
+                // cout<< components.value(1).toInt()-1 << endl;
                 b = atof(token.c_str()) - 1;
                 Vertex*  vertB = vertices[b];
 
@@ -146,8 +146,7 @@ void Mesh::Load( std::string fileName)
         }
         myfile.close();
 
-        for( int i = 0; i < textureCoords.size(); i++)
-            cout << textureCoords[i] << endl;
+
         StoreMeshState();
         CalculateNormals();
         ReconstructMeshDataStructure( );
@@ -343,18 +342,18 @@ void Mesh::ReconstructMeshDataStructure( )
 
     //cout<< "normals" <<endl;
     // calculate Face Normals
-//    for ( int i =0; i < (int)triangles.size(); i++)
-//    {
-//        Face* face = triangles[i];
+    //    for ( int i =0; i < (int)triangles.size(); i++)
+    //    {
+    //        Face* face = triangles[i];
 
-//        cout << face<< endl;
-//         for ( int k =0; k < 3; k++)
-//         {
-//             cout << face->vertices[k]->position << endl;
-//            // AddPoint(face->vertices[k]->position , BLUE );
-//            // cout << face->vertices[k]->neighbours.size() << endl;
-//         }
-//    }
+    //        cout << face<< endl;
+    //         for ( int k =0; k < 3; k++)
+    //         {
+    //             cout << face->vertices[k]->position << endl;
+    //            // AddPoint(face->vertices[k]->position , BLUE );
+    //            // cout << face->vertices[k]->neighbours.size() << endl;
+    //         }
+    //    }
 
     // construct the data stucture
     ConstructGraphFromFaces(quads);
@@ -389,14 +388,14 @@ void Mesh::ConstructGraphFromFaces( vector < Face* >& faces)
             vector<Vertex*>::iterator result =   find( A->neighbours.begin(), A->neighbours.end(), B );
 
 
-          //  cout <<  "---ss-rr-ss--" << endl;
+            //  cout <<  "---ss-rr-ss--" << endl;
 
             if( result == A->neighbours.end() )
             {
-            //    cout <<  "--ss-ss--ssr-- " <<  A->neighbours.size() << endl;
+                //    cout <<  "--ss-ss--ssr-- " <<  A->neighbours.size() << endl;
                 A->neighbours.push_back(B);
                 B->neighbours.push_back(A);
-//cout <<  "---ss--ssr--" << endl;
+                //cout <<  "---ss--ssr--" << endl;
                 // create a new edge
                 Edge* edge = new Edge(A, B, face);
                 face->edges.push_back(edge);
@@ -409,7 +408,7 @@ void Mesh::ConstructGraphFromFaces( vector < Face* >& faces)
             else
             {
 
-              //  cout <<  "---ss--ssr--" << endl;
+                //  cout <<  "---ss--ssr--" << endl;
                 // edge already exists, just need to find it and tell it about this face
                 for ( uint k =0; k < A->edges.size(); k++)
                 {
@@ -421,7 +420,7 @@ void Mesh::ConstructGraphFromFaces( vector < Face* >& faces)
                     }
                 }
 
-               // cout <<  "---ss--ssr--" << endl;
+                // cout <<  "---ss--ssr--" << endl;
             }
 
         }
@@ -466,7 +465,7 @@ void Mesh::ConstructGraphFromFaces( vector < Face* >& faces)
 
 Mesh::~Mesh()
 {
- //   cout << "BOOM! model was blown to bits (destroyed)"<< endl;
+    //   cout << "BOOM! model was blown to bits (destroyed)"<< endl;
     for (uint i = 0; i < vertices.size(); i++)
         delete vertices[i];
 
@@ -522,6 +521,7 @@ void Mesh::ClearNeighourAndEdgeData()
     }
 }
 
+
 extern bool display4Texture;
 extern bool displayMesh;
 void Mesh::Draw()
@@ -543,16 +543,10 @@ void Mesh::Draw()
                 {
                     Face* tri = triangles[j];
 
-
+                    Vector3f mid;
                     for ( int k = 0; k < 3; k++ )
                     {
-
-                        //Vector3f normal = tri->vertices[k]->normal;
-                        Vector3f normal ;
-                       // if(smoothShading)
-                      //  normal = -tri->vertices[k]->normal;
-                        //else
-                           normal = -tri->normal;
+                        Vector3f normal = -tri->normal;
 
                         glNormal3f( normal.x, normal.y, normal.z );
 
@@ -566,10 +560,15 @@ void Mesh::Draw()
 
                         Vector3f vert = tri->vertices[k]->position;
 
-                      //  vert *= scale;
-                       // vert+=position;
+                        //  vert *= scale;
+                        // vert+=position;
+                        mid += vert*scale;;
                         glVertex3f( vert.x, vert.y, vert.z );
                     }
+
+                    mid/=3;
+                    // AddRay(mid, tri->normal*0.01f*scale, YELLOW);
+                    // AddRay(mid, -tri->normal*0.01f*scale, RED);
                 }
             }
             glEnd();
@@ -597,10 +596,10 @@ void Mesh::Draw()
                         else
                             normal = quad->normal;
                         glNormal3f( normal.x, normal.y, normal.z ); // this needs to be fixed
-                        // glTexCoord2f( pTri->m_s[k], pTri->m_t[k] );
+
                         Vector3f vert = quad->vertices[k]->position;
-                      //  vert *= scale;
-                     //   vert+=position;
+                        vert *= scale;
+                        vert+=position;
                         glVertex3f( vert.x, vert.y, vert.z );
 
 
@@ -616,55 +615,7 @@ void Mesh::Draw()
             for ( uint i =0; i < edges.size(); i++)
                 DrawLine(edges[i]->vertices[0]->position*scale, edges[i]->vertices[1]->position*scale);
         }
-        //            for ( uint i =0; i < vertices.size(); i++)
-        //                DrawPoint(vertices[i]->position *scale);
 
-//        for ( uint i =0; i < vertices.size(); i++)
-//        {
-//    //        break;
-//            Vertex* A = vertices[i];
-//
-//            bool unique = true;
-//            for ( uint j =0; j < A->textureCoords.size(); j++)
-//            {
-//                Vector2f texCoordA = A->textureCoords[j];
-//                for ( uint k = j+1; k < A->textureCoords.size(); k++)
-//                {
-//                    Vector2f texCoordB = A->textureCoords[k];
-//                    if(texCoordA!=texCoordB )
-//                    {
-//
-//
-//                        unique = false;
-//                        break;
-//                    }
-//                }
-//            }
-//
-//if(!unique)
-//            for ( uint j =0; j < A->textureCoords.size(); j++)
-//            {
-//                Vector2f texCoord = A->textureCoords[j];
-//                //                stringstream ss;
-//                //                ss <<
-//
-//
-//                DrawText( texCoord.toString(),A->position, (Colours)(j+2) );
-//              //  else
-//                //    DrawText( texCoord.toString(),A->position , GREEN );
-//            }
-//            //            if( vertices[i]->faces.size() == 0)
-//            //                continue;
-//            //            if( vertices[i]->isSeam == true)
-//            //                SetColour(GREEN);
-//            //            else
-//            //                SetColour(BLUE);
-//
-//
-//
-//         //   DrawPoint( vertices[i]->position*scale );
-//        }
-        // DrawRay(vertices[i]->position,vertices[i]->normal*0.05f );
         glDisable(GL_NORMALIZE);
     }
     glPopMatrix();
@@ -675,21 +626,16 @@ void Mesh::Draw()
 
 void Mesh::StoreTextureCoordInVerticesAndMarkSeams()
 {
-    cout << "ssss"  <<endl;
     for( uint i = 0; i < vertices.size(); i++ )
     {
         Vertex* vert = vertices[i];
-        vert->textureCoordinate = Vector2f(-1, -1 );
+        vert->textureCoordinate = Vector2f(-10, -10 );
         vert->isSeam = false;
     }
 
     for( uint i = 0; i < triangles.size(); i++ )
     {
         Face* face = triangles[i];
-        if( face->texCoords[0] == Vector2f(0,0) && face->texCoords[1] == Vector2f(0,0)
-                && face->texCoords[2] == Vector2f(0,0) && face->texCoords[3] == Vector2f(0,0)) // face is already parameterised so continue
-            continue;
-
 
         int sides = 3;
         if(face->vertices[3] != NULL )
@@ -698,31 +644,28 @@ void Mesh::StoreTextureCoordInVerticesAndMarkSeams()
         {
             Vertex* A = face->vertices[i];
             Vector2f texCoordA =  A->textureCoordinate;
-            if( texCoordA.x == 1 ) texCoordA.x-= 1;
-            if( texCoordA.y == 1 ) texCoordA.y-= 1;
+            // if( texCoordA.x == 1 ) texCoordA.x-= 1;
+            // if( texCoordA.y == 1 ) texCoordA.y-= 1;
 
             Vector2f texCoord =  face->texCoords[i];
-            if( texCoord.x == 1 ) texCoord.x-= 1;
-            if( texCoord.y == 1 ) texCoord.y-= 1;
+            // if( texCoord.x == 1 ) texCoord.x-= 1;
+            // if( texCoord.y == 1 ) texCoord.y-= 1;
 
-       //     A->textureCoords.push_back(texCoord);
-
-
-            if( A->textureCoordinate != Vector2f(-1, -1 ) ) // vertex has already been assigned by another face
+            if( A->textureCoordinate == Vector2f(-10, -10 ) ) // vertex has already been assigned by another face
             {
-
-                if( texCoordA != texCoord) // the other face assigned a different coord, so this is a seam
-                {
-                  //  cout << "-----"  <<endl;
-                   // cout << texCoordA  <<endl;
-                  //  cout << texCoord << endl;
-                    // mark all vertex as seam
-
-                    A->isSeam = true;
-                }
-            }
-            else
                 A->textureCoordinate = texCoord; // else the vertex has not yet been assigned a coor, so assign this one
+
+            }
+            else if( texCoordA != texCoord) // the other face assigned a different coord, so this is a seam
+            {
+                //  cout << "-----"  <<endl;
+                // cout << texCoordA  <<endl;
+                //  cout << texCoord << endl;
+                // mark all vertex as seam
+
+                A->isSeam = true;
+            }
+
         }
     }
 }
@@ -770,7 +713,7 @@ void Mesh::Draw2()
                     ////                       cout<< tri->vertices[2]->position << endl;
                     //                    }
 
-                    //  Vector3f mid;
+                    Vector3f mid;
                     for ( int k = 0; k < 3; k++ )
                     {
 
@@ -779,7 +722,7 @@ void Mesh::Draw2()
                         if(smoothShading)
                             normal = -tri->vertices[k]->normal;
                         else
-                            normal = tri->normal;
+                            normal = -tri->normal;
 
 
 
@@ -800,7 +743,7 @@ void Mesh::Draw2()
                         vert+=position;
                         glVertex3f( vert.x, vert.y, vert.z );
 
-                      //  mid += vert;
+                        mid += vert;
 
                         //                        Vector3f texDirY;
                         //                        texDirY.y = texCoord.y;
@@ -821,8 +764,9 @@ void Mesh::Draw2()
 
                         // cout << vert << endl;
                     }
-                   // mid/=3;
-                  //  AddRay(mid, tri->normal*0.05f, YELLOW);
+                    mid/=3;
+                    // AddRay(mid, tri->normal*0.01f*scale, YELLOW);
+                    // AddRay(mid, -tri->normal*0.01f*scale, RED);
                 }
             }
             glEnd();
@@ -865,12 +809,27 @@ void Mesh::Draw2()
         }
         if( displayWireFrame)
         {
-            SetColour(RED);
+
             for ( uint i =0; i < edges.size(); i++)
+            {
+                 if(edges[i]->vertices[0]->isSeam && edges[i]->vertices[1]->isSeam)
+                      SetColour(RED);
+                 else
+                      SetColour(WHITE);
                 DrawLine(edges[i]->vertices[0]->position*scale, edges[i]->vertices[1]->position*scale);
+            }
+
+
         }
-        //            for ( uint i =0; i < vertices.size(); i++)
-        //                DrawPoint(vertices[i]->position *scale);
+
+//        for ( uint i =0; i < vertices.size(); i++)
+//        {
+//            if(vertices[i]->isSeam)
+//                SetColour(GREEN);
+//            else
+//                SetColour(RED);
+//            DrawPoint(vertices[i]->position *scale);
+//        }
         // SetColour(RED);
         //for ( uint i =0; i < vertices.size(); i++)
         // DrawRay(vertices[i]->position,vertices[i]->normal*0.05f );

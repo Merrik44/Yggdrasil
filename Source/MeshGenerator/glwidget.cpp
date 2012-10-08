@@ -53,6 +53,11 @@
 #include "QImage"
 #include "surfacesubdivision.h"
 #include "QDir"
+#include "performancetimer.h"
+#include "mainwindow.h"
+#include "ctime"
+#include <sys/time.h>
+#include "fstream"
 
 #ifndef GL_MULTISAMPLE
 #define GL_MULTISAMPLE  0x809D
@@ -162,7 +167,7 @@ void GLWidget::loadGLTextures()
     QImage t;
     QImage b;
 
-    if ( !b.load( "../images/bark.jpg" ) )
+    if ( !b.load( "../images/irish3.jpg" ) )
     {
         b = QImage( 16, 16, (QImage::Format)32 );
         b.fill( Qt::green );
@@ -187,35 +192,37 @@ void GLWidget::initializeGL()
     for( int i = 0; i < lstFileList.count(); i++ )
         cout << lstFileList.value(i).toStdString() << endl;
 
-    LoadLST("../lst files/treefile91.lst" );
-    model = generateMesh( skeleton->branches);
-   // app
+     LoadLST("../lst files/thinkAndThin.lst" );
+     model = generateMesh( skeleton->branches);
+
+    // app
 
     loadGLTextures();
     //qglClearColor(qtPurple.dark());
 
-     glClearColor(0.98f,  0.98f,  0.98f, 1);
-     glEnable(GL_DEPTH_TEST);
-   //  glEnable(GL_CULL_FACE);
-     glShadeModel(GL_SMOOTH);
-     glEnable(GL_LIGHTING);
-     glEnable(GL_LIGHT0);
-     glEnable(GL_MULTISAMPLE);
-     glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
-     glEnable( GL_BLEND );
+    glClearColor(0.98f,  0.98f,  0.98f, 1);
+    glEnable(GL_DEPTH_TEST);
+    //  glEnable(GL_CULL_FACE);
+    glShadeModel(GL_SMOOTH);
+    glEnable(GL_LIGHTING);
+    glEnable(GL_LIGHT0);
+    glEnable(GL_MULTISAMPLE);
+    glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
+    glEnable( GL_BLEND );
     // glFrontFace(GL_CW);
 
 
-     static GLfloat lightPosition[4] = { 0.5, 5.0, 7.0, 1.0 };
-     glLightfv(GL_LIGHT0, GL_POSITION, lightPosition);
+    static GLfloat lightPosition[4] = { 0.5, 5.0, 7.0, 1.0 };
+    glLightfv(GL_LIGHT0, GL_POSITION, lightPosition);
 
-     glEnable( GL_LINE_SMOOTH );
-     glEnable( GL_POLYGON_SMOOTH );
-     glHint( GL_LINE_SMOOTH_HINT, GL_NICEST );
-     glHint( GL_POLYGON_SMOOTH_HINT, GL_NICEST );
+    glEnable( GL_LINE_SMOOTH );
+    glEnable( GL_POLYGON_SMOOTH );
+    glHint( GL_LINE_SMOOTH_HINT, GL_NICEST );
+    glHint( GL_POLYGON_SMOOTH_HINT, GL_NICEST );
 
 
 
+    //   RunPerformanceTest();
 }
 //! [6]
 
@@ -285,9 +292,99 @@ void GLWidget::GenerateMeshFromLST()
     // updateGL();
 }
 
-void DrawSquare()
-{
+MainWindow* mainwindowRef;
 
+void GLWidget::RunPerformanceTest()
+{
+    // ---- generate graphs from 2 till 50 -----
+    // int64  averageRunTime = 0;
+    const int iterations = 50;
+    const int numberOfBranches = 40;
+    double  averageRunTimes[numberOfBranches];
+    for ( int i = 0; i < numberOfBranches; i++ )
+    {
+        averageRunTimes[i] =0;
+    }
+    int totalIterationsNeeded = iterations*numberOfBranches;
+    int iterationsSoFar = 0;
+
+    ofstream perfLog("../../PerformanceLog.txt");
+
+    for(int k = 0; k < iterations; k++)
+    {
+
+
+        for ( int i = 0; i < numberOfBranches; i++ )
+        {
+            iterationsSoFar++;
+            mainwindowRef->progressBarUpdate(iterationsSoFar*100/(totalIterationsNeeded) );
+
+            if(model!= NULL )
+                delete model;
+            if(skeleton!= NULL )
+                delete skeleton;
+            skeleton = new LstSkeleton();
+            int branches= i*4 + 2;
+            skeleton->createRandomBifurcation( branches, 500, 5, 3);
+
+            cout << (branches + 1) << skeleton->branches.size() << endl;
+            // ---- memory ----
+
+            double vm_before, rss_before;
+            process_mem_usage(vm_before, rss_before);
+          //  cout << "VM: " << vm_before << "; RSS: " << rss_before << endl;
+
+            // --- time ----
+            timeval t1, t2;
+            double elapsedTime;
+            gettimeofday(&t1, NULL);
+
+            model = generateMesh( skeleton->branches);
+
+
+            gettimeofday(&t2, NULL);
+
+            // compute and print the elapsed time in millisec
+            elapsedTime = (t2.tv_sec - t1.tv_sec) * 1000.0;      // sec to ms
+            elapsedTime += (t2.tv_usec - t1.tv_usec) / 1000.0;   // us to ms
+      //      cout << elapsedTime << " ms.\n";
+
+            averageRunTimes[i] += elapsedTime;
+
+            double vm_after, rss_after;
+            process_mem_usage(vm_after, rss_after);
+       //     cout << "VM: " << (vm_after - vm_before)<< "; RSS: " << (rss_after - rss_before) << endl;
+
+        //    cout << runTime << endl;
+            //  delete testGraph;
+            paintGL();
+            updateGL();
+            // sleep(3.5f);
+        }
+
+
+
+        // ---- for each time joint construction woth both methods ----
+
+
+        // --- time subdivisions ---
+
+
+        // --- delete everything ---
+    }
+
+   // return;
+
+    for ( int i = 0; i < numberOfBranches; i++ )
+    {
+        int branches= i*4 + 2;
+           averageRunTimes[i] /= (double)iterations;
+        // averageRunTimes[i] /= CLOCKS_PER_SEC;
+           cout << (double)averageRunTimes[i] << endl;
+           perfLog  << branches<< "\t" << (double)averageRunTimes[i] << endl;
+    }
+
+    perfLog.close();
 }
 
 void gluPerspective(double fovy,double aspect, double zNear, double zFar)
@@ -305,6 +402,8 @@ void gluPerspective(double fovy,double aspect, double zNear, double zFar)
 //! [7]
 void GLWidget::paintGL()
 {
+
+    DebugClear();
     glMatrixMode(GL_PROJECTION);
     glLoadIdentity();
     gluPerspective (50.0*zoom, 1, 0.1f, 100);
@@ -315,8 +414,8 @@ void GLWidget::paintGL()
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
     glLoadIdentity();
 
-//    GLfloat light_position0[] = {10, -10, 0.0};
-  //  glLightfv(GL_LIGHT0, GL_POSITION, light_position0);
+    //    GLfloat light_position0[] = {10, -10, 0.0};
+    //  glLightfv(GL_LIGHT0, GL_POSITION, light_position0);
     static GLfloat lightPosition[4] = { 0.5, 5.0, 7.0, 1.0 };
     glLightfv(GL_LIGHT0, GL_POSITION, lightPosition);
     glTranslatef(xOffset, yOffset, -10);
@@ -326,18 +425,13 @@ void GLWidget::paintGL()
 
 
 
-
-    //    cout << "DDDDD" << endl;
-    //    cout << zoom << endl;
-    //     cout << xOffset << endl;
-    //    cout << yOffset << endl;
-    //    cout << xRot << endl;
-    //    cout << yRot << endl;
-
     //SetColour(LIGHT_GREY);
 
     if( model != NULL)
+    {
+        model->StoreTextureCoordInVerticesAndMarkSeams();
         model->Draw2();
+    }
 
     if( skeleton != NULL)
         skeleton->Draw();

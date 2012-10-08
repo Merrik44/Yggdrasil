@@ -42,7 +42,6 @@ SOURCES += TreeDrawGUI/main.cpp \
     MeshGenerator/meshgenerator.cpp \
     MeshGenerator/lstskeleton.cpp \
     MeshGenerator/jointgenerator.cpp \
-    MeshGenerator/glwidget.cpp \
     MeshGenerator/generator.cpp \
     MeshGenerator/debug.cpp \
     TextureSynthesis/vector2.cpp \
@@ -88,7 +87,6 @@ HEADERS += TreeDrawGUI/mainwindow.h \
     MeshGenerator/meshgenerator.h \
     MeshGenerator/lstskeleton.h \
     MeshGenerator/jointgenerator.h \
-    MeshGenerator/glwidget.h \
     MeshGenerator/generator.h \
     MeshGenerator/debug.h \
     MeshGenerator/branchnode.h \

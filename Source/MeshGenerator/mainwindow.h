@@ -68,6 +68,8 @@ private slots:
 
     void on_pushButton_clicked();
 
+    void on_performaceTestButton_clicked();
+
 private:
     Ui::MainWindow *ui;
     GLWidget* glWidget;

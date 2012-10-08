@@ -65,11 +65,10 @@ void ApplyLoopSubvision( Mesh* model, int levels, QProgressDialog*  progBar)
 
        if(progBar != NULL )
        {
-       progBar->setValue(0);
-           }
+            progBar->setValue(0);
+       }
 
-      //  mainWindowRef->progressBarUpdate(((n+1)*100)/(levels));
-       // mainWindowRef.
+
         int oldVerticesLength = vertices.size();
         // step 1: generate the midpoints
 
@@ -79,7 +78,6 @@ void ApplyLoopSubvision( Mesh* model, int levels, QProgressDialog*  progBar)
             Edge* edge =  edges[i];
             int index = vertices.size();
             Vertex* midpoint = CreateMidPoint(edge,index) ;
-
             vertices.push_back(midpoint );
         }
 
@@ -103,7 +101,10 @@ void ApplyLoopSubvision( Mesh* model, int levels, QProgressDialog*  progBar)
 
         }
 
-         if(progBar != NULL ) progBar->setValue(30);
+         if(progBar != NULL )
+         {
+             progBar->setValue(30);
+         }
 
         // step 2: create the new faces. NB Specifically for triangles/loop
 
@@ -157,7 +158,6 @@ void ApplyLoopSubvision( Mesh* model, int levels, QProgressDialog*  progBar)
             }
 
             // set the oldface to be in the center
-            // set the oldface to be in the center
             for( int j = 0; j < 3; j++ )
             {
                 oldFace->vertices[j] = oldFace->edges[j]->midPoint;
@@ -166,7 +166,10 @@ void ApplyLoopSubvision( Mesh* model, int levels, QProgressDialog*  progBar)
 
         }
 
-        if(progBar != NULL ) progBar->setValue(60);
+        if(progBar != NULL )
+        {
+            progBar->setValue(60);
+        }
 
         //  cout << "step2"  << endl;
         // Vertex points are constructed for each old vertex. A given vertex has n neighbor vertices.
@@ -238,5 +241,6 @@ void ApplyLoopSubvision( Mesh* model, int levels, QProgressDialog*  progBar)
     }
     model->CalculateNormals();
 
-    if(progBar != NULL ) progBar->setValue(100);
+    if(progBar != NULL )
+        progBar->setValue(100);
 }

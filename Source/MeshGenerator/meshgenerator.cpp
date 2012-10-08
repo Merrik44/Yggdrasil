@@ -9,6 +9,7 @@
 #include "algorithm"
 #include "jointgenerator.h"
 #include "mainwindow.h"
+//#include"performancetimer.h"
 
 using namespace std;
 
@@ -24,7 +25,7 @@ bool displayMesh = true;
 bool displayGraph = true;
 bool tightJoints = true;
 bool alternatingTriangulation = false;
-int noOfSides = 8;
+int noOfSides = 4;
 
 void InterpolateTexCoordsAccrosRemainingFaces( Mesh* model )
 {
@@ -35,9 +36,6 @@ void InterpolateTexCoordsAccrosRemainingFaces( Mesh* model )
                 face->texCoords[2] != Vector2f(0,0) || face->texCoords[3] != Vector2f(0,0)) // face is already parameterised so continue
             continue;
 
-        // AddLine( face->vertices[0]->position,  face->vertices[1]->position, YELLOW);
-        //  AddLine( face->vertices[1]->position,  face->vertices[2]->position, YELLOW);
-        //   AddLine( face->vertices[2]->position,  face->vertices[0]->position, YELLOW);
 
         // find longest edge with tex coords
         // ------- sort edges by length --------
@@ -112,8 +110,7 @@ void InterpolateTexCoordsAccrosRemainingFaces( Mesh* model )
             BA/=lengthBA;
             BC /=lengthBC;
             CA /=lengthCA;
-            float theta = acos(BC.dotProduct(BA));
-            //float angleC = acos(CA.dotProduct(-BC));
+            float theta = -acos(BC.dotProduct(BA));
 
             Vector2f bc = texC - texB;
 
@@ -136,6 +133,7 @@ void InterpolateTexCoordsAccrosRemainingFaces( Mesh* model )
         }
 
     }
+
 }
 
 
@@ -706,6 +704,8 @@ void MergeTwoBondaries(vector<Vertex*>& loopA, vector<Vertex*>& loopB, std::vect
 
 Mesh* generateMesh( vector<BranchNode*>& branches,  QProgressDialog* progressBar)
 {
+
+    //long startTime = GetTimeMs64();
     // ------------------ debug stuff ---------------
     countdown = Count;
     DebugClear();
@@ -728,7 +728,8 @@ Mesh* generateMesh( vector<BranchNode*>& branches,  QProgressDialog* progressBar
 
     int branchesProcessed =0;
     int noOfBranches = branches.size();
-    cout << "processing" << endl;
+   // cout << "processing" << endl;
+    int jointsConstructed = 0;
 
 
 
@@ -806,7 +807,7 @@ Mesh* generateMesh( vector<BranchNode*>& branches,  QProgressDialog* progressBar
 
 
                 // --------- Finally construct the joint --------
-
+                jointsConstructed++;
                 Mesh* jointMesh = GenerateJoint2(boundaries, incomingBranchFaces, otherVertices, geometricCenter);
 
                 // --------- Triangles from joint into main model --------
@@ -842,22 +843,24 @@ Mesh* generateMesh( vector<BranchNode*>& branches,  QProgressDialog* progressBar
         }
 
     }
-     cout << "complete" << endl;
+    // cout << "complete" << endl;
 
     // ------ Store the mesh state for subdivision purposes -------
     model->ClearNeighourAndEdgeData();
 
     model->ReconstructMeshDataStructure();
-     cout << "rec" << endl;
+
     model->CalculateNormals();
 
-  cout << "nor" << endl;
+
     InterpolateTexCoordsAccrosRemainingFaces( model ); //-------------- This should probs run till stabl!!!
-      cout << "texCorrd" << endl;
+    InterpolateTexCoordsAccrosRemainingFaces( model ); //-------------- This should probs run till stabl!!!
+
     model->StoreMeshState();
 
+    //long endTime = GetTimeMs64();
 
-
+   // cout << "Total time: " << (endTime - startTime) << " for " << jointsConstructed<< endl;
     return model;
 }
 

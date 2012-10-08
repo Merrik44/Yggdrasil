@@ -202,7 +202,10 @@ void QTreeDisplayWidget::GenerateMeshFromLST( QProgressDialog* progressBar)
 void QTreeDisplayWidget::ApplySubdivisionToMesh( int numberOfSubdvisions,  QProgressDialog* progressBar )
 {
     if( model != NULL )
+    {
         ApplyLoopSubvision(model, numberOfSubdvisions, progressBar);
+        model->CalculateNormals();
+    }
 }
 
 void qtGluPerspective(double fovy,double aspect, double zNear, double zFar)
@@ -275,7 +278,11 @@ void QTreeDisplayWidget::paintGL()
         if( displayGeneratedMesh )
         {
             if(model!= NULL)
-                model->Draw();
+            {
+                DebugClear();
+                model->Draw2();
+                DebugDraw();
+            }
         }
         else
         {
@@ -283,25 +290,6 @@ void QTreeDisplayWidget::paintGL()
         }
 
         //  cout << "rendering " << endl;
-        if (!isCurrent && false)
-        {
-            glLoadIdentity();
-            glDisable(GL_DEPTH_TEST);
-            glDisable(GL_LIGHTING);
-            glBlendFunc(GL_ZERO,GL_ONE_MINUS_SRC_ALPHA);
-            glEnable(GL_BLEND);
-            glColor4f(1.0f,1.0f,1.0f,0.5f);
-            glBegin(GL_QUADS);
-            glVertex3f(-1.0f, -1.0f, -1.0f);
-            glVertex3f( 1.0f, -1.0f, -1.0f);
-            glVertex3f( 1.0f, 1.0f, -1.0f);
-            glVertex3f(-1.0f, 1.0f, -1.0f);
-            glEnd();
-            glDisable(GL_BLEND);
-            glEnable(GL_LIGHTING);
-            glEnable(GL_DEPTH_TEST);
-        }
-
 
     }
 

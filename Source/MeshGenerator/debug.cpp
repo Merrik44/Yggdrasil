@@ -249,7 +249,7 @@ void SetColour( Colours colour )
     //    glCol[1]  *= 1.5f;
     //    glCol[2] *= 1.5f;
 
-    glMaterialfv(GL_FRONT_AND_BACK, GL_AMBIENT_AND_DIFFUSE, glCol);
+  //  glMaterialfv(GL_FRONT_AND_BACK, GL_AMBIENT_AND_DIFFUSE, glCol);
     glColor3f(glCol[0], glCol[1], glCol[2]);
 
 }

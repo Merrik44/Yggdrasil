@@ -6,11 +6,12 @@
 
 //extern MainWindow* mainWindowRef;
 extern int Count;
+extern MainWindow* mainwindowRef;
 MainWindow::MainWindow(QWidget *parent) :
     QMainWindow(parent),
     ui(new Ui::MainWindow)
 {
-  //  mainWindowRef = this;
+    mainwindowRef = this;
     ui->setupUi(this);
 
     glWidget = new GLWidget;
@@ -28,7 +29,6 @@ MainWindow::~MainWindow()
 
 void MainWindow::on_subdivisionSlider_valueChanged(int value)
 {
-
      glWidget->setSubdivisionLevel(value );
 
     std::stringstream ss;
@@ -39,6 +39,7 @@ void MainWindow::on_subdivisionSlider_valueChanged(int value)
     int faces = glWidget->model->GetFaceCount();
     ss2 << faces;
     ui->faceCountLabel->setText(ss2.str().c_str());
+
 }
 
 void MainWindow::on_loadObjButton_clicked()
@@ -238,4 +239,9 @@ void MainWindow::on_pushButton_clicked()
 {
     glWidget->ResetCamera();
     glWidget->updateGL();
+}
+
+void MainWindow::on_performaceTestButton_clicked()
+{
+    glWidget->RunPerformanceTest();
 }

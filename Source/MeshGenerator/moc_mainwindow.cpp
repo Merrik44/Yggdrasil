@@ -1,7 +1,7 @@
 /****************************************************************************
 ** Meta object code from reading C++ file 'mainwindow.h'
 **
-** Created: Fri Oct 5 04:25:41 2012
+** Created: Sat Oct 6 14:12:03 2012
 **      by: The Qt Meta Object Compiler version 63 (Qt 4.8.1)
 **
 ** WARNING! All changes made in this file will be lost!
@@ -23,7 +23,7 @@ static const uint qt_meta_data_MainWindow[] = {
        6,       // revision
        0,       // classname
        0,    0, // classinfo
-      24,   14, // methods
+      25,   14, // methods
        0,    0, // properties
        0,    0, // enums/sets
        0,    0, // constructors
@@ -55,6 +55,7 @@ static const uint qt_meta_data_MainWindow[] = {
      689,  205,   11,   11, 0x08,
      725,  205,   11,   11, 0x08,
      761,   11,   11,   11, 0x08,
+     785,   11,   11,   11, 0x08,
 
        0        // eod
 };
@@ -85,6 +86,7 @@ static const char qt_meta_stringdata_MainWindow[] = {
     "on_simplifyCheckBox_4_toggled(bool)\0"
     "on_simplifyCheckBox_5_toggled(bool)\0"
     "on_pushButton_clicked()\0"
+    "on_performaceTestButton_clicked()\0"
 };
 
 void MainWindow::qt_static_metacall(QObject *_o, QMetaObject::Call _c, int _id, void **_a)
@@ -117,6 +119,7 @@ void MainWindow::qt_static_metacall(QObject *_o, QMetaObject::Call _c, int _id, 
         case 21: _t->on_simplifyCheckBox_4_toggled((*reinterpret_cast< bool(*)>(_a[1]))); break;
         case 22: _t->on_simplifyCheckBox_5_toggled((*reinterpret_cast< bool(*)>(_a[1]))); break;
         case 23: _t->on_pushButton_clicked(); break;
+        case 24: _t->on_performaceTestButton_clicked(); break;
         default: ;
         }
     }
@@ -154,9 +157,9 @@ int MainWindow::qt_metacall(QMetaObject::Call _c, int _id, void **_a)
     if (_id < 0)
         return _id;
     if (_c == QMetaObject::InvokeMetaMethod) {
-        if (_id < 24)
+        if (_id < 25)
             qt_static_metacall(this, _c, _id, _a);
-        _id -= 24;
+        _id -= 25;
     }
     return _id;
 }

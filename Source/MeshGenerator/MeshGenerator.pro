@@ -20,7 +20,8 @@ SOURCES += main.cpp\
     meshgenerator.cpp \
     objexporter.cpp \
     jointgenerator.cpp \
-    surfacesubdivision.cpp
+    surfacesubdivision.cpp \
+    performancetimer.cpp
 
 
 HEADERS  += mainwindow.h \
@@ -33,7 +34,8 @@ glwidget.h \
     meshgenerator.h \
     objexporter.h \
     jointgenerator.h \
-    surfacesubdivision.h
+    surfacesubdivision.h \
+    performancetimer.h
 
 QT += opengl
 FORMS    += mainwindow.ui

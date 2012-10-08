@@ -1,7 +1,7 @@
 /********************************************************************************
 ** Form generated from reading UI file 'mainwindow.ui'
 **
-** Created: Wed Oct 3 18:06:44 2012
+** Created: Sat Oct 6 14:11:57 2012
 **      by: Qt User Interface Compiler version 4.8.1
 **
 ** WARNING! All changes made in this file will be lost when recompiling UI file!
@@ -69,6 +69,7 @@ public:
     QCheckBox *simplifyCheckBox_4;
     QCheckBox *simplifyCheckBox_5;
     QPushButton *pushButton;
+    QPushButton *performaceTestButton;
     QMenuBar *menuBar;
     QToolBar *mainToolBar;
     QStatusBar *statusBar;
@@ -108,16 +109,16 @@ public:
         faceCountLabel->setGeometry(QRect(870, 160, 101, 31));
         loadObjButton = new QPushButton(centralWidget);
         loadObjButton->setObjectName(QString::fromUtf8("loadObjButton"));
-        loadObjButton->setGeometry(QRect(570, 380, 131, 31));
+        loadObjButton->setGeometry(QRect(570, 380, 91, 31));
         loadLstButton = new QPushButton(centralWidget);
         loadLstButton->setObjectName(QString::fromUtf8("loadLstButton"));
-        loadLstButton->setGeometry(QRect(840, 380, 131, 31));
+        loadLstButton->setGeometry(QRect(760, 380, 91, 31));
         countLabel = new QLabel(centralWidget);
         countLabel->setObjectName(QString::fromUtf8("countLabel"));
         countLabel->setGeometry(QRect(920, 321, 41, 21));
         exportObjButton = new QPushButton(centralWidget);
         exportObjButton->setObjectName(QString::fromUtf8("exportObjButton"));
-        exportObjButton->setGeometry(QRect(700, 380, 141, 31));
+        exportObjButton->setGeometry(QRect(660, 380, 101, 31));
         subDivPlus = new QPushButton(centralWidget);
         subDivPlus->setObjectName(QString::fromUtf8("subDivPlus"));
         subDivPlus->setGeometry(QRect(910, 190, 41, 27));
@@ -222,6 +223,9 @@ public:
         pushButton = new QPushButton(centralWidget);
         pushButton->setObjectName(QString::fromUtf8("pushButton"));
         pushButton->setGeometry(QRect(20, 500, 98, 27));
+        performaceTestButton = new QPushButton(centralWidget);
+        performaceTestButton->setObjectName(QString::fromUtf8("performaceTestButton"));
+        performaceTestButton->setGeometry(QRect(850, 380, 121, 31));
         MainWindow->setCentralWidget(centralWidget);
         menuBar = new QMenuBar(MainWindow);
         menuBar->setObjectName(QString::fromUtf8("menuBar"));
@@ -271,6 +275,7 @@ public:
         simplifyCheckBox_4->setText(QApplication::translate("MainWindow", "Alternate Tris", 0, QApplication::UnicodeUTF8));
         simplifyCheckBox_5->setText(QApplication::translate("MainWindow", "Shade Smooth", 0, QApplication::UnicodeUTF8));
         pushButton->setText(QApplication::translate("MainWindow", "Reset Camera", 0, QApplication::UnicodeUTF8));
+        performaceTestButton->setText(QApplication::translate("MainWindow", "performance test", 0, QApplication::UnicodeUTF8));
     } // retranslateUi
 
 };

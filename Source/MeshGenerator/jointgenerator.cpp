@@ -118,21 +118,24 @@ bool DoStringsShareCharacters(string A, string B)
 }
 
 int counter2 = 300;
-bool collapseCounter = false;
+bool collapseCounter = true;
 bool CollapseJoint(Mesh* jointModel, vector< Face* >& incomingBranchFaces)
 {
 
-    //  cout << "s---" <<endl;
+
     bool AtleastOneCollapse = false;
     SortByLength(jointModel->edges);
+//    for (uint i = 0; i < jointModel->edges.size(); i++ )
+//    {
+//        float length =( jointModel->edges[i]->vertices[0]->position - jointModel->edges[i]->vertices[1]->position).length();
+//        cout << length << endl;
+//    }
     vector< Face* > facesToDelete;
     for (uint i = 0; i < jointModel->edges.size(); i++ )
     {
-
-
-
         if(collapseCounter)
         {
+              cout << "s---" <<  counter2<< endl;
             counter2--;
             if( counter2 < 0)
                 break;
@@ -141,7 +144,8 @@ bool CollapseJoint(Mesh* jointModel, vector< Face* >& incomingBranchFaces)
             {
                 for (uint r = 0; r < jointModel->edges.size(); r++ )
                     AddLine(jointModel->edges[r]->vertices[0]->position, jointModel->edges[r]->vertices[1]->position, CYAN);
-            }}
+            }
+        }
 
         Edge* edge = jointModel->edges[i];
 
@@ -166,16 +170,6 @@ bool CollapseJoint(Mesh* jointModel, vector< Face* >& incomingBranchFaces)
         if( faceB->markedForDeletion )
             continue;
 
-        //
-        //        if( counter2 == 0)
-        //        {
-        //
-        //         //   AddPoint(B->position, BLACK);
-        //            AddLine( A->position, B->position, GREEN);
-        //          //  break;
-        //        }
-        //       else
-        //        {
         // ---- collapse ----
 
         B  = weightedmMergeAwithedB( A, B, jointModel );
@@ -1094,6 +1088,7 @@ Mesh* GenerateJoint2(vector< vector<Vertex*>* >& branches, vector< Face* >& inco
 //        RetriangulateSharpEdges(jointModel );
 //    }
 
+//    counter2 = Count;
 //    for( int n = 0; n < 20; n++)
 //    {
 //        jointModel->ClearNeighourAndEdgeData();

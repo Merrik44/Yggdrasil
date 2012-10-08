@@ -82,6 +82,7 @@ protected:
     void drawCylinder( bool invertNormal );
     void wheelEvent(QWheelEvent *event);
 
+
 public:
     void setSubdivisionLevel( int level );
     void LoadModel( std::string filepath );
@@ -90,7 +91,7 @@ public:
     void GenerateMeshFromLST();
     void ExportModelAsObj(std::string filepath);
     void ResetCamera();
-
+ void RunPerformanceTest();
 
     float zoom;
     Mesh* model;

@@ -20,6 +20,13 @@ LstSkeleton::LstSkeleton(string filepath)
 
 }
 
+
+LstSkeleton::LstSkeleton()
+{
+    scale = 0.01f;
+
+}
+
 LstSkeleton::~LstSkeleton()
 {
     cout << "LST file has been destroyed" << endl;
@@ -31,15 +38,17 @@ LstSkeleton::~LstSkeleton()
 }
 
 
-void LstSkeleton::LstSkeleton::LoadLstFile( string path )
+void LstSkeleton::LoadLstFile( string path )
 {
     cout << "Loading lst file: " << filepath << endl;
     filepath = path;
     ifstream myfile(filepath.c_str());
 
-
     if (myfile.is_open())
     {
+
+        cout << "Loading lst file: Open " << filepath << endl;
+
         string command;
 
         stack<BranchNode*> branchStack;
@@ -133,6 +142,68 @@ void LstSkeleton::LstSkeleton::LoadLstFile( string path )
         branch->startRadius*=scale;
     }
 
+
+    // find the tips of all the branches
+    for ( int i = 0; i < (int)branches.size(); i++ )
+    {
+        if (  branches[i]->children.size() == 0)
+            branchTips.push_back(branches[i]);
+
+    }
+
+    // ----- Calculate offsets so that branches do not intersect -----
+    for ( int i = 0; i < (int)branches.size(); i++ )
+        CalculateBranchOffsets(*branches[i]);
+
+    if(simplifyGraph)
+        SimplifyGraph();
+
+}
+
+
+void LstSkeleton::createRandomBifurcation(int numberOfBranches, float branchLength, float maxRadius, float minRadius )
+{
+
+    if( branches.size() > 0)
+    {
+        cout << "cannot generate bifurcation, graph already exists" << endl;
+        return;
+    }
+
+    // --- create trunk ----
+    float rad;
+    Vector3f start;
+    Matrix3f rotation;
+    rad = minRadius +(maxRadius - minRadius)*(random()%1000)/1000.0f;
+    root = new BranchNode( start, rotation, rad, rad, branchLength, NULL );
+    branches.push_back(root);
+
+    // --- create branches ---
+    for( int i = 0; i < numberOfBranches; i++ )
+    {
+        start = root->endPosition;
+        rad = minRadius +(maxRadius - minRadius)*(random()%1000)/1000.0f;
+        rotation.identity();
+      //  cout << rad << endl;
+        rotation = rotation.createRotationAroundAxis(((random()%1000)/1000.0f)*360, ((random()%1000)/1000.0f)*360 , ((random()%1000)/1000.0f)*360  );
+        // cout << rotation.toString() << endl;
+        BranchNode* branch = new BranchNode( start, rotation, rad, rad, branchLength, root );
+        branches.push_back(branch);
+
+
+    }
+
+    // scale graph
+    for ( int i = 0; i < (int)branches.size(); i++ )
+    {
+        BranchNode* branch = branches[i];
+        branch->length *= scale;
+        branch->startPosition*=scale;
+        branch->endPosition*=scale;
+        branch->endRadius*=scale;
+        branch->startRadius*=scale;
+    }
+
     // find the tips of all the branches
     for ( int i = 0; i < (int)branches.size(); i++ )
     {
@@ -182,7 +253,7 @@ void LstSkeleton::SimplifyGraph()
         for ( int i = 0; i < (int)branches.size(); i++ )
         {
             branches[i]->startOffset = 0;
-             branches[i]->endOffset = 0;
+            branches[i]->endOffset = 0;
 
         }
         // ----- recalculate offsets -----
@@ -199,56 +270,6 @@ void LstSkeleton::SimplifyGraph()
     }
 
 
-//    for ( int i = (int)branches.size() - 1; i >= 0; i-- )
-//    {
-
-
-//        Branch* branch = branches[i];
-//        branch->direction = branch->endPosition - branch->startPosition;
-//        AddLine( branch->startPosition,branch->endPosition, MAGENTA );
-//        cout << branch->startPosition << endl;
-//        branch->direction.normalize();
-
-//        // ---- update rotation matrix ----
-//        Vector3f axis = branch->direction.crossProduct( Vector3f(0, 1, 0 ));
-//        axis.normalize();
-//        float dot = branch->direction.dotProduct( Vector3f(0, 1, 0 ));
-//        float angle = acos(dot);
-
-//        if(dot == 0)
-//            axis = Vector3f(0, 1, 0);
-//        if(dot == 1)
-//            axis = Vector3f(0, -1, 0);
-
-
-//      //  axis*= angle;
-//        angle*= radToDegree;
-
-//         Quatf rotQuat = Quatf::fromAxisRot(axis, -angle);
-//        branch->rotation = rotQuat.rotMatrix();
-
-//        Vector3f A(1,1,1);
-//        A.normalize();
-
-//        AddRay( Vector3f(), A*0.1f, YELLOW );
-
-////        Vector3f axisa = A.crossProduct( Vector3f(0, -1, 0 ));
-////        axisa.normalize();
-////        float dota = A.dotProduct( Vector3f(0, -1, 0 ));
-////        float anglea = acos(dota);
-////       // axisa*= anglea;
-////        //axisa*= radToDegree;
-////        anglea *= radToDegree;
-
-////        newRot.identity();
-////        newRot = newRot.createRotationAroundAxis(axisa.x,axisa.y,axisa.z);
-////       // A.
-////       Quatf rotQuat = Quatf::fromAxisRot(axisa, -anglea);
-////       newRot= rotQuat.rotMatrix();
-////        Vector3f dir = newRot*Vector3f(0, -1, 0);
-////        AddRay( Vector3f(), dir*0.1f, WHITE );
-//    }
-
 
 
 }
@@ -257,12 +278,12 @@ bool LstSkeleton::TryCollapseBranch( BranchNode* branch )
 {
 
     float finalSegmentlength =  branch->startOffset + branch->endOffset;
-     float averageDiameter =  (branch->startRadius + branch->endOffset);
+    float averageDiameter =  (branch->startRadius + branch->endOffset);
 
     // the 2 conditions for collapse are:
-     // 1) the offsets overlap
-     // or 2) the radius is less the than half the length
-     //cout <<  branch->length << " > " << endl;
+    // 1) the offsets overlap
+    // or 2) the radius is less the than half the length
+    //cout <<  branch->length << " > " << endl;
     // cout << finalSegmentlength << endl;
     if(  branch->length > finalSegmentlength + 0.5f*averageDiameter )
         return false;
@@ -316,9 +337,9 @@ bool LstSkeleton::TryCollapseBranch( BranchNode* branch )
 
         angle*= radToDegree;
 
-         Quatf rotQuat = Quatf::fromAxisRot(axis, -angle);
+        Quatf rotQuat = Quatf::fromAxisRot(axis, -angle);
         child->rotation = rotQuat.rotMatrix();
-       // child->rotation = newRot;
+        // child->rotation = newRot;
         //child->rotation = Matrix3f::(axis.x, axis.y, axis.z );
 
         parent->children.push_back(child);
@@ -346,7 +367,7 @@ Offsets GetOffsets( Vector3f directionA, Vector3f directionB, float radiusA, flo
 
     float dot = directionA.dotProduct( directionB);
     dot = max( dot, -1.0f);
-     dot = min( dot, 1.0f);
+    dot = min( dot, 1.0f);
     if (dot == 1)
     {
         // no solution
@@ -363,7 +384,7 @@ Offsets GetOffsets( Vector3f directionA, Vector3f directionB, float radiusA, flo
 
         float alpha = acos(dot);
         float os1 = radiusA/tan(alpha);
-        float os2 = radiusB /sin(alpha);
+        float os2 = radiusB/sin(alpha);
         float A = os1 + os2;
 
         float hypotenuseSqrd = A * A + radiusA * radiusA;
@@ -378,7 +399,16 @@ Offsets GetOffsets( Vector3f directionA, Vector3f directionB, float radiusA, flo
 
         float alpha = acos(dot);
         float beta = PI - alpha;
-        float offset = radiusA * tan(beta/2.0f);
+        float radius;
+
+        //  use the shortest radius
+        if( radiusB < radiusA)
+            radius = radiusB;
+        else
+            radius = radiusA;
+
+        float offset = radius * tan(beta/2.0f);
+
 
         offsetA = offset;
         offsetB =  offset;
@@ -391,7 +421,6 @@ Offsets GetOffsets( Vector3f directionA, Vector3f directionB, float radiusA, flo
 
 void LstSkeleton::CalculateBranchOffsets( BranchNode& branch)
 {
-
     if( branch.children.size() == 0)
     {
         branch.endOffset = 0;
@@ -409,6 +438,7 @@ void LstSkeleton::CalculateBranchOffsets( BranchNode& branch)
         float radiusB = child.startRadius;
 
         Offsets offsets = GetOffsets(directionA, directionB,radiusA,radiusB  );
+
 
         branch.endOffset = max(offsets.offsetA, branch.endOffset);
         child.startOffset = max(offsets.offsetB, child.startOffset);
@@ -459,23 +489,29 @@ void LstSkeleton::Draw()
         SetColour( CYAN );
         DrawLine( pos, posEnd);
 
-         SetColour( RED );
+        SetColour( RED );
 
-//         Vector3f dir(1, 1, 0);
-//         dir.normalize();
-//         dir = branch.rotation*dir;
+        //         Vector3f dir(1, 1, 0);
+        //         dir.normalize();
+        //         dir = branch.rotation*dir;
         DrawRay( pos, branch.direction*0.1f);
 
         SetColour( RED );
         if(  branches[j]->children.size() > 0 )
             DrawPoint(branches[j]->endPosition);
 
-//        SetColour( WHITE );
+        SetColour( BLUE );
 
-//        DrawPoint(pos + branch.direction*branch.startOffset);
+        DrawPoint(branches[j]->endPosition - branch.direction*branch.endOffset);
+        DrawPoint(branch.startPosition + branch.direction*branch.startOffset);
 
-//        SetColour( BLACK );
-//        DrawPoint(posEnd - branch.direction*branch.endOffset);
+
+        //        SetColour( WHITE );
+
+        //        DrawPoint(pos + branch.direction*branch.startOffset);
+
+        //        SetColour( BLACK );
+        //        DrawPoint(posEnd - branch.direction*branch.endOffset);
     }
 
 }
