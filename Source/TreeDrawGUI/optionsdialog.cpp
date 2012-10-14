@@ -8,6 +8,13 @@ OptionsDialog::OptionsDialog(QWidget *parent) :
     QDialog(parent)
 {
 
+
+    acceptedImageFormats.append("*.jpg");
+    acceptedImageFormats.append("*.png");
+    acceptedImageFormats.append("*.pgm");
+    acceptedImageFormats.append("*.raw");
+
+
     //QFrame *frame = new QFrame;
     layout = new QGridLayout(this);
     frameLayout = new QGridLayout();
@@ -148,7 +155,7 @@ OptionsDialog::OptionsDialog(QWidget *parent) :
     texArea.setSizePolicy(QSizePolicy::Fixed, QSizePolicy::Fixed);
 
     QDir directory("./Resources/Textures/");
-    textureList = directory.entryList(QStringList("*.jpg"));
+    textureList = directory.entryList(acceptedImageFormats);
 
     QToolButton *button;
     for (int i=0; i<textureList.count(); ++i)

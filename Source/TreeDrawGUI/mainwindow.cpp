@@ -14,6 +14,7 @@
 const int BRUSH_SIZE_COUNT = 10;
 const int BRUSH_SIZE_OPTION[] = { 1, 3, 5, 7, 9, 11, 15, 20, 25, 30 };
 
+
 MainWindow::MainWindow()
     : ui(new Ui::MainWindow)
 {
@@ -40,8 +41,14 @@ MainWindow::MainWindow()
     subdivs = 0;
     brushSize->setCurrentIndex(2);
 
+    acceptedImageFormats.append("*.jpg");
+    acceptedImageFormats.append("*.png");
+    acceptedImageFormats.append("*.pgm");
+    acceptedImageFormats.append("*.raw");
+
+
     QDir directory("./Resources/Textures/");
-    QStringList textureList = directory.entryList(QStringList("*.raw"));
+    QStringList textureList = directory.entryList(acceptedImageFormats);
 
     //  cout << "texture " << textureIndex << endl;
     // displayWidget->setTexture("./Resources/Textures/blank.jpg");
@@ -235,9 +242,8 @@ void MainWindow::generateFromCurrent()
     string filename;
     int count = 0;
 
-
     QDir directory("./Resources/Textures/");
-    QStringList textureList = directory.entryList(QStringList("*.jpg"));
+    QStringList textureList = directory.entryList(acceptedImageFormats);
 
     if (textureList.size() > textureIndex && textureIndex >= 0)
     {
@@ -438,7 +444,7 @@ void MainWindow::generateNewVariation()
 
 
     QDir directory("./Resources/Textures/");
-    QStringList textureList = directory.entryList(QStringList("*.raw"));
+    QStringList textureList = directory.entryList(acceptedImageFormats);
 
     if (textureList.size() > textureIndex && textureIndex >= 0)
     {
@@ -524,7 +530,15 @@ void MainWindow::optionsAccepted(int v1, int v2, int v3, int v4, int v5, int sub
     else
         storeRoot = 0;
     textureIndex = v5;
-    subdivs =subdValue;
+
+    QDir directory("./Resources/Textures/");
+    QStringList textureList = directory.entryList(acceptedImageFormats);
+
+    if (textureList.size() > textureIndex && textureIndex >= 0)
+        displayWidget->setTexture("./Resources/Textures/" + textureList[textureIndex]);
+
+
+     subdivs =subdValue;
 }
 
 

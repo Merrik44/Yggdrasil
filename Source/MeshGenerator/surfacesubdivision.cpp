@@ -1,6 +1,8 @@
 #include "surfacesubdivision.h"
 #include "vector"
 #include "mainwindow.h"
+#include <sys/time.h>
+
 
 using namespace std;
 
@@ -8,35 +10,35 @@ Vertex*  CreateMidPoint( Edge* edge, int verticesArrayIndex)
 {
     //Face* faces[2];
     Vertex** vertices = edge->vertices;
-  //  Vertex* vertices
-     Face** faces = edge->faces;
+    //  Vertex* vertices
+    Face** faces = edge->faces;
 
     //Edge points are constructed on each edge. These points are three eighths of the sum of the
     //two end points of the edge plus one eighth of the sum of the two other points that form the
     //two triangles that share the edge in question.
 
-     Vector3f mid;
-     //std::cout << "midV " <<  std::endl;
-     // if not a boundary
-     if( faces[0] != NULL && faces[1] != NULL )
-     {
+    Vector3f mid;
+    //std::cout << "midV " <<  std::endl;
+    // if not a boundary
+    if( faces[0] != NULL && faces[1] != NULL )
+    {
 
-         // find other points
-         Vertex* A = NULL;
-         Vertex* B = NULL;
-         for ( int i = 0; i < 3; i++)
-         {
-             if( faces[0]->vertices[i] != vertices[0] && faces[0]->vertices[i] != vertices[1] )
-                 A = faces[0]->vertices[i];
+        // find other points
+        Vertex* A = NULL;
+        Vertex* B = NULL;
+        for ( int i = 0; i < 3; i++)
+        {
+            if( faces[0]->vertices[i] != vertices[0] && faces[0]->vertices[i] != vertices[1] )
+                A = faces[0]->vertices[i];
 
-             if( faces[1]->vertices[i] != vertices[0] && faces[1]->vertices[i] != vertices[1] )
-                 B = faces[1]->vertices[i];
+            if( faces[1]->vertices[i] != vertices[0] && faces[1]->vertices[i] != vertices[1] )
+                B = faces[1]->vertices[i];
 
-         }
-         mid += (vertices[0]->position + vertices[1]->position)*3.0f/8.0f + (A->position + B->position)*1/8.0f;
-     }
-     else
-         mid = (vertices[0]->position + vertices[1]->position)/2.0f; // boundary condition
+        }
+        mid += (vertices[0]->position + vertices[1]->position)*3.0f/8.0f + (A->position + B->position)*1/8.0f;
+    }
+    else
+        mid = (vertices[0]->position + vertices[1]->position)/2.0f; // boundary condition
 
     // midPoint
     edge->midPoint  = new Vertex(mid.x, mid.y, mid.z, verticesArrayIndex);
@@ -45,16 +47,18 @@ Vertex*  CreateMidPoint( Edge* edge, int verticesArrayIndex)
 }
 
 
-
 //extern MainWindow* mainWindowRef;
 void ApplyLoopSubvision( Mesh* model, int levels, QProgressDialog*  progBar)
 {
+
+    DebugClear();
     if( levels == 0)
         return;
 
-//    int noOfIters = model->triangles*pow(4, levels ) + model->quadss*pow(4, levels );
-//    int iterCount = 0;
-//    int updateCountDown = 0;
+    //    int noOfIters = model->triangles*pow(4, levels ) + model->quadss*pow(4, levels );
+    //    int iterCount = 0;
+    //    int updateCountDown = 0;
+
 
     vector< Vertex*>& vertices = model->vertices;
     vector< Face*>& triangles = model->triangles;
@@ -63,10 +67,11 @@ void ApplyLoopSubvision( Mesh* model, int levels, QProgressDialog*  progBar)
     for( int n = 0; n < levels; n++ )
     {
 
-       if(progBar != NULL )
-       {
+        DebugClear();
+        if(progBar != NULL )
+        {
             progBar->setValue(0);
-       }
+        }
 
 
         int oldVerticesLength = vertices.size();
@@ -81,6 +86,8 @@ void ApplyLoopSubvision( Mesh* model, int levels, QProgressDialog*  progBar)
             vertices.push_back(midpoint );
         }
 
+
+
         // ----------- split the texture coordinates linearly ---------
         for( int i = 0; i < triangles.size(); i++ )
         {
@@ -90,21 +97,87 @@ void ApplyLoopSubvision( Mesh* model, int levels, QProgressDialog*  progBar)
             {
                 // find the edge index associated with the vertices
                 int b = (a+1)%3;
+                int c = (a+2)%3;
                 Vector2f A  = face->texCoords[a];
                 Vector2f B  = face->texCoords[b];
-                Vector2f midTexCoord = (A + B)/2.0f;
+                Vector2f C  = face->texCoords[c];
 
+                Vector2f midTexCoord = (A + B)/2.0f;
                 face->midTexCoords[a] = midTexCoord;
+                continue;
+
+                Vertex* vertA = face->vertices[a];
+                Vertex* vertB = face->vertices[b];
+
+
+
+
+                // ----- Find the adjacent face -----
+                Edge* edge = face->edges[a];
+                Face* adjFace = NULL;
+                if(edge->faces[0] == face) adjFace = edge->faces[1];
+                if(edge->faces[1] == face) adjFace = edge->faces[0];
+
+                if( adjFace == NULL )   // this is a boundars so split linearly
+                {
+                    Vector2f midTexCoord = (A + B)/2.0f;
+                    face->midTexCoords[a] = midTexCoord;
+                    continue;
+                }
+
+                int face2EdgeIndex = -1;
+                for( int d = 0; d < 3; d++ )
+                {
+                    // ----- Find the index of the shared edge -----
+                    if(adjFace->edges[d] == edge)
+                    {
+                        face2EdgeIndex = d;
+                    }
+                }
+
+                if( face2EdgeIndex == -1 )
+                {
+                    cout << "Shared edge not found: Thats no right..." << endl;
+                    // ---- split linearly ----
+                    Vector2f midTexCoord = (A + B)/2.0f;
+                    face->midTexCoords[a] = midTexCoord;
+                    continue;
+                }
+
+                // --- find corrospoding texture coords in opposite face ----
+                int a_2 = face2EdgeIndex;
+                int b_2 = (face2EdgeIndex+1)%3;
+                int c_2 = (face2EdgeIndex+2)%3;;
+
+                Vector2f A2  = face->texCoords[a_2];
+                Vector2f B2  = face->texCoords[b_2];
+                Vector2f C2  = face->texCoords[c_2];
+
+                // ----- for seams -----
+                // need to flip edge vertices around
+                if( A != B2 || B != A2 ) // seam
+                {
+                  //  AddLine( vertA->position, vertB->position, GREEN  );
+                    // ---- split linearly ----
+                    Vector2f midTexCoord = (A + B)/2.0f;
+                    face->midTexCoords[a] = midTexCoord;
+                    continue;
+                }
+
+
+                // ----- finally I can smoothly subdivide ----
+                Vector2f smoothedTexCoord = (A + B)*3.0f/8.0f + (C + C2)*1/8.0f;
+                face->midTexCoords[a] = smoothedTexCoord;
 
 
             }
 
         }
 
-         if(progBar != NULL )
-         {
-             progBar->setValue(30);
-         }
+        if(progBar != NULL )
+        {
+            progBar->setValue(30);
+        }
 
         // step 2: create the new faces. NB Specifically for triangles/loop
 
@@ -229,11 +302,11 @@ void ApplyLoopSubvision( Mesh* model, int levels, QProgressDialog*  progBar)
             }
 
         }
-          if(progBar != NULL )
-          {
-              progBar->setValue(80);
-              progBar->repaint();
-          }
+        if(progBar != NULL )
+        {
+            progBar->setValue(80);
+            progBar->repaint();
+        }
 
         model->ClearNeighourAndEdgeData();
         model->ReconstructMeshDataStructure();

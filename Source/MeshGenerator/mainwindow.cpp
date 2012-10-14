@@ -243,5 +243,6 @@ void MainWindow::on_pushButton_clicked()
 
 void MainWindow::on_performaceTestButton_clicked()
 {
-    glWidget->RunPerformanceTest();
+   // glWidget->subdivisionPerformanceTest();
+     glWidget->RunPerformanceTest();
 }

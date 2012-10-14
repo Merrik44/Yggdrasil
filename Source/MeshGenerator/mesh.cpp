@@ -720,9 +720,9 @@ void Mesh::Draw2()
                         //Vector3f normal = tri->vertices[k]->normal;
                         Vector3f normal ;
                         if(smoothShading)
-                            normal = -tri->vertices[k]->normal;
+                            normal = tri->vertices[k]->normal;
                         else
-                            normal = -tri->normal;
+                            normal = tri->normal;
 
 
 

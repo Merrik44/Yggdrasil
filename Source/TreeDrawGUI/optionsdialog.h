@@ -52,7 +52,7 @@ private:
     QLabel settingsHeading;
 
     int textureIndex;
-
+    QStringList acceptedImageFormats;
 
 
 };

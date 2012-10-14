@@ -101,6 +101,7 @@ private:
 
     int optionD, optionB, optionP, textureIndex, storeRoot, subdivs;
     void errorMessage(const char* msg, const char* title);
+    QStringList acceptedImageFormats;
 
     bool sketchWidgetCreated;
 

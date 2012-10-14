@@ -56,7 +56,6 @@
 #include "performancetimer.h"
 #include "mainwindow.h"
 #include "ctime"
-#include <sys/time.h>
 #include "fstream"
 
 #ifndef GL_MULTISAMPLE
@@ -167,7 +166,7 @@ void GLWidget::loadGLTextures()
     QImage t;
     QImage b;
 
-    if ( !b.load( "../images/irish3.jpg" ) )
+    if ( !b.load( "../images/irish.jpg" ) )
     {
         b = QImage( 16, 16, (QImage::Format)32 );
         b.fill( Qt::green );
@@ -192,8 +191,8 @@ void GLWidget::initializeGL()
     for( int i = 0; i < lstFileList.count(); i++ )
         cout << lstFileList.value(i).toStdString() << endl;
 
-     LoadLST("../lst files/thinkAndThin.lst" );
-     model = generateMesh( skeleton->branches);
+    LoadLST("../lst files/thinkAndThin.lst" );
+    model = generateMesh( skeleton->branches);
 
     // app
 
@@ -248,8 +247,10 @@ void GLWidget::LoadLST( std::string filepath )
     if( skeleton != NULL )
         delete skeleton;
 
-    skeleton = new LstSkeleton(filepath);
-    cout << "sss" << filepath << endl;
+    skeleton = new LstSkeleton();
+
+    skeleton->scale = 0.01f;
+     skeleton->LoadLstFile( filepath);
 }
 
 void GLWidget::reloadLST( )
@@ -294,12 +295,141 @@ void GLWidget::GenerateMeshFromLST()
 
 MainWindow* mainwindowRef;
 
+timeval t1, t2;
+
+void GLWidget::subdivisionPerformanceTest()
+{
+    const int iterations = 30;
+    const int numberOfBranches = 30;
+    double  averageRunTimes[numberOfBranches*3];
+    int numberOfFaces[ numberOfBranches*3 ];
+
+    for ( int i = 0; i < numberOfBranches; i++ )
+    {
+        averageRunTimes[i] =0;
+    }
+    int totalIterationsNeeded = iterations*numberOfBranches;
+    int iterationsSoFar = 0;
+
+    ofstream perfLog("../../PerformanceLog_subdiv.txt");
+
+    for(int k = 0; k < iterations; k++)
+    {
+        for ( int i = 0; i < numberOfBranches; i++ )
+        {
+            iterationsSoFar++;
+            mainwindowRef->progressBarUpdate(iterationsSoFar*100/(totalIterationsNeeded) );
+
+            if(model!= NULL )
+                delete model;
+
+            for ( int m = 0; m < 50; m++ )
+            {
+                if(skeleton!= NULL )
+                    delete skeleton;
+                skeleton = new LstSkeleton();
+                skeleton->createRandomBifurcation( i, 800, 5, 5);
+
+                if(skeleton->branches.size() == i +1)
+                {
+                    break;
+                }
+
+                if(m==49)
+                {
+                    cout<< "could not find branch configuration" << endl;
+                }
+
+
+            }
+            // ---- memory ----
+
+            // --- time ----
+            int index, faceCount;
+            double elapsedTime;
+
+
+            model = generateMesh( skeleton->branches);
+
+            // ----- subdiv first ----
+            setSubdivisionLevel( 1 );
+            faceCount = model->triangles.size();
+
+            elapsedTime = (t2.tv_sec - t1.tv_sec) * 1000.0;      // sec to ms
+            elapsedTime += (t2.tv_usec - t1.tv_usec) / 1000.0;   // us to ms
+
+            index = i*3 + 0;
+            cout<< numberOfFaces[index] << " : " << faceCount << endl;
+
+            numberOfFaces[index] =faceCount;
+            averageRunTimes[index] += elapsedTime;
+
+            model->StoreMeshState();
+
+
+
+
+            // ----- subdiv second ----
+
+            setSubdivisionLevel( 1 );
+            faceCount = model->triangles.size();
+
+            elapsedTime = (t2.tv_sec - t1.tv_sec) * 1000.0;      // sec to ms
+            elapsedTime += (t2.tv_usec - t1.tv_usec) / 1000.0;   // us to ms
+
+            index = i*3 + 1;
+            cout<< numberOfFaces[index] << " : " << faceCount << endl;
+
+            numberOfFaces[index] =faceCount;
+            averageRunTimes[index] += elapsedTime;
+
+            model->StoreMeshState();
+
+
+            // ----- sub div third -----
+
+
+            setSubdivisionLevel( 1 );
+            faceCount = model->triangles.size();
+
+            elapsedTime = (t2.tv_sec - t1.tv_sec) * 1000.0;      // sec to ms
+            elapsedTime += (t2.tv_usec - t1.tv_usec) / 1000.0;   // us to ms
+
+            index = i*3 + 2;
+            cout<< numberOfFaces[index] << " : " << faceCount << endl;
+
+            numberOfFaces[index] =faceCount;
+            averageRunTimes[index] += elapsedTime;
+
+            model->StoreMeshState();
+
+
+            paintGL();
+            updateGL();
+
+        }
+    }
+
+
+
+    for ( int i = 0; i < numberOfBranches*3; i++ )
+    {
+        averageRunTimes[i] /= (double)iterations;
+
+        cout << numberOfFaces[i]<< "\t" << (double)averageRunTimes[i] << endl;
+        perfLog  << numberOfFaces[i]<< "\t" << (double)averageRunTimes[i] << endl;
+    }
+
+    perfLog.close();
+
+}
+
 void GLWidget::RunPerformanceTest()
 {
     // ---- generate graphs from 2 till 50 -----
     // int64  averageRunTime = 0;
-    const int iterations = 50;
-    const int numberOfBranches = 40;
+    const int iterations = 30;
+    const int numberOfBranches = 50;
     double  averageRunTimes[numberOfBranches];
     for ( int i = 0; i < numberOfBranches; i++ )
     {
@@ -308,7 +438,7 @@ void GLWidget::RunPerformanceTest()
     int totalIterationsNeeded = iterations*numberOfBranches;
     int iterationsSoFar = 0;
 
-    ofstream perfLog("../../PerformanceLog.txt");
+    ofstream perfLog("../../PerformanceLog_Ics.txt");
 
     for(int k = 0; k < iterations; k++)
     {
@@ -316,55 +446,70 @@ void GLWidget::RunPerformanceTest()
 
         for ( int i = 0; i < numberOfBranches; i++ )
         {
+            cout <<k << " "<<  i << endl;
             iterationsSoFar++;
             mainwindowRef->progressBarUpdate(iterationsSoFar*100/(totalIterationsNeeded) );
 
             if(model!= NULL )
                 delete model;
-            if(skeleton!= NULL )
-                delete skeleton;
-            skeleton = new LstSkeleton();
-            int branches= i*4 + 2;
-            skeleton->createRandomBifurcation( branches, 500, 5, 3);
 
-            cout << (branches + 1) << skeleton->branches.size() << endl;
+            int branches= i*4 + 2;
+            for ( int m = 0; m < 50; m++ )
+            {
+                if(skeleton!= NULL )
+                    delete skeleton;
+                skeleton = new LstSkeleton();
+                skeleton->createRandomBifurcation( branches, 1300, 5, 5);
+
+                if(skeleton->branches.size() == branches + 1)
+                {
+                    break;
+                }
+
+                if(i==49)
+                {
+                    cout<< "could not find branch configuration" << endl;
+                }
+
+
+            }
+            cout << (branches + 1) << " | " <<skeleton->branches.size() << endl;
             // ---- memory ----
 
             double vm_before, rss_before;
             process_mem_usage(vm_before, rss_before);
-          //  cout << "VM: " << vm_before << "; RSS: " << rss_before << endl;
+            //  cout << "VM: " << vm_before << "; RSS: " << rss_before << endl;
 
             // --- time ----
-            timeval t1, t2;
+
             double elapsedTime;
-            gettimeofday(&t1, NULL);
+            //gettimeofday(&t1, NULL);
 
             model = generateMesh( skeleton->branches);
 
 
-            gettimeofday(&t2, NULL);
 
             // compute and print the elapsed time in millisec
             elapsedTime = (t2.tv_sec - t1.tv_sec) * 1000.0;      // sec to ms
             elapsedTime += (t2.tv_usec - t1.tv_usec) / 1000.0;   // us to ms
-      //      cout << elapsedTime << " ms.\n";
+            //      cout << elapsedTime << " ms.\n";
 
             averageRunTimes[i] += elapsedTime;
 
             double vm_after, rss_after;
             process_mem_usage(vm_after, rss_after);
-       //     cout << "VM: " << (vm_after - vm_before)<< "; RSS: " << (rss_after - rss_before) << endl;
+            //     cout << "VM: " << (vm_after - vm_before)<< "; RSS: " << (rss_after - rss_before) << endl;
 
-        //    cout << runTime << endl;
+            //    cout << runTime << endl;
             //  delete testGraph;
-            paintGL();
-            updateGL();
+            //  paintGL();
+            //   updateGL();
             // sleep(3.5f);
         }
 
 
 
-        // ---- for each time joint construction woth both methods ----
+        // ---- for each time joint construction with both methods ----
 
 
         // --- time subdivisions ---
@@ -373,15 +518,15 @@ void GLWidget::RunPerformanceTest()
         // --- delete everything ---
     }
 
-   // return;
+    // return;
 
     for ( int i = 0; i < numberOfBranches; i++ )
     {
         int branches= i*4 + 2;
-           averageRunTimes[i] /= (double)iterations;
+        averageRunTimes[i] /= (double)iterations;
         // averageRunTimes[i] /= CLOCKS_PER_SEC;
-           cout << (double)averageRunTimes[i] << endl;
-           perfLog  << branches<< "\t" << (double)averageRunTimes[i] << endl;
+        cout << (double)averageRunTimes[i] << endl;
+        perfLog  << branches<< "\t" << (double)averageRunTimes[i] << endl;
     }
 
     perfLog.close();
@@ -403,7 +548,6 @@ void gluPerspective(double fovy,double aspect, double zNear, double zFar)
 void GLWidget::paintGL()
 {
 
-    DebugClear();
     glMatrixMode(GL_PROJECTION);
     glLoadIdentity();
     gluPerspective (50.0*zoom, 1, 0.1f, 100);

@@ -4,13 +4,8 @@
 #include "iostream"
 #include "vector"
 #include "debug.h"
-#include "glwidget.h"
 #include "math.h"
-#include "algorithm"
 #include "jointgenerator.h"
-#include "mainwindow.h"
-//#include"performancetimer.h"
-
 using namespace std;
 
 
@@ -131,9 +126,7 @@ void InterpolateTexCoordsAccrosRemainingFaces( Mesh* model )
             texA = texB + ba;
             break;
         }
-
     }
-
 }
 
 
@@ -150,8 +143,6 @@ void CreateLoop( int sides, float radius, Matrix3f rotation, Vector3f offset, fl
         float z = sin( interval*i);
 
         Vector3f position(x, 0, z);
-
-
 
         position *= radius;
         position = rotation*position;
@@ -173,13 +164,14 @@ void CreateLoop( int sides, float radius, Matrix3f rotation, Vector3f offset, fl
     texLoops.push_back(texLoop);
 }
 
+
+
 void GenerateFaces(  Mesh* model, vector< vector< Vertex*>*>& vertexLoops, vector< vector< Vector2f>* >& texLoops, BranchNode* branch  )
 {
     int sides = noOfSides;
 
 
     for( uint m = 0; m <vertexLoops.size() -1; m++ )
-        //for( int m = 0; m < 1; m++ )
     {
 
         vector< Vertex*>& startLoop = *vertexLoops[m];
@@ -281,31 +273,9 @@ void GenerateBranch( Mesh* model, BranchNode* branch )
     float averageRadius =(branch->startRadius + branch->endRadius)/2.0f;
     int noOfSegments = ceil(branch->length/(averageRadius*PI));
 
-    //CreateLoop( sides, branch->startRadius, branch->rotation, branch->startPosition, 0, model, vertexLoops, texLoops );
 
     Vector3f startPos = branch->startPosition + branch->direction*branch->startOffset;
     Vector3f endPos = branch->endPosition - branch->direction*branch->endOffset;
-    //   cout << branch->endOffset << endl;
-    //float startRadius = branch->startRadius
-
-    // ---------- Clamp the control factor ------------
-    //    float controlFactor = min(SubDivControl, 0.5f);
-    //    controlFactor = max( 0.01f, controlFactor);
-
-    // ======================================
-
-    Vector3f randomVec(1,1,1);
-    float r =(float)(random()%1000 - 500)/1000.0f;
-    if (r == 0)
-        r += 0.1f;
-    randomVec *=r;
-    Vector3f U = branch->direction.crossProduct(randomVec );
-    U.normalize();
-    Vector3f V = U.crossProduct(branch->direction);
-    V.normalize();
-
-   // cout << randomVec << " " << branch->direction << endl;
-    //cout << randomVec << " " << branch->direction << endl;
 
 
     for( int i = 0; i < noOfSegments+1; i++)
@@ -318,61 +288,9 @@ void GenerateBranch( Mesh* model, BranchNode* branch )
             vTexCoordinate = 0.5f;
 
         offset =  startPos + (endPos -  startPos)*ratio;
-//        if( i != 0 && i != noOfSegments && i%2 == 1 && V.x != NAN)
-//        {
-//            float scale = 0.4f;
-//            float randU =(float)(random()%100 - 50)/100.0f;
-//            float randV =(float)(random()%100 - 50)/100.0f;
-//            randU *= radius;
-//            randV *= radius;
-//            randU*=scale;
-//            randV*=scale;
-//            offset += U*randU + V*randV;
-
-//        }
-
 
         CreateLoop( sides, radius, branch->rotation,offset, vTexCoordinate, model, vertexLoops, texLoops );
     }
-
-
-    // ======================================
-
-    // ---------- create the starting loop -------------
-    // CreateLoop( sides, branch->startRadius, branch->rotation, startPos, 0, model, vertexLoops, texLoops );
-
-
-    // ---------- create the middle control loops -------------
-    //    if(controlFactor < 0.5f   )
-    //    {
-    //        ratio = controlFactor;
-    //        offset =  startPos + (endPos -  startPos)*ratio;
-
-    //        radius = branch->startRadius + (branch->endRadius - branch->startRadius )*ratio;
-
-    //        CreateLoop( sides, radius, branch->rotation, offset, ratio, model, vertexLoops, texLoops );
-    //    }
-    //    ratio = 0.5f;
-    //    offset =  startPos + (endPos -  startPos)*ratio;
-    //    radius = branch->startRadius + (branch->endRadius - branch->startRadius )*ratio;
-
-    //    CreateLoop( sides, radius, branch->rotation, offset, ratio, model, vertexLoops, texLoops );
-
-    //    // ---------- if the factor is below 0.5f the create a secont, mirrored loop -------------
-    //    if(controlFactor < 0.5f   )
-    //    {
-
-    //        ratio = 1-controlFactor;
-    //        offset =  startPos + (endPos -  startPos)*ratio;
-    //        radius = branch->startRadius + (branch->endRadius - branch->startRadius )*ratio;
-
-    //        CreateLoop( sides, radius, branch->rotation, offset, ratio, model, vertexLoops, texLoops );
-    //    }
-
-    //    // ---------- create the end loop -------------
-    //    CreateLoop( sides, branch->endRadius, branch->rotation, endPos, 1, model, vertexLoops, texLoops );
-
-    // ======================================
 
 
     // ------------- generate faces --------------
@@ -447,127 +365,6 @@ Vertex* mergeAwithB2( Vertex* A, Vertex* B, vector< Face* > incomingBranchFace )
     return B;
 }
 
-
-
-Vector3f TrimIncomingBranches( vector< vector< Vertex* >* >& boundaries, vector< Vector3f >& loopNormals, vector< float >& offsets )
-{
-
-    int length = loopNormals.size();
-
-    // --------------- find the furthest offset ------------
-
-    float maxOffset = 0;
-
-    for (int a = 0; a < length; a++)
-        maxOffset = max(maxOffset,offsets[a]);
-
-    maxOffset *= 2.05f; // make it a little larger fo luck
-
-
-    // --------------- for each branch ------------
-    for (int a = 0; a < length; a++)
-    {
-        // --------------off set everything-----------
-
-        vector< Vertex* >& loop = *boundaries[a];
-        Vector3f maxTranslation = loopNormals[a]* maxOffset*1.01;
-
-        for (uint i = 0; i < loop.size(); i++)
-        {
-            Vertex* vertex = loop[i];
-            vertex->finalPosition = vertex->position;
-
-            //vertex->position += maxTranslation;
-        }
-    }
-
-    // --------- calculate loop center -------------------
-
-    vector<Vector3f> loopCenters;
-    Vector3f geometricCenter;
-    for (unsigned int i = 0; i < boundaries.size(); i++)
-    {
-        Vector3f loopCenter;
-        vector< Vertex* >& loop = *boundaries[i];
-        for (unsigned int j = 0; j < loop.size(); j++)
-            loopCenter += loop[j]->position;
-
-        loopCenter /= loop.size();
-        loopCenters.push_back(loopCenter);
-
-
-        geometricCenter += loopCenter;
-    }
-
-    // ---------- calculate geometric center -----------
-    geometricCenter /= boundaries.size();
-
-//    // ----- reset positions -----
-//    for (int a = 0; a < length; a++)
-//    {
-//        // --------------off set everything-----------
-
-//        vector< Vertex* >& loop = *boundaries[a];
-
-//        for (uint i = 0; i < loop.size(); i++)
-//        {
-//            Vertex* vertex = loop[i];
-//            vertex->position = vertex->finalPosition;
-//        }
-//    }
-
-    // ----------- rotate loops so that they are orthoganal to the geo center -------------------
-    for (unsigned int i = 0; i < boundaries.size(); i++)
-    {
-
-        Vector3f oldNormal = loopNormals[i];
-
-        Vector3f newNormal = loopCenters[i] - geometricCenter;
-        if( newNormal == Vector3f(0,0,0))
-            continue;
-        else
-            newNormal.normalize();
-
-
-        // ------------ update rotation matrix ------------
-        Vector3f axis = newNormal.crossProduct( oldNormal);
-        axis.normalize();
-        float dot = newNormal.dotProduct( oldNormal);
-        float angle = acos(dot);
-
-        if(dot == 0)
-            axis = Vector3f(1, 0, 0);
-        if(dot == 1)
-            axis = Vector3f(1, 0, 0);
-
-
-        angle*= radToDegree;
-
-        Quatf rotQuat = Quatf::fromAxisRot(axis, -angle);
-        Matrix3f rotation = rotQuat.rotMatrix();
-
-        vector< Vertex* >& loop = *boundaries[i];
-
-        //  Vector3f translation = direction* offsets[a]*1.01f;
-        Vector3f maxTranslation = newNormal* maxOffset*1.01;
-
-        //   AddLine(geometricCenter+ maxTranslation, geometricCenter, BLACK );
-        for (unsigned int j = 0; j < loop.size(); j++)
-        {
-            Vertex* A = loop[j];
-            A->position -= loopCenters[i]; // translate to origin
-            A->position = rotation *A->position; // rotate
-            A->position   += geometricCenter; // move to geo center
-            A->position += maxTranslation;
-
-        }
-
-
-    }
-
-    return geometricCenter;
-
-}
 
 
 Vector3f TrimIncomingBranches2( vector< vector< Vertex* >* >& boundaries, vector< Vector3f >& loopNormals, vector< float >& offsets, Vector3f center )
@@ -754,6 +551,7 @@ Mesh* generateMesh( vector<BranchNode*>& branches,  QProgressDialog* progressBar
             branchStack.push(current->children[i]);
         }
 
+
         // --------------- create the joint ---------------------------------
         if( current->children.size() != 0)
         {
@@ -793,7 +591,9 @@ Mesh* generateMesh( vector<BranchNode*>& branches,  QProgressDialog* progressBar
 
             // --------- Trim the branches so that the dont intersect --------
 
+
             Vector3f geometricCenter = TrimIncomingBranches2(boundaries, loopNormals, offsets, current->endPosition);
+           // Vector3f geometricCenter = TrimIncomingBranches(boundaries, loopNormals, offsets);
 
             // --- If there is only one child, then simply merge the closest vertices ---
             if( current->children.size() == 1)
@@ -809,6 +609,7 @@ Mesh* generateMesh( vector<BranchNode*>& branches,  QProgressDialog* progressBar
                 // --------- Finally construct the joint --------
                 jointsConstructed++;
                 Mesh* jointMesh = GenerateJoint2(boundaries, incomingBranchFaces, otherVertices, geometricCenter);
+               // Mesh* jointMesh = GenerateJoint(boundaries, incomingBranchFaces, otherVertices, geometricCenter);
 
                 // --------- Triangles from joint into main model --------
                 for (unsigned int i = 0; i < jointMesh->triangles.size(); i++)

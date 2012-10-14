@@ -15,7 +15,7 @@ bool simplifyGraph = true;
 
 LstSkeleton::LstSkeleton(string filepath)
 {
-    scale = 0.01f;
+    scale = 1;
     LoadLstFile( filepath );
 
 }
@@ -23,7 +23,7 @@ LstSkeleton::LstSkeleton(string filepath)
 
 LstSkeleton::LstSkeleton()
 {
-    scale = 0.01f;
+    scale = 1;
 
 }
 

@@ -91,7 +91,8 @@ public:
     void GenerateMeshFromLST();
     void ExportModelAsObj(std::string filepath);
     void ResetCamera();
- void RunPerformanceTest();
+    void RunPerformanceTest();
+    void subdivisionPerformanceTest();
 
     float zoom;
     Mesh* model;

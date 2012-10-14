@@ -43,25 +43,25 @@ GLuint CreateGLTexture(const char * filename, int width, int height)
 {
 
     GLuint texture;
-  QImage t;
-  QImage b;
+    QImage t;
+    QImage b;
 
-   t = QGLWidget::convertToGLFormat( b );
-  if ( !b.load( filename ) )
-  {
-      cout << "Texture could not be loaded: " << filename << endl;
-      b = QImage( 32, 32, QImage::Format_RGB32);
-      b.fill( Qt::white );
-  }
+    t = QGLWidget::convertToGLFormat( b );
+    if ( !b.load( filename ) )
+    {
+        cout << "Texture could not be loaded: " << filename << endl;
+        b = QImage( 32, 32, QImage::Format_RGB32);
+        b.fill( Qt::white );
+    }
 
-  t = QGLWidget::convertToGLFormat( b );
-  glGenTextures( 1, &texture );
-  glBindTexture( GL_TEXTURE_2D, texture );
-  glTexImage2D( GL_TEXTURE_2D, 0, 3, t.width(), t.height(), 0, GL_RGBA, GL_UNSIGNED_BYTE, t.bits() );
-  glTexParameteri( GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR );
-  glTexParameteri( GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR );
-  glEnable(GL_TEXTURE_2D);
-  glBindTexture(GL_TEXTURE_2D,texture);
+    t = QGLWidget::convertToGLFormat( b );
+    glGenTextures( 1, &texture );
+    glBindTexture( GL_TEXTURE_2D, texture );
+    glTexImage2D( GL_TEXTURE_2D, 0, 3, t.width(), t.height(), 0, GL_RGBA, GL_UNSIGNED_BYTE, t.bits() );
+    glTexParameteri( GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR );
+    glTexParameteri( GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR );
+    glEnable(GL_TEXTURE_2D);
+    glBindTexture(GL_TEXTURE_2D,texture);
 
     return texture;
 }
@@ -102,11 +102,11 @@ GLuint CreateGLTexture(const char * filename, int width, int height)
 //}
 
 QTreeDisplayWidget::QTreeDisplayWidget(QWidget *parent) :
-        QGLWidget(parent),
-        cameraRotationX(DefaultCameraRotationX),
-        cameraRotationY(DefaultCameraRotationY),
-        movementMode(MOVEMENT_MODE_INACTIVE),
-        cameraDistance(DefaultCameraDistance)
+    QGLWidget(parent),
+    cameraRotationX(DefaultCameraRotationX),
+    cameraRotationY(DefaultCameraRotationY),
+    movementMode(MOVEMENT_MODE_INACTIVE),
+    cameraDistance(DefaultCameraDistance)
 {
     tree = 0;
     centerX = 0.0f;
@@ -135,9 +135,9 @@ QTreeDisplayWidget::QTreeDisplayWidget(QWidget *parent) :
     lstGraph = NULL;
     model = NULL;
 
-//    LoadLST("./lst files/treefile4.lst" );
-//    model = generateMesh( lstGraph->branches);
-//    model->scale = 60;
+    //    LoadLST("./lst files/treefile4.lst" );
+    //    model = generateMesh( lstGraph->branches);
+    //    model->scale = 60;
 
     //  ApplyLoopSubvision(model, 4);
 }
@@ -158,7 +158,6 @@ QTreeDisplayWidget::~QTreeDisplayWidget()
 
 void QTreeDisplayWidget::setTexture(const QString &path)
 {
-    cout << "texture " << path.toStdString() << endl;
     texture = CreateGLTexture(path.toStdString().c_str(), TEXTURE_SIZE, TEXTURE_SIZE);
 }
 
@@ -195,17 +194,23 @@ void QTreeDisplayWidget::GenerateMeshFromLST( QProgressDialog* progressBar)
     if( model != NULL )
         delete model;
     model = generateMesh( lstGraph->branches, progressBar);
-    model->scale = 100;
-
 }
 
 void QTreeDisplayWidget::ApplySubdivisionToMesh( int numberOfSubdvisions,  QProgressDialog* progressBar )
 {
-    if( model != NULL )
-    {
-        ApplyLoopSubvision(model, numberOfSubdvisions, progressBar);
-        model->CalculateNormals();
-    }
+
+    if( model == NULL )
+        return;
+
+
+    model->RestoreMeshState();
+    model->ClearNeighourAndEdgeData();
+    model->ReconstructMeshDataStructure();
+    model->CalculateNormals();
+
+
+    ApplyLoopSubvision(model, numberOfSubdvisions, progressBar);
+
 }
 
 void qtGluPerspective(double fovy,double aspect, double zNear, double zFar)
@@ -280,7 +285,7 @@ void QTreeDisplayWidget::paintGL()
             if(model!= NULL)
             {
                 DebugClear();
-                model->Draw2();
+                model->Draw();
                 DebugDraw();
             }
         }
