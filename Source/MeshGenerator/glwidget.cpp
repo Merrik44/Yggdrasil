@@ -166,7 +166,7 @@ void GLWidget::loadGLTextures()
     QImage t;
     QImage b;
 
-    if ( !b.load( "../images/irish.jpg" ) )
+    if ( !b.load( "../images/stripes.jpg" ) )
     {
         b = QImage( 16, 16, (QImage::Format)32 );
         b.fill( Qt::green );
@@ -199,7 +199,7 @@ void GLWidget::initializeGL()
     loadGLTextures();
     //qglClearColor(qtPurple.dark());
 
-    glClearColor(0.98f,  0.98f,  0.98f, 1);
+    glClearColor(1,  1,  1, 1);
     glEnable(GL_DEPTH_TEST);
     //  glEnable(GL_CULL_FACE);
     glShadeModel(GL_SMOOTH);

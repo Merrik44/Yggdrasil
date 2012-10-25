@@ -49,6 +49,7 @@ private slots:
     void exportToOBJ();
     void displayAsCylinders();
     void displayAsMesh();
+    void SubdivSliderChange(int value);
     void SynthesizeTexture();
 
     void blackBackground();
@@ -85,6 +86,7 @@ private:
     QAction *displayMesh;
     QAction *texSynthOption;
     QAction *displayCylinderForm;
+    QSlider *SubdivSlider;
 
     //QAction *newSketch;
 

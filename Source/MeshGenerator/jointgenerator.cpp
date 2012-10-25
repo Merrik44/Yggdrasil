@@ -16,26 +16,38 @@ bool enableProgressControl = false;
 
 
 
-Vertex* weightedmMergeAwithedB( Vertex* A, Vertex* B, Mesh* jointModel )
+Vertex* weightedmMergeAwithedB( Vertex* A, Vertex* B)
 {
 
+//cout << A->position  << endl;
+//cout << B->position  << endl;
 
     // ------- Add A to B ---------
     B->position*= B->weight;
+    B->finalPosition*= B->weight;
     B->normal*=B->weight;
 
 
     B->position += A->position*A->weight;
+    B->finalPosition += A->finalPosition*A->weight;
     B->normal += A->normal*A->weight;
 
     // ------ Normalize B, which now represents the merged point-----
+
+
     B->position /= B->weight +A->weight;
+    B->finalPosition /= B->weight +A->weight;
     B->normal /= B->weight +A->weight;
     B->weight += A->weight;
 
-    B->loopID += A->loopID;
+   // cout << B->position  << endl;
+   // AddPoint( A->position, GREEN);
+   // AddPoint( Vector3f(0,0,0), GREEN);
+   // AddLine( B->position,A->position, BLUE);
+    stringstream ss;
+    ss << A->position  << A->loopID;
 
-
+    B->loopID = ss.str();
 
 
     return B;
@@ -125,25 +137,25 @@ bool CollapseJoint(Mesh* jointModel, vector< Face* >& incomingBranchFaces)
 
     bool AtleastOneCollapse = false;
     SortByLength(jointModel->edges);
-//    for (uint i = 0; i < jointModel->edges.size(); i++ )
-//    {
-//        float length =( jointModel->edges[i]->vertices[0]->position - jointModel->edges[i]->vertices[1]->position).length();
-//        cout << length << endl;
-//    }
+    //    for (uint i = 0; i < jointModel->edges.size(); i++ )
+    //    {
+    //        float length =( jointModel->edges[i]->vertices[0]->position - jointModel->edges[i]->vertices[1]->position).length();
+    //        cout << length << endl;
+    //    }
     vector< Face* > facesToDelete;
     for (uint i = 0; i < jointModel->edges.size(); i++ )
     {
         if(collapseCounter)
         {
-             // cout << "s---" <<  counter2<< endl;
+            // cout << "s---" <<  counter2<< endl;
             counter2--;
             if( counter2 < 0)
                 break;
 
             if( counter2 == 0 )
             {
-                for (uint r = 0; r < jointModel->edges.size(); r++ )
-                    AddLine(jointModel->edges[r]->vertices[0]->position, jointModel->edges[r]->vertices[1]->position, CYAN);
+              //  for (uint r = 0; r < jointModel->edges.size(); r++ )
+                    //AddLine(jointModel->edges[r]->vertices[0]->position, jointModel->edges[r]->vertices[1]->position, CYAN);
             }
         }
 
@@ -172,7 +184,7 @@ bool CollapseJoint(Mesh* jointModel, vector< Face* >& incomingBranchFaces)
 
         // ---- collapse ----
 
-        B  = weightedmMergeAwithedB( A, B, jointModel );
+        B  = weightedmMergeAwithedB( A, B );
         AtleastOneCollapse = true;
 
 
@@ -426,18 +438,20 @@ Mesh* GenerateJoint2(vector< vector<Vertex*>* >& branches, vector< Face* >& inco
 
 
     // ------------------- Initialize Edges----------------------------
-    stringstream sstream;
+
     for (unsigned int i = 0; i < rootBoundaryLoops.size(); i++)
     {
         vector<Vertex*>& loop = *rootBoundaryLoops[i];
         for (unsigned int k = 0; k < loop.size(); k++)
         {
+             stringstream sstream;
             // get the vertices
             Vertex* v1 = loop[k];
             v1->loopIndex = i;
             sstream << k;
             sstream >> v1->loopID;
         }
+
 
     }
 
@@ -496,11 +510,11 @@ Mesh* GenerateJoint2(vector< vector<Vertex*>* >& branches, vector< Face* >& inco
     for(int i = 0; i < rootVertices.size(); i++)
     {
         Vertex* vertexToAdd = rootVertices[i];
-       //  AddPoint( vertexToAdd->position, MAGENTA);
+        //  AddPoint( vertexToAdd->position, MAGENTA);
 
         faces--;
 
-       // if( faces <= 0 )
+        // if( faces <= 0 )
         //    continue;
 
 
@@ -514,7 +528,7 @@ Mesh* GenerateJoint2(vector< vector<Vertex*>* >& branches, vector< Face* >& inco
             Vector3f ray = centroid - vertexToAdd->position;
             if( faces == 1  )
             {
-              //  AddRay(centroid, faceToTest->normal*0.1f, YELLOW);
+                //  AddRay(centroid, faceToTest->normal*0.1f, YELLOW);
 
 
             }
@@ -542,9 +556,9 @@ Mesh* GenerateJoint2(vector< vector<Vertex*>* >& branches, vector< Face* >& inco
 
             if( faces == 1 )
             {
-                AddLine( edge->vertices[1]->position,  edge->vertices[0]->position, CYAN );
-                AddLine( vertexToAdd->position,  edge->vertices[0]->position, GREEN );
-                AddLine( edge->vertices[1]->position,  vertexToAdd->position, GREEN );
+                //AddLine( edge->vertices[1]->position,  edge->vertices[0]->position, CYAN );
+              //  AddLine( vertexToAdd->position,  edge->vertices[0]->position, GREEN );
+               // AddLine( edge->vertices[1]->position,  vertexToAdd->position, GREEN );
             }
             Face* newFace = new Face(edge->vertices[0], edge->vertices[1], vertexToAdd );
 
@@ -552,7 +566,7 @@ Mesh* GenerateJoint2(vector< vector<Vertex*>* >& branches, vector< Face* >& inco
             jointModel->triangles.push_back(newFace);
 
             Vector3f hullCenter = GetHullCenter( jointModel->triangles );
-             newFace->UpdateWinding(hullCenter);
+            newFace->UpdateWinding(hullCenter);
         }
 
     }
@@ -567,6 +581,18 @@ Mesh* GenerateJoint2(vector< vector<Vertex*>* >& branches, vector< Face* >& inco
 
     }
 
+    counter2 = Count;
+    for( int n = 0; n < 20; n++)
+    {
+        jointModel->ClearNeighourAndEdgeData();
+        jointModel->ReconstructMeshDataStructure();
+        bool unstable = CollapseJoint( jointModel, incomingBranchFaces );
+        if( unstable == false)
+            break;
+        if( n == 10)
+            cout << "warning: too many joint collapse" << endl;
+    }
+
     if( tightJoints )
     {
         for (unsigned int i = 0; i <branches.size(); i++)
@@ -578,22 +604,12 @@ Mesh* GenerateJoint2(vector< vector<Vertex*>* >& branches, vector< Face* >& inco
     }
 
 
-//    if( retriangulate)
-//    {
-//        RetriangulateSharpEdges(jointModel );
-//    }
+    //    if( retriangulate)
+    //    {
+    //        RetriangulateSharpEdges(jointModel );
+    //    }
 
-//    counter2 = Count;
-//    for( int n = 0; n < 20; n++)
-//    {
-//        jointModel->ClearNeighourAndEdgeData();
-//        jointModel->ReconstructMeshDataStructure();
-//        bool unstable = CollapseJoint( jointModel, incomingBranchFaces );
-//        if( unstable == false)
-//            break;
-//        if( n == 10)
-//            cout << "warning: too many joint collapse" << endl;
-//    }
+
 
     jointModel->ClearNeighourAndEdgeData();
     jointModel->ReconstructMeshDataStructure();
@@ -608,6 +624,7 @@ Mesh* GenerateJoint2(vector< vector<Vertex*>* >& branches, vector< Face* >& inco
 
     //for( int j = jointModel->triangles.size() - 1; j >= 0; j--)
     //  cout <<  jointModel->triangles[j]->vertices[0] << " " <<  jointModel->triangles[j]->vertices[1] << " " <<  jointModel->triangles[j]->vertices[2] <<  endl;
+
     return jointModel;
 
 }

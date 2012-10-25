@@ -20,7 +20,7 @@ bool displayMesh = true;
 bool displayGraph = true;
 bool tightJoints = true;
 bool alternatingTriangulation = false;
-int noOfSides = 4;
+int noOfSides = 8;
 
 void InterpolateTexCoordsAccrosRemainingFaces( Mesh* model )
 {
@@ -255,6 +255,7 @@ void GenerateFaces(  Mesh* model, vector< vector< Vertex*>*>& vertexLoops, vecto
 
 void GenerateBranch( Mesh* model, BranchNode* branch )
 {
+
     int sides = noOfSides;
 
     // ------- If the branch has no children, then merge the tip points --------
@@ -502,6 +503,7 @@ void MergeTwoBondaries(vector<Vertex*>& loopA, vector<Vertex*>& loopB, std::vect
 Mesh* generateMesh( vector<BranchNode*>& branches,  QProgressDialog* progressBar)
 {
 
+    cout << "beginning mesh generation" << endl;
     //long startTime = GetTimeMs64();
     // ------------------ debug stuff ---------------
     countdown = Count;
@@ -653,9 +655,12 @@ Mesh* generateMesh( vector<BranchNode*>& branches,  QProgressDialog* progressBar
 
     model->CalculateNormals();
 
+    cout << "mesh generation complete" << endl;
 
     InterpolateTexCoordsAccrosRemainingFaces( model ); //-------------- This should probs run till stabl!!!
     InterpolateTexCoordsAccrosRemainingFaces( model ); //-------------- This should probs run till stabl!!!
+
+    cout << "paramertization finished" << endl;
 
     model->StoreMeshState();
 

@@ -528,7 +528,6 @@ void Mesh::Draw()
 {
     // cout << "ss" << endl;
     //CalculateNormals();
-    //DebugClear();
     //SetColour( LIGHT_GREY );
     glPushMatrix();
     {
@@ -674,7 +673,6 @@ void Mesh::Draw2()
 {
     //cout << "drawing " << endl;
     //CalculateNormals();
-    //DebugClear();
     SetColour( LIGHT_GREY );
     glPushMatrix();
     {

@@ -158,6 +158,8 @@ void LstSkeleton::LoadLstFile( string path )
     if(simplifyGraph)
         SimplifyGraph();
 
+    BezierCurves(root);
+
 }
 
 
@@ -184,7 +186,7 @@ void LstSkeleton::createRandomBifurcation(int numberOfBranches, float branchLeng
         start = root->endPosition;
         rad = minRadius +(maxRadius - minRadius)*(random()%1000)/1000.0f;
         rotation.identity();
-      //  cout << rad << endl;
+        //  cout << rad << endl;
         rotation = rotation.createRotationAroundAxis(((random()%1000)/1000.0f)*360, ((random()%1000)/1000.0f)*360 , ((random()%1000)/1000.0f)*360  );
         // cout << rotation.toString() << endl;
         BranchNode* branch = new BranchNode( start, rotation, rad, rad, branchLength, root );
@@ -218,6 +220,9 @@ void LstSkeleton::createRandomBifurcation(int numberOfBranches, float branchLeng
 
     if(simplifyGraph)
         SimplifyGraph();
+
+
+
 
 }
 
@@ -270,6 +275,86 @@ void LstSkeleton::SimplifyGraph()
     }
 
 
+
+
+}
+
+void LstSkeleton::BezierCurves( BranchNode* root)
+{
+    if( root == NULL)
+        return;
+
+    stack< BranchNode*> branchStack;
+    branchStack.push(root);
+
+    BranchSection* currentSection;
+
+    // --- find continous branch sections ---
+    // currentSection = new BranchSection();
+    //   sections.push_back(currentSection);
+
+    while( branchStack.size() > 0)
+    {
+        BranchNode* branch = branchStack.top();
+        branchStack.pop();
+
+        if(branch->parent == NULL || branch->parent->children.size() > 1)
+        {
+            currentSection = new BranchSection();
+            sections.push_back(currentSection);
+        }
+
+        currentSection->branchNodes.push_back(branch);
+
+
+        for( int i = 0; i <  branch->children.size(); i++)
+        {
+            branchStack.push(branch->children[i]);
+        }
+
+
+    }
+
+    for ( int i = 0; i < (int)sections.size(); i++ )
+    {
+        std::vector< BranchNode*>& branchNodes= sections[i]->branchNodes;
+        bool stable = false;
+
+
+        for ( int j = 0; j < branchNodes.size(); j++ )
+            branchNodes[j]->split = false;
+
+        for ( int j = 0; j < branchNodes.size(); j++ )
+        {
+            BranchNode* A = branchNodes[j];
+            BranchNode* B = branchNodes[(j+1)% branchNodes.size()];
+            Vector3f dirA = A->direction;
+            Vector3f dirB = B->direction;
+
+            dirA.normalize();
+            dirB.normalize();
+
+            float dot =dirB.dotProduct(-dirA);
+            float tolerance = -0.8f;
+            if(dot > tolerance ) // split
+            {
+                A->split = true;
+                B->split = true;
+            }
+        }
+
+        for ( int j = 0; j < branchNodes.size(); j++ )
+        {
+            if( branchNodes[j]->split == false )
+                continue;
+
+            stable = false;
+
+
+
+        }
+
+    }
 
 
 }
@@ -479,6 +564,7 @@ void LstSkeleton::Draw()
 
 
 
+
     for ( int j = 0; j < (int)branches.size(); j++ )
     {
         Vector3f pos = branches[j]->startPosition;
@@ -513,6 +599,27 @@ void LstSkeleton::Draw()
         //        SetColour( BLACK );
         //        DrawPoint(posEnd - branch.direction*branch.endOffset);
     }
+
+
+    //    for ( int i = 0; i < (int)sections.size(); i++ )
+    //    {
+    //        for ( int j = 0; j < (int)sections[i]->branchNodes.size(); j++ )
+    //        {
+    //              BranchNode& branch = *sections[i]->branchNodes[j];
+    //            Vector3f pos = branch.startPosition;
+    //            Vector3f posEnd = branch.endPosition;
+
+
+    //            //  DrawPoint(pos);
+    //            SetColour( YELLOW );
+
+    //            if( j == (int)sections[i]->branchNodes.size() -1)
+    //                SetColour( RED );
+    //            DrawLine( pos, posEnd);
+
+
+    //        }
+    //    }
 
 }
 

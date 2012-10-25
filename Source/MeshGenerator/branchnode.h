@@ -31,6 +31,7 @@ public:
     float endOffset;
     float tightStartOffset;
     float tightEndOffset;
+    bool split;
 
 
 
@@ -51,6 +52,12 @@ public:
 
         startOffset = endOffset = 0;
     }
+};
+
+class BranchSection
+{
+public:
+    std::vector< BranchNode*> branchNodes;
 };
 
 

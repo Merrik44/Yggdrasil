@@ -6,6 +6,8 @@
 #include "branchnode.h"
 
 class BranchNode;
+class BranchSection;
+
 class LstSkeleton
 {
 public:
@@ -18,7 +20,9 @@ public:
     void CalculateBranchOffsets( BranchNode& branch);
     void SimplifyGraph();
     void createRandomBifurcation(int numberOfBranches, float branchLength, float maxRadius, float minRadius );
+    void BezierCurves( BranchNode* root);
 
+    std::vector< BranchSection* > sections;
 
     float scale;
     std::string filepath;

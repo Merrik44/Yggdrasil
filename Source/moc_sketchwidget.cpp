@@ -1,7 +1,7 @@
 /****************************************************************************
 ** Meta object code from reading C++ file 'sketchwidget.h'
 **
-** Created: Mon Oct 8 22:10:39 2012
+** Created: Mon Oct 15 00:50:31 2012
 **      by: The Qt Meta Object Compiler version 63 (Qt 4.8.1)
 **
 ** WARNING! All changes made in this file will be lost!

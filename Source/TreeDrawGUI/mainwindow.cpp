@@ -23,6 +23,15 @@ MainWindow::MainWindow()
     //QDir::setCurrent(QApplication::applicationDirPath());
     sketchWidgetCreated = false;
 
+
+    lastGeneratedFile = "";
+    optionD = 2;
+    optionB = 500;
+    optionP = -1;
+    textureIndex = 37;
+    storeRoot = 1;
+    subdivs = 0;
+
     connectActions();
 
     createActions();
@@ -32,13 +41,6 @@ MainWindow::MainWindow()
     setWindowTitle(tr("TreeDraw"));
     setLineMode();
 
-    lastGeneratedFile = "";
-    optionD = 2;
-    optionB = 500;
-    optionP = -1;
-    textureIndex = 37;
-    storeRoot = 1;
-    subdivs = 0;
     brushSize->setCurrentIndex(2);
 
     acceptedImageFormats.append("*.jpg");
@@ -199,6 +201,8 @@ void MainWindow::displayAsCylinders()
  //   cout << "SS " << endl;
     displayWidget->displayGeneratedMesh = false;
     displayCylinderForm->setEnabled(false);
+
+    SubdivSlider->setEnabled(false);
     displayMesh->setEnabled(true);
     displayWidget->repaint();
     displayWidget->updateGL();
@@ -218,8 +222,23 @@ void MainWindow::displayAsMesh()
     //  if (p.wasCanceled()) return;
 displayMesh->setEnabled(false);
 displayCylinderForm->setEnabled(true);
+SubdivSlider->setEnabled(true);
     displayWidget->repaint();
     displayWidget->updateGL();
+}
+
+void MainWindow::SubdivSliderChange( int value )
+{
+    subdivs = value;
+    QProgressDialog subdivisionProgbar(this);
+    subdivisionProgbar.setRange(0, 100);
+    subdivisionProgbar.setModal(true);
+    subdivisionProgbar.show();
+    subdivisionProgbar.setCursor(QCursor(Qt::ArrowCursor));
+    subdivisionProgbar.setLabelText("Applying Loop Sudivision");
+    subdivisionProgbar.setValue(0);
+    displayWidget->ApplySubdivisionToMesh( subdivs, &subdivisionProgbar);
+
 }
 
 
@@ -429,11 +448,18 @@ void MainWindow::generateMeshFromLST( std::string lstfile)
     displayWidget->GenerateMeshFromLST(&progbar);
     progbar.setValue(99);
 
+    progbar.setVisible(false);
 
-    progbar.setLabelText("Applying Loop Sudivision");
+    QProgressDialog subdivisionProgbar(this);
+    subdivisionProgbar.setRange(0, 100);
+    subdivisionProgbar.setModal(true);
+    subdivisionProgbar.show();
+    subdivisionProgbar.setCursor(QCursor(Qt::ArrowCursor));
+    subdivisionProgbar.setLabelText("Applying Loop Sudivision");
+    subdivisionProgbar.setValue(0);
 
-    displayWidget->ApplySubdivisionToMesh(subdivs, &progbar);
-    progbar.setValue(99);
+    displayWidget->ApplySubdivisionToMesh(subdivs, &subdivisionProgbar);
+    subdivisionProgbar.setValue(99);
 }
 
 void MainWindow::generateNewVariation()
@@ -725,12 +751,20 @@ void MainWindow::createActions()
     connect(displayMesh, SIGNAL(triggered()), this, SLOT(displayAsMesh()));
     displayMesh->setEnabled(false);
 
+
     displayCylinderForm = new QAction(("&Display Cylinder Model"), this);
     //newVariation->setShortcuts(QKeySequence(Qt::CTRL + Qt::Key_G));
     displayCylinderForm->setStatusTip(tr("Generate a new variation of the last type of tree you generated"));
     connect(displayCylinderForm, SIGNAL(triggered()), this, SLOT(displayAsCylinders()));
     displayCylinderForm->setEnabled(false);
 
+    SubdivSlider = new QSlider( Qt::Horizontal);
+
+    SubdivSlider->setValue(subdivs);
+       SubdivSlider->setMaximum(4);
+     SubdivSlider->setEnabled(false);
+
+        connect(SubdivSlider, SIGNAL( valueChanged(int)), this, SLOT(SubdivSliderChange(int)));
 
 
     undo = new QAction(QIcon("./Resources/Icons/Undo.png"),("&Undo"), this);
@@ -791,7 +825,7 @@ void MainWindow::createActions()
     texSynthOption = new QAction(("&Synthesize Texture"), this);
   //  texSynthOption->setShortcut(QKeySequence(Qt::CTRL + Qt::Key_O));
     texSynthOption->setStatusTip(tr("Synthesize a new texture from a sample"));
-    connect(texSynthOption, SIGNAL(triggered()), this, SLOT(SynthesizeTexture()));
+    connect(texSynthOption, SIGNAL(triggered()), this,SLOT(SynthesizeTexture()));
 
 }
 
@@ -830,6 +864,7 @@ void MainWindow::createToolBars()
    // displayToolBar->addWidget(generateMesh);
     displayToolBar->addAction(displayCylinderForm);
     displayToolBar->addAction(displayMesh);
+    displayToolBar->addWidget(SubdivSlider);
 
 
 
@@ -856,7 +891,7 @@ void MainWindow::setupWidgets()
     connect(sketchWidget,SIGNAL(sketchNonEmpty()), this, SLOT(sketchNonEmpty()));
     sketchWidget->setMinimumSize(700, 600);
     displayWidget = new QTreeDisplayWidget(frame);
-    displayWidget->setMinimumSize(650, 600);
+    displayWidget->setMinimumSize(550, 600);
     frameLayout->addWidget(sketchToolBar, 0, 0);
     frameLayout->addWidget(sketchWidget, 1, 0);
     frameLayout->addWidget(displayToolBar, 0, 1);

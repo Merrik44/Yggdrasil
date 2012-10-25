@@ -51,7 +51,6 @@ Vertex*  CreateMidPoint( Edge* edge, int verticesArrayIndex)
 void ApplyLoopSubvision( Mesh* model, int levels, QProgressDialog*  progBar)
 {
 
-    DebugClear();
     if( levels == 0)
         return;
 
@@ -60,6 +59,11 @@ void ApplyLoopSubvision( Mesh* model, int levels, QProgressDialog*  progBar)
     //    int updateCountDown = 0;
 
 
+    if(progBar != NULL )
+    {
+        progBar->setValue(5);
+    }
+
     vector< Vertex*>& vertices = model->vertices;
     vector< Face*>& triangles = model->triangles;
     vector< Edge*>& edges = model->edges;
@@ -67,10 +71,9 @@ void ApplyLoopSubvision( Mesh* model, int levels, QProgressDialog*  progBar)
     for( int n = 0; n < levels; n++ )
     {
 
-        DebugClear();
         if(progBar != NULL )
         {
-            progBar->setValue(0);
+            progBar->setValue(n*100/levels);
         }
 
 
@@ -92,6 +95,9 @@ void ApplyLoopSubvision( Mesh* model, int levels, QProgressDialog*  progBar)
         for( int i = 0; i < triangles.size(); i++ )
         {
             Face* face = triangles[i];
+
+
+
 
             for( uint a = 0; a < 3; a++ )
             {
@@ -174,10 +180,9 @@ void ApplyLoopSubvision( Mesh* model, int levels, QProgressDialog*  progBar)
 
         }
 
-        if(progBar != NULL )
-        {
-            progBar->setValue(30);
-        }
+
+
+
 
         // step 2: create the new faces. NB Specifically for triangles/loop
 
@@ -239,10 +244,6 @@ void ApplyLoopSubvision( Mesh* model, int levels, QProgressDialog*  progBar)
 
         }
 
-        if(progBar != NULL )
-        {
-            progBar->setValue(60);
-        }
 
         //  cout << "step2"  << endl;
         // Vertex points are constructed for each old vertex. A given vertex has n neighbor vertices.
@@ -301,11 +302,6 @@ void ApplyLoopSubvision( Mesh* model, int levels, QProgressDialog*  progBar)
                 vertex->position += sum*s;
             }
 
-        }
-        if(progBar != NULL )
-        {
-            progBar->setValue(80);
-            progBar->repaint();
         }
 
         model->ClearNeighourAndEdgeData();

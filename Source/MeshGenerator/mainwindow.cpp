@@ -75,7 +75,6 @@ void MainWindow::on_countSlider_valueChanged(int value)
     ss << value;
     ui->countLabel->setText(ss.str().c_str());
 
-      DebugClear();
     Count = value;
     glWidget->GenerateMeshFromLST();
 
