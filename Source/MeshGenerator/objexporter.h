@@ -1,3 +1,6 @@
+// Author: Richard Pieterse
+// Date: October 2012
+
 #ifndef OBJEXPORTER_H
 #define OBJEXPORTER_H
 

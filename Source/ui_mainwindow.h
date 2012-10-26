@@ -1,7 +1,7 @@
 /********************************************************************************
 ** Form generated from reading UI file 'mainwindow.ui'
 **
-** Created: Mon Oct 15 00:46:53 2012
+** Created: Fri Oct 26 02:14:41 2012
 **      by: Qt User Interface Compiler version 4.8.1
 **
 ** WARNING! All changes made in this file will be lost when recompiling UI file!
@@ -35,24 +35,26 @@ public:
     QAction *actionGenerate_output_for_XML_file;
     QAction *actionUndo;
     QAction *actionRedo;
-    QAction *actionExport_to_OBJ;
+    QAction *actionExport_Cylinder_Model_to_OBJ;
     QAction *actionBlack_background;
     QAction *actionWhite_background;
     QAction *actionOpen_XML_file_2;
-    QAction *actionEE;
+    QAction *Export_to_Mesh_Model_to_OBJ;
     QWidget *centralWidget;
     QMenuBar *menuBar;
     QMenu *menuFile;
     QMenu *menuDisplay;
     QMenu *menuEdit;
     QMenu *menuSynthesise_Texture;
+    QMenu *menuGenerate_Leaves;
+    QMenu *menuDafasdf;
     QStatusBar *statusBar;
 
     void setupUi(QMainWindow *MainWindow)
     {
         if (MainWindow->objectName().isEmpty())
             MainWindow->setObjectName(QString::fromUtf8("MainWindow"));
-        MainWindow->resize(400, 300);
+        MainWindow->resize(633, 300);
         actionOpen_XML_file = new QAction(MainWindow);
         actionOpen_XML_file->setObjectName(QString::fromUtf8("actionOpen_XML_file"));
         actionSave_XML_file = new QAction(MainWindow);
@@ -71,8 +73,8 @@ public:
         actionUndo->setObjectName(QString::fromUtf8("actionUndo"));
         actionRedo = new QAction(MainWindow);
         actionRedo->setObjectName(QString::fromUtf8("actionRedo"));
-        actionExport_to_OBJ = new QAction(MainWindow);
-        actionExport_to_OBJ->setObjectName(QString::fromUtf8("actionExport_to_OBJ"));
+        actionExport_Cylinder_Model_to_OBJ = new QAction(MainWindow);
+        actionExport_Cylinder_Model_to_OBJ->setObjectName(QString::fromUtf8("actionExport_Cylinder_Model_to_OBJ"));
         actionBlack_background = new QAction(MainWindow);
         actionBlack_background->setObjectName(QString::fromUtf8("actionBlack_background"));
         actionBlack_background->setCheckable(true);
@@ -82,14 +84,14 @@ public:
         actionWhite_background->setCheckable(true);
         actionOpen_XML_file_2 = new QAction(MainWindow);
         actionOpen_XML_file_2->setObjectName(QString::fromUtf8("actionOpen_XML_file_2"));
-        actionEE = new QAction(MainWindow);
-        actionEE->setObjectName(QString::fromUtf8("actionEE"));
+        Export_to_Mesh_Model_to_OBJ = new QAction(MainWindow);
+        Export_to_Mesh_Model_to_OBJ->setObjectName(QString::fromUtf8("Export_to_Mesh_Model_to_OBJ"));
         centralWidget = new QWidget(MainWindow);
         centralWidget->setObjectName(QString::fromUtf8("centralWidget"));
         MainWindow->setCentralWidget(centralWidget);
         menuBar = new QMenuBar(MainWindow);
         menuBar->setObjectName(QString::fromUtf8("menuBar"));
-        menuBar->setGeometry(QRect(0, 0, 400, 25));
+        menuBar->setGeometry(QRect(0, 0, 633, 25));
         menuFile = new QMenu(menuBar);
         menuFile->setObjectName(QString::fromUtf8("menuFile"));
         menuDisplay = new QMenu(menuBar);
@@ -98,6 +100,10 @@ public:
         menuEdit->setObjectName(QString::fromUtf8("menuEdit"));
         menuSynthesise_Texture = new QMenu(menuBar);
         menuSynthesise_Texture->setObjectName(QString::fromUtf8("menuSynthesise_Texture"));
+        menuGenerate_Leaves = new QMenu(menuBar);
+        menuGenerate_Leaves->setObjectName(QString::fromUtf8("menuGenerate_Leaves"));
+        menuDafasdf = new QMenu(menuBar);
+        menuDafasdf->setObjectName(QString::fromUtf8("menuDafasdf"));
         MainWindow->setMenuBar(menuBar);
         statusBar = new QStatusBar(MainWindow);
         statusBar->setObjectName(QString::fromUtf8("statusBar"));
@@ -107,6 +113,8 @@ public:
         menuBar->addAction(menuEdit->menuAction());
         menuBar->addAction(menuDisplay->menuAction());
         menuBar->addAction(menuSynthesise_Texture->menuAction());
+        menuBar->addAction(menuGenerate_Leaves->menuAction());
+        menuBar->addAction(menuDafasdf->menuAction());
         menuFile->addAction(actionOpen_XML_file);
         menuFile->addAction(actionSave_XML_file);
         menuFile->addSeparator();
@@ -115,8 +123,7 @@ public:
         menuDisplay->addAction(actionDisplay_LST_file);
         menuDisplay->addSeparator();
         menuDisplay->addAction(actionGenerate_from_current);
-        menuDisplay->addAction(actionExport_to_OBJ);
-        menuDisplay->addAction(actionEE);
+        menuDisplay->addAction(actionExport_Cylinder_Model_to_OBJ);
         menuDisplay->addSeparator();
         menuDisplay->addAction(actionBlack_background);
         menuDisplay->addAction(actionWhite_background);
@@ -140,15 +147,17 @@ public:
         actionGenerate_output_for_XML_file->setText(QApplication::translate("MainWindow", "Generate output for XML file", 0, QApplication::UnicodeUTF8));
         actionUndo->setText(QApplication::translate("MainWindow", "Undo", 0, QApplication::UnicodeUTF8));
         actionRedo->setText(QApplication::translate("MainWindow", "Redo", 0, QApplication::UnicodeUTF8));
-        actionExport_to_OBJ->setText(QApplication::translate("MainWindow", "Export to Cylinder Model to OBJ", 0, QApplication::UnicodeUTF8));
+        actionExport_Cylinder_Model_to_OBJ->setText(QApplication::translate("MainWindow", "Export model in view as OBJ", 0, QApplication::UnicodeUTF8));
         actionBlack_background->setText(QApplication::translate("MainWindow", "Black background", 0, QApplication::UnicodeUTF8));
         actionWhite_background->setText(QApplication::translate("MainWindow", "White background", 0, QApplication::UnicodeUTF8));
         actionOpen_XML_file_2->setText(QApplication::translate("MainWindow", "Open XML file", 0, QApplication::UnicodeUTF8));
-        actionEE->setText(QApplication::translate("MainWindow", "Export to Mesh Model to OBJ", 0, QApplication::UnicodeUTF8));
+        Export_to_Mesh_Model_to_OBJ->setText(QApplication::translate("MainWindow", "Export to Mesh Model to OBJ", 0, QApplication::UnicodeUTF8));
         menuFile->setTitle(QApplication::translate("MainWindow", "File", 0, QApplication::UnicodeUTF8));
         menuDisplay->setTitle(QApplication::translate("MainWindow", "Display", 0, QApplication::UnicodeUTF8));
         menuEdit->setTitle(QApplication::translate("MainWindow", "Edit", 0, QApplication::UnicodeUTF8));
         menuSynthesise_Texture->setTitle(QApplication::translate("MainWindow", "Synthesise Texture", 0, QApplication::UnicodeUTF8));
+        menuGenerate_Leaves->setTitle(QApplication::translate("MainWindow", "Generate Leaves", 0, QApplication::UnicodeUTF8));
+        menuDafasdf->setTitle(QApplication::translate("MainWindow", "dafasdf", 0, QApplication::UnicodeUTF8));
     } // retranslateUi
 
 };

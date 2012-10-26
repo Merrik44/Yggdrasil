@@ -1,3 +1,6 @@
+// Author: Richard Pieterse
+// Date: October 2012
+
 #include "meshgenerator.h"
 #include "stack"
 #include "vmath.h"

@@ -1,3 +1,6 @@
+// Author: Richard Pieterse
+// Date: October 2012
+
 #ifndef JOINTGENERATOR_H
 #define JOINTGENERATOR_H
 

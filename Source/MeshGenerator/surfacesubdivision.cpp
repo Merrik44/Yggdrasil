@@ -1,3 +1,6 @@
+// Author: Richard Pieterse
+// Date: October 2012
+
 #include "surfacesubdivision.h"
 #include "vector"
 #include "mainwindow.h"

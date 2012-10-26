@@ -191,7 +191,7 @@ void GLWidget::initializeGL()
     for( int i = 0; i < lstFileList.count(); i++ )
         cout << lstFileList.value(i).toStdString() << endl;
 
-    LoadLST("../lst files/thinkAndThin.lst" );
+    LoadLST("../lst files/treefile25.lst" );
     model = generateMesh( skeleton->branches);
 
     // app

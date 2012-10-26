@@ -1,3 +1,6 @@
+// Author: Richard Pieterse
+// Date: October 2012
+
 #ifndef BRANCH_H
 #define BRANCH_H
 
@@ -52,12 +55,40 @@ public:
 
         startOffset = endOffset = 0;
     }
+
+
+//    BranchNode( Vector3f StartPosition, Vector3f EndPosition, float StartRadius, float EndRadius, BranchNode* Parent)
+//    {
+//        startPosition = StartPosition;
+//        startRadius = StartRadius;
+//        endRadius = EndRadius;
+//        endPosition = EndPosition;
+//        length = (startPosition - EndPosition).normalize();
+//        parent = Parent;
+//        rotation =Rotation;
+
+//        if( parent != NULL )
+//            parent->children.push_back(this);
+
+//        // calculate end pos
+//        direction = rotation*Vector3f( 0, 1, 0 );;
+//        endPosition = direction*length + startPosition;
+
+//        startOffset = endOffset = 0;
+//    }
 };
 
 class BranchSection
 {
 public:
     std::vector< BranchNode*> branchNodes;
+};
+
+class BranchPoint
+{
+    public:
+        Vector3f poistion;
+        float radius;
 };
 
 

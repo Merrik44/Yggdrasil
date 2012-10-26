@@ -1,3 +1,6 @@
+// Author: Richard Pieterse
+// Date: October 2012
+
 #ifndef LSTSKELETON_H
 #define LSTSKELETON_H
 #include "string"

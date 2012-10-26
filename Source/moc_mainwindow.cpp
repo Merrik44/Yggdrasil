@@ -1,7 +1,7 @@
 /****************************************************************************
 ** Meta object code from reading C++ file 'mainwindow.h'
 **
-** Created: Thu Oct 25 05:53:43 2012
+** Created: Fri Oct 26 02:11:55 2012
 **      by: The Qt Meta Object Compiler version 63 (Qt 4.8.1)
 **
 ** WARNING! All changes made in this file will be lost!
@@ -23,7 +23,7 @@ static const uint qt_meta_data_MainWindow[] = {
        6,       // revision
        0,       // classname
        0,    0, // classinfo
-      28,   14, // methods
+      31,   14, // methods
        0,    0, // properties
        0,    0, // enums/sets
        0,    0, // constructors
@@ -48,17 +48,20 @@ static const uint qt_meta_data_MainWindow[] = {
      275,  250,   11,   11, 0x08,
      324,  316,   11,   11, 0x08,
      357,   11,   11,   11, 0x08,
-     371,   11,   11,   11, 0x08,
-     392,   11,   11,   11, 0x08,
-     414,  408,   11,   11, 0x08,
-     438,   11,   11,   11, 0x08,
-     458,   11,   11,   11, 0x08,
-     476,   11,   11,   11, 0x08,
-     494,   11,   11,   11, 0x08,
-     508,   11,   11,   11, 0x08,
-     524,   11,   11,   11, 0x08,
-     545,  540,   11,   11, 0x08,
-     567,   11,   11,   11, 0x08,
+     379,   11,   11,   11, 0x08,
+     397,   11,   11,   11, 0x08,
+     418,   11,   11,   11, 0x08,
+     440,  434,   11,   11, 0x08,
+     464,   11,   11,   11, 0x08,
+     484,   11,   11,   11, 0x08,
+     502,   11,   11,   11, 0x08,
+     520,   11,   11,   11, 0x08,
+     534,   11,   11,   11, 0x08,
+     550,   11,   11,   11, 0x08,
+     571,  566,   11,   11, 0x08,
+     593,   11,   11,   11, 0x08,
+     612,   11,   11,   11, 0x08,
+     662,   11,   11,   11, 0x08,
 
        0        // eod
 };
@@ -74,12 +77,15 @@ static const char qt_meta_stringdata_MainWindow[] = {
     "v1,v2,v3,v4,v5,subdValue\0"
     "optionsAccepted(int,int,int,int,int,int)\0"
     "lstfile\0generateMeshFromLST(std::string)\0"
-    "exportToOBJ()\0displayAsCylinders()\0"
-    "displayAsMesh()\0value\0SubdivSliderChange(int)\0"
+    "exportCylindesAsOBJ()\0exportMeshAsOBJ()\0"
+    "displayAsCylinders()\0displayAsMesh()\0"
+    "value\0SubdivSliderChange(int)\0"
     "SynthesizeTexture()\0blackBackground()\0"
     "whiteBackground()\0setLineMode()\0"
     "setSelectMode()\0setPencilMode()\0text\0"
     "setBrushSize(QString)\0cancelGeneration()\0"
+    "on_actionExport_Cylinder_Model_to_OBJ_triggered()\0"
+    "on_Export_to_Mesh_Model_to_OBJ_triggered()\0"
 };
 
 void MainWindow::qt_static_metacall(QObject *_o, QMetaObject::Call _c, int _id, void **_a)
@@ -104,18 +110,21 @@ void MainWindow::qt_static_metacall(QObject *_o, QMetaObject::Call _c, int _id, 
         case 13: _t->generationOptions(); break;
         case 14: _t->optionsAccepted((*reinterpret_cast< int(*)>(_a[1])),(*reinterpret_cast< int(*)>(_a[2])),(*reinterpret_cast< int(*)>(_a[3])),(*reinterpret_cast< int(*)>(_a[4])),(*reinterpret_cast< int(*)>(_a[5])),(*reinterpret_cast< int(*)>(_a[6]))); break;
         case 15: _t->generateMeshFromLST((*reinterpret_cast< std::string(*)>(_a[1]))); break;
-        case 16: _t->exportToOBJ(); break;
-        case 17: _t->displayAsCylinders(); break;
-        case 18: _t->displayAsMesh(); break;
-        case 19: _t->SubdivSliderChange((*reinterpret_cast< int(*)>(_a[1]))); break;
-        case 20: _t->SynthesizeTexture(); break;
-        case 21: _t->blackBackground(); break;
-        case 22: _t->whiteBackground(); break;
-        case 23: _t->setLineMode(); break;
-        case 24: _t->setSelectMode(); break;
-        case 25: _t->setPencilMode(); break;
-        case 26: _t->setBrushSize((*reinterpret_cast< const QString(*)>(_a[1]))); break;
-        case 27: _t->cancelGeneration(); break;
+        case 16: _t->exportCylindesAsOBJ(); break;
+        case 17: _t->exportMeshAsOBJ(); break;
+        case 18: _t->displayAsCylinders(); break;
+        case 19: _t->displayAsMesh(); break;
+        case 20: _t->SubdivSliderChange((*reinterpret_cast< int(*)>(_a[1]))); break;
+        case 21: _t->SynthesizeTexture(); break;
+        case 22: _t->blackBackground(); break;
+        case 23: _t->whiteBackground(); break;
+        case 24: _t->setLineMode(); break;
+        case 25: _t->setSelectMode(); break;
+        case 26: _t->setPencilMode(); break;
+        case 27: _t->setBrushSize((*reinterpret_cast< const QString(*)>(_a[1]))); break;
+        case 28: _t->cancelGeneration(); break;
+        case 29: _t->on_actionExport_Cylinder_Model_to_OBJ_triggered(); break;
+        case 30: _t->on_Export_to_Mesh_Model_to_OBJ_triggered(); break;
         default: ;
         }
     }
@@ -153,9 +162,9 @@ int MainWindow::qt_metacall(QMetaObject::Call _c, int _id, void **_a)
     if (_id < 0)
         return _id;
     if (_c == QMetaObject::InvokeMetaMethod) {
-        if (_id < 28)
+        if (_id < 31)
             qt_static_metacall(this, _c, _id, _a);
-        _id -= 28;
+        _id -= 31;
     }
     return _id;
 }

@@ -1,3 +1,6 @@
+// Author: Richard Pieterse
+// Date: October 2012
+
 #ifndef MESHGENERATOR_H
 #define MESHGENERATOR_H
 

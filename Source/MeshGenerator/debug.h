@@ -1,3 +1,6 @@
+// Author: Richard Pieterse
+// Date: October 2012
+
 #ifndef DEBUG_H
 #define DEBUG_H
 

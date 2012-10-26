@@ -42,7 +42,6 @@ SOURCES += TreeDrawGUI/main.cpp \
     MeshGenerator/meshgenerator.cpp \
     MeshGenerator/lstskeleton.cpp \
     MeshGenerator/jointgenerator.cpp \
-    MeshGenerator/generator.cpp \
     MeshGenerator/debug.cpp \
     TextureSynthesis/vector2.cpp \
     TextureSynthesis/texturesynthesis.cpp \
@@ -80,6 +79,7 @@ HEADERS += TreeDrawGUI/mainwindow.h \
     TreeDrawGUI/optionsdialog.h \
     TreeDrawGUI/ancestorwidthvariation.h \
     TreeDrawGUI/loadsketch.h \
+    TreeDrawGUI/ui_mainwindow.h \
     MeshGenerator/vmath.h \
     MeshGenerator/surfacesubdivision.h \
     MeshGenerator/objexporter.h \
@@ -87,7 +87,6 @@ HEADERS += TreeDrawGUI/mainwindow.h \
     MeshGenerator/meshgenerator.h \
     MeshGenerator/lstskeleton.h \
     MeshGenerator/jointgenerator.h \
-    MeshGenerator/generator.h \
     MeshGenerator/debug.h \
     MeshGenerator/branchnode.h \
     TextureSynthesis/vector2.h \
@@ -96,7 +95,8 @@ HEADERS += TreeDrawGUI/mainwindow.h \
     TextureSynthesis/pixelcoherence.h \
     TextureSynthesis/indexedtexture.h \
     TextureSynthesis/coherenttexture.h \
-    TextureSynthesis/texturesynthesisdialog.h
+    TextureSynthesis/texturesynthesisdialog.h \\\
+
 INCLUDEPATH += /QTreeWidget/
 INCLUDEPATH += /TreeDrawGUI/
 FORMS += TreeDrawGUI/mainwindow.ui \

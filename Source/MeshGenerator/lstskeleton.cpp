@@ -1,3 +1,6 @@
+// Author: Richard Pieterse
+// Date: October 2012
+
 #include "lstskeleton.h"
 #include "stack"
 #include "QtOpenGL"
@@ -279,8 +282,98 @@ void LstSkeleton::SimplifyGraph()
 
 }
 
+// takes in a section of branches, and outputs a smooth curving section
+BranchSection* curvyAlgorithm( BranchSection* section)
+{
+    std::vector< BranchNode*>& branchNodes= section->branchNodes;
+    std::vector< BranchPoint*> newNodes;
+
+
+    for( int x = 0; x < 1; x++)
+    {
+         bool stable = false;
+
+        for ( int j = 0; j < branchNodes.size(); j++ )
+        {
+            BranchNode* A = branchNodes[j];
+            BranchNode* B = branchNodes[(j+1)% branchNodes.size()];
+            Vector3f dirA = A->direction;
+            Vector3f dirB = B->direction;
+
+            dirA.normalize();
+            dirB.normalize();
+
+            float dot =dirB.dotProduct(-dirA);
+            float tolerance = -0.8f;
+            if(dot > tolerance ) // split
+            {
+                A->split = true;
+                B->split = true;
+            }
+        }
+
+
+        // split nodes
+
+
+        newNodes.clear();
+        for ( int j = 0; j < branchNodes.size(); j++ )
+        {
+            BranchNode* branchA = branchNodes[j];
+
+            if( branchNodes[j]->split == false )
+                continue;
+
+            stable = false;
+
+
+
+            BranchPoint* newPoint = new BranchPoint();
+            newPoint->poistion = branchA->startPosition;;
+            newPoint->radius = branchA->startRadius;;
+             newNodes.push_back(newPoint);
+            // ---- ignore start ---
+            if(branchA->split)
+            {
+
+                BranchPoint* midPoint = new BranchPoint();
+                midPoint->poistion =  branchA->endPosition -  branchA->startPosition;
+                midPoint->radius =  branchA->endRadius - branchA->startRadius;
+                midPoint->poistion /= 2;
+                midPoint->radius /= 2;
+                newNodes.push_back(midPoint);
+            }
+
+            if(j+1 != branchNodes.size())
+            {
+                BranchPoint* EndPoint = new BranchPoint();
+                EndPoint->poistion =  branchA->endPosition;;
+                EndPoint->radius = branchA->startRadius;;
+                 newNodes.push_back(EndPoint);
+            }
+
+
+
+        }
+
+        for ( int j = 0; j < newNodes.size()-1; j++ )
+        {
+            //BranchPoint A = newNodes[j];
+           // BranchPoint B = newNodes[j+1];
+
+          //  BranchNode* newBranch = new BranchNode(A.poistion, B.poistion,  )
+        }
+
+        if( stable)
+            break;
+    }
+
+
+}
+
 void LstSkeleton::BezierCurves( BranchNode* root)
 {
+    return;
     if( root == NULL)
         return;
 
@@ -315,45 +408,11 @@ void LstSkeleton::BezierCurves( BranchNode* root)
 
     }
 
+
+
     for ( int i = 0; i < (int)sections.size(); i++ )
     {
-        std::vector< BranchNode*>& branchNodes= sections[i]->branchNodes;
-        bool stable = false;
-
-
-        for ( int j = 0; j < branchNodes.size(); j++ )
-            branchNodes[j]->split = false;
-
-        for ( int j = 0; j < branchNodes.size(); j++ )
-        {
-            BranchNode* A = branchNodes[j];
-            BranchNode* B = branchNodes[(j+1)% branchNodes.size()];
-            Vector3f dirA = A->direction;
-            Vector3f dirB = B->direction;
-
-            dirA.normalize();
-            dirB.normalize();
-
-            float dot =dirB.dotProduct(-dirA);
-            float tolerance = -0.8f;
-            if(dot > tolerance ) // split
-            {
-                A->split = true;
-                B->split = true;
-            }
-        }
-
-        for ( int j = 0; j < branchNodes.size(); j++ )
-        {
-            if( branchNodes[j]->split == false )
-                continue;
-
-            stable = false;
-
-
-
-        }
-
+        curvyAlgorithm(sections[i]);
     }
 
 

@@ -6,7 +6,7 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>400</width>
+    <width>633</width>
     <height>300</height>
    </rect>
   </property>
@@ -19,7 +19,7 @@
     <rect>
      <x>0</x>
      <y>0</y>
-     <width>400</width>
+     <width>633</width>
      <height>25</height>
     </rect>
    </property>
@@ -40,8 +40,7 @@
     <addaction name="actionDisplay_LST_file"/>
     <addaction name="separator"/>
     <addaction name="actionGenerate_from_current"/>
-    <addaction name="actionExport_to_OBJ"/>
-    <addaction name="actionEE"/>
+    <addaction name="actionExport_Cylinder_Model_to_OBJ"/>
     <addaction name="separator"/>
     <addaction name="actionBlack_background"/>
     <addaction name="actionWhite_background"/>
@@ -58,10 +57,22 @@
      <string>Synthesise Texture</string>
     </property>
    </widget>
+   <widget class="QMenu" name="menuGenerate_Leaves">
+    <property name="title">
+     <string>Generate Leaves</string>
+    </property>
+   </widget>
+   <widget class="QMenu" name="menuDafasdf">
+    <property name="title">
+     <string>dafasdf</string>
+    </property>
+   </widget>
    <addaction name="menuFile"/>
    <addaction name="menuEdit"/>
    <addaction name="menuDisplay"/>
    <addaction name="menuSynthesise_Texture"/>
+   <addaction name="menuGenerate_Leaves"/>
+   <addaction name="menuDafasdf"/>
   </widget>
   <widget class="QStatusBar" name="statusBar"/>
   <action name="actionOpen_XML_file">
@@ -109,9 +120,9 @@
     <string>Redo</string>
    </property>
   </action>
-  <action name="actionExport_to_OBJ">
+  <action name="actionExport_Cylinder_Model_to_OBJ">
    <property name="text">
-    <string>Export to Cylinder Model to OBJ</string>
+    <string>Export model in view as OBJ</string>
    </property>
   </action>
   <action name="actionBlack_background">
@@ -138,7 +149,7 @@
     <string>Open XML file</string>
    </property>
   </action>
-  <action name="actionEE">
+  <action name="Export_to_Mesh_Model_to_OBJ">
    <property name="text">
     <string>Export to Mesh Model to OBJ</string>
    </property>

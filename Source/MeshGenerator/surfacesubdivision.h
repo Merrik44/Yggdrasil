@@ -1,3 +1,6 @@
+// Author: Richard Pieterse
+// Date: October 2012
+
 #ifndef SURFACESUBDIVISION_H
 #define SURFACESUBDIVISION_H
 

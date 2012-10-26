@@ -198,7 +198,7 @@ void MainWindow::generateFromXML()
 
 void MainWindow::displayAsCylinders()
 {
- //   cout << "SS " << endl;
+    //   cout << "SS " << endl;
     displayWidget->displayGeneratedMesh = false;
     displayCylinderForm->setEnabled(false);
 
@@ -214,15 +214,9 @@ void MainWindow::displayAsMesh()
     // --------------- Generate the mesh ---------------------------------
     generateMeshFromLST(lastLSTFile);
 
-
-    //  connect(&p, SIGNAL(canceled()), this, SLOT(cancelGeneration()));
-
-
-    //   QCoreApplication::processEvents();
-    //  if (p.wasCanceled()) return;
-displayMesh->setEnabled(false);
-displayCylinderForm->setEnabled(true);
-SubdivSlider->setEnabled(true);
+    displayMesh->setEnabled(false);
+    displayCylinderForm->setEnabled(true);
+    SubdivSlider->setEnabled(true);
     displayWidget->repaint();
     displayWidget->updateGL();
 }
@@ -409,8 +403,8 @@ void MainWindow::generateFromCurrent()
     setCursor(QCursor(Qt::ArrowCursor));
     newVariation->setEnabled(true);
     displayAsCylinders();
-   // displayCylinderForm->setEnabled(true);
-  //   displayCylinderForm->setEnabled(true);
+    // displayCylinderForm->setEnabled(true);
+    //   displayCylinderForm->setEnabled(true);
     // generateMesh->setEnabled(true);
 
 }
@@ -564,11 +558,11 @@ void MainWindow::optionsAccepted(int v1, int v2, int v3, int v4, int v5, int sub
         displayWidget->setTexture("./Resources/Textures/" + textureList[textureIndex]);
 
 
-     subdivs =subdValue;
+    subdivs =subdValue;
 }
 
 
-void MainWindow::exportToOBJ()
+void MainWindow::exportCylindesAsOBJ()
 {
     QString path = QFileDialog::getSaveFileName(
                 this,
@@ -576,22 +570,29 @@ void MainWindow::exportToOBJ()
                 QDir::currentPath(),
                 "OBJ file (*.obj)");
 
-    QString meshPath = path;
-    QString cylinderPath = path;
-  //  QString folder = path;
-    QString fileName =  path.split("/").last();
-   // folder.replace( fileName, "");
-    fileName = fileName.split(".").first();
 
-
-    //system("mkdir ")
-    cylinderPath.replace( fileName,  fileName  + "_cyl");
-    displayWidget->exportToObj(cylinderPath.toStdString());
+    // export the mesh that is in the viewport
+    if(displayMesh->isEnabled())
+        displayWidget->exportToObj(path.toStdString());
+    else
+        displayWidget->exportMeshToObj(path.toStdString());
 
 
 
-    meshPath.replace( fileName,  fileName  + "_mesh_" + subdivs);
-    displayWidget->exportMeshToObj(meshPath.toStdString());
+}
+
+void MainWindow::exportMeshAsOBJ()
+{
+    QString path = QFileDialog::getSaveFileName(
+                this,
+                "OBJ",
+                QDir::currentPath(),
+                "OBJ file (*.obj)");
+
+    cout << "!!!!" << endl;
+
+
+
 
 
 
@@ -693,14 +694,15 @@ void MainWindow::connectActions()
     connect(ui->actionGenerate_from_current, SIGNAL(triggered()), this, SLOT(generateFromCurrent()));
     ui->actionGenerate_from_current->setStatusTip(tr("Generate rendered output from the current sketch"));
 
-    connect(ui->actionExport_to_OBJ, SIGNAL(triggered()), this, SLOT(exportToOBJ()));
-    ui->actionExport_to_OBJ->setStatusTip(tr("Export current view to OBJ file"));
+    connect(ui->actionExport_Cylinder_Model_to_OBJ, SIGNAL(triggered()), this, SLOT(exportCylindesAsOBJ()));
+    ui->actionExport_Cylinder_Model_to_OBJ->setStatusTip(tr("Export current view to OBJ file"));
 
     connect(ui->actionBlack_background, SIGNAL(triggered()), this, SLOT(blackBackground()));
     ui->actionBlack_background->setStatusTip(tr("Set tree display background to black"));
 
     connect(ui->actionWhite_background, SIGNAL(triggered()), this, SLOT(whiteBackground()));
     ui->actionWhite_background->setStatusTip(tr("Set tree display background to white"));
+
 
 
     connect(ui->actionUndo, SIGNAL(triggered()), this, SLOT(undoAction()));
@@ -761,10 +763,10 @@ void MainWindow::createActions()
     SubdivSlider = new QSlider( Qt::Horizontal);
 
     SubdivSlider->setValue(subdivs);
-       SubdivSlider->setMaximum(4);
-     SubdivSlider->setEnabled(false);
+    SubdivSlider->setMaximum(4);
+    SubdivSlider->setEnabled(false);
 
-        connect(SubdivSlider, SIGNAL( valueChanged(int)), this, SLOT(SubdivSliderChange(int)));
+    connect(SubdivSlider, SIGNAL( valueChanged(int)), this, SLOT(SubdivSliderChange(int)));
 
 
     undo = new QAction(QIcon("./Resources/Icons/Undo.png"),("&Undo"), this);
@@ -823,7 +825,7 @@ void MainWindow::createActions()
 
 
     texSynthOption = new QAction(("&Synthesize Texture"), this);
-  //  texSynthOption->setShortcut(QKeySequence(Qt::CTRL + Qt::Key_O));
+    //  texSynthOption->setShortcut(QKeySequence(Qt::CTRL + Qt::Key_O));
     texSynthOption->setStatusTip(tr("Synthesize a new texture from a sample"));
     connect(texSynthOption, SIGNAL(triggered()), this,SLOT(SynthesizeTexture()));
 
@@ -853,7 +855,7 @@ void MainWindow::createToolBars()
     sketchToolBar->addSeparator();
     sketchToolBar->addWidget(brushLabel);
     sketchToolBar->addWidget(brushSize);
-     sketchToolBar->addSeparator();
+    sketchToolBar->addSeparator();
     sketchToolBar->addAction(texSynthOption);
 
 
@@ -861,7 +863,7 @@ void MainWindow::createToolBars()
     displayToolBar->setFloatable(false);
     displayToolBar->setMovable(false);
     displayToolBar->addAction(newVariation);
-   // displayToolBar->addWidget(generateMesh);
+    // displayToolBar->addWidget(generateMesh);
     displayToolBar->addAction(displayCylinderForm);
     displayToolBar->addAction(displayMesh);
     displayToolBar->addWidget(SubdivSlider);
@@ -906,4 +908,14 @@ void MainWindow::errorMessage(const char* msg, const char* title)
     messageBox.setText(QString(msg));
     messageBox.setIcon(QMessageBox::Critical);
     messageBox.exec();
+}
+
+void MainWindow::on_actionExport_Cylinder_Model_to_OBJ_triggered()
+{
+
+}
+
+void MainWindow::on_Export_to_Mesh_Model_to_OBJ_triggered()
+{
+
 }

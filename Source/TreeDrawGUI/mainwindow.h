@@ -46,7 +46,8 @@ private slots:
     void generationOptions();
     void optionsAccepted(int v1, int v2, int v3, int v4, int v5, int subdValue);
     void generateMeshFromLST( std::string lstfile);
-    void exportToOBJ();
+    void exportCylindesAsOBJ();
+    void exportMeshAsOBJ();
     void displayAsCylinders();
     void displayAsMesh();
     void SubdivSliderChange(int value);
@@ -62,6 +63,12 @@ private slots:
     void setBrushSize(const QString &text);
 
     void cancelGeneration();
+
+   // void on_Export_to_Mesh_Model_to_OBJ_triggered();
+
+    void on_actionExport_Cylinder_Model_to_OBJ_triggered();
+
+    void on_Export_to_Mesh_Model_to_OBJ_triggered();
 
 private:
     Ui::MainWindow *ui;

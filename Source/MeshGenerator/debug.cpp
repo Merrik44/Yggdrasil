@@ -1,3 +1,7 @@
+// Author: Richard Pieterse
+// Date: October 2012
+
+
 #include "debug.h"
 
 #include <QtOpenGL>

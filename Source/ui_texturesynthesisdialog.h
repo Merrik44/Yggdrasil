@@ -1,7 +1,7 @@
 /********************************************************************************
 ** Form generated from reading UI file 'texturesynthesisdialog.ui'
 **
-** Created: Mon Oct 15 00:46:53 2012
+** Created: Fri Oct 26 01:46:23 2012
 **      by: Qt User Interface Compiler version 4.8.1
 **
 ** WARNING! All changes made in this file will be lost when recompiling UI file!
