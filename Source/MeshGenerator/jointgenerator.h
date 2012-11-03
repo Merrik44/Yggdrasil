@@ -8,6 +8,6 @@
 #include "vector"
 
 void SortByLength( std::vector< Edge*>& edges );
-Mesh *GenerateJoint2( std::vector< std::vector<Vertex*>* >& branches, std::vector<Face *> &incomingBranchFaces, std::vector< Vertex* >& otherVertices, Vector3f center);
+Mesh *GenerateJoint( std::vector< std::vector<Vertex*>* >& branches, std::vector<Face *> &incomingBranchFaces, std::vector<Vector3f> &brancheDirections);
 
 #endif // JOINTGENERATOR_H

@@ -5,7 +5,6 @@
 #include "stack"
 #include "QtOpenGL"
 #include "fstream"
-#include "debug.h"
 #include "math.h"
 #include "stdlib.h"
 #include <boost/algorithm/string.hpp>
@@ -159,8 +158,6 @@ void LstSkeleton::LoadLstFile( string path )
     if(simplifyGraph)
         SimplifyGraph();
 
-    BezierCurves(root);
-
 }
 
 
@@ -219,8 +216,8 @@ void LstSkeleton::createRandomBifurcation(int numberOfBranches, float branchLeng
     for ( int i = 0; i < (int)branches.size(); i++ )
         CalculateBranchOffsets(*branches[i]);
 
-//    if(simplifyGraph)
-//        SimplifyGraph();
+    if(simplifyGraph)
+        SimplifyGraph();
 
 
 
@@ -639,11 +636,14 @@ void LstSkeleton::Draw()
         //         dir = branch.rotation*dir;
         DrawRay( pos, branch.direction*0.1f);
 
+     //   SetColour( RED );
+      //  if(  branches[j]->children.size() > 0 )
+        //    DrawPoint(branches[j]->endPosition);
 
-       SetColour( BLUE );
+      // SetColour( BLUE );
 
-      //  DrawPoint(branches[j]->endPosition - branch.direction*branch.endOffset);
-        //DrawPoint(branch.startPosition + branch.direction*branch.startOffset);
+        DrawPoint(branches[j]->endPosition - branch.direction*branch.endOffset);
+        DrawPoint(branch.startPosition + branch.direction*branch.startOffset);
 
 
         //        SetColour( WHITE );
@@ -652,18 +652,7 @@ void LstSkeleton::Draw()
 
         //        SetColour( BLACK );
         //        DrawPoint(posEnd - branch.direction*branch.endOffset);
-
-
     }
-     SetColour( MAGENTA );
-
-    for ( int j = 0; j < (int)branchTips.size(); j++ )
-    {
-          DrawPoint(branchTips[j]->endPosition);
-
-    }
-
- SetColour( WHITE );
 
 
     //    for ( int i = 0; i < (int)sections.size(); i++ )

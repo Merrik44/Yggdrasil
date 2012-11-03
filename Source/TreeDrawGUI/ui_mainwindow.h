@@ -1,7 +1,7 @@
 /********************************************************************************
 ** Form generated from reading UI file 'mainwindow.ui'
 **
-** Created: Fri Oct 26 02:15:01 2012
+** Created: Fri Oct 26 15:25:32 2012
 **      by: Qt User Interface Compiler version 4.8.1
 **
 ** WARNING! All changes made in this file will be lost when recompiling UI file!
@@ -40,6 +40,8 @@ public:
     QAction *actionWhite_background;
     QAction *actionOpen_XML_file_2;
     QAction *Export_to_Mesh_Model_to_OBJ;
+    QAction *actionCreate_Leaves;
+    QAction *actionCreate_Foliage;
     QWidget *centralWidget;
     QMenuBar *menuBar;
     QMenu *menuFile;
@@ -86,6 +88,10 @@ public:
         actionOpen_XML_file_2->setObjectName(QString::fromUtf8("actionOpen_XML_file_2"));
         Export_to_Mesh_Model_to_OBJ = new QAction(MainWindow);
         Export_to_Mesh_Model_to_OBJ->setObjectName(QString::fromUtf8("Export_to_Mesh_Model_to_OBJ"));
+        actionCreate_Leaves = new QAction(MainWindow);
+        actionCreate_Leaves->setObjectName(QString::fromUtf8("actionCreate_Leaves"));
+        actionCreate_Foliage = new QAction(MainWindow);
+        actionCreate_Foliage->setObjectName(QString::fromUtf8("actionCreate_Foliage"));
         centralWidget = new QWidget(MainWindow);
         centralWidget->setObjectName(QString::fromUtf8("centralWidget"));
         MainWindow->setCentralWidget(centralWidget);
@@ -129,6 +135,8 @@ public:
         menuDisplay->addAction(actionWhite_background);
         menuEdit->addAction(actionUndo);
         menuEdit->addAction(actionRedo);
+        menuGenerate_Leaves->addAction(actionCreate_Leaves);
+        menuGenerate_Leaves->addAction(actionCreate_Foliage);
 
         retranslateUi(MainWindow);
 
@@ -152,6 +160,8 @@ public:
         actionWhite_background->setText(QApplication::translate("MainWindow", "White background", 0, QApplication::UnicodeUTF8));
         actionOpen_XML_file_2->setText(QApplication::translate("MainWindow", "Open XML file", 0, QApplication::UnicodeUTF8));
         Export_to_Mesh_Model_to_OBJ->setText(QApplication::translate("MainWindow", "Export to Mesh Model to OBJ", 0, QApplication::UnicodeUTF8));
+        actionCreate_Leaves->setText(QApplication::translate("MainWindow", "Create Leaves", 0, QApplication::UnicodeUTF8));
+        actionCreate_Foliage->setText(QApplication::translate("MainWindow", "Create Foliage", 0, QApplication::UnicodeUTF8));
         menuFile->setTitle(QApplication::translate("MainWindow", "File", 0, QApplication::UnicodeUTF8));
         menuDisplay->setTitle(QApplication::translate("MainWindow", "Display", 0, QApplication::UnicodeUTF8));
         menuEdit->setTitle(QApplication::translate("MainWindow", "Edit", 0, QApplication::UnicodeUTF8));

@@ -285,6 +285,9 @@ void GLWidget::setSubdivisionLevel( int level )
 }
 void GLWidget::GenerateMeshFromLST()
 {
+    if(model != NULL)
+        delete model;
+
     if(skeleton != NULL)
         model = generateMesh( skeleton->branches);
 

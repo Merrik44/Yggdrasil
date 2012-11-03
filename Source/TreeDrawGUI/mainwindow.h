@@ -70,6 +70,10 @@ private slots:
 
     void on_Export_to_Mesh_Model_to_OBJ_triggered();
 
+    void on_actionCreate_Foliage_triggered();
+
+    void on_actionCreate_Leaves_triggered();
+
 private:
     Ui::MainWindow *ui;
     void connectActions();

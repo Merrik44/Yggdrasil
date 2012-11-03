@@ -61,6 +61,8 @@
     <property name="title">
      <string>Generate Leaves</string>
     </property>
+    <addaction name="actionCreate_Leaves"/>
+    <addaction name="actionCreate_Foliage"/>
    </widget>
    <widget class="QMenu" name="menuDafasdf">
     <property name="title">
@@ -152,6 +154,16 @@
   <action name="Export_to_Mesh_Model_to_OBJ">
    <property name="text">
     <string>Export to Mesh Model to OBJ</string>
+   </property>
+  </action>
+  <action name="actionCreate_Leaves">
+   <property name="text">
+    <string>Create Leaves</string>
+   </property>
+  </action>
+  <action name="actionCreate_Foliage">
+   <property name="text">
+    <string>Create Foliage</string>
    </property>
   </action>
  </widget>

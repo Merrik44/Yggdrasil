@@ -919,3 +919,14 @@ void MainWindow::on_Export_to_Mesh_Model_to_OBJ_triggered()
 {
 
 }
+
+// OVERHERE!!!!!!
+void MainWindow::on_actionCreate_Foliage_triggered()
+{
+    cout << "Foliage" << endl;
+}
+
+void MainWindow::on_actionCreate_Leaves_triggered()
+{
+    cout << "Leaves" << endl;
+}

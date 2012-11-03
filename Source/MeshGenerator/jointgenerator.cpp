@@ -22,9 +22,6 @@ bool enableProgressControl = false;
 Vertex* weightedmMergeAwithedB( Vertex* A, Vertex* B)
 {
 
-//cout << A->position  << endl;
-//cout << B->position  << endl;
-
     // ------- Add A to B ---------
     B->position*= B->weight;
     B->finalPosition*= B->weight;
@@ -43,14 +40,61 @@ Vertex* weightedmMergeAwithedB( Vertex* A, Vertex* B)
     B->normal /= B->weight +A->weight;
     B->weight += A->weight;
 
-   // cout << B->position  << endl;
-   // AddPoint( A->position, GREEN);
-   // AddPoint( Vector3f(0,0,0), GREEN);
-   // AddLine( B->position,A->position, BLUE);
+    // cout << B->position  << endl;
+    // AddPoint( A->position, GREEN);
+    // AddPoint( Vector3f(0,0,0), GREEN);
+    // AddLine( B->position,A->position, BLUE);
     stringstream ss;
     ss << A->position  << A->loopID;
 
     B->loopID = ss.str();
+
+
+    return B;
+}
+
+
+Vertex* regularMerge( Vertex* A, Vertex* B, Mesh* jointModel, vector< Face* >& incomingBranchFaces)
+{
+
+    // ------- Add A to B ---------
+
+    B->position += A->position;
+    B->finalPosition += A->finalPosition;
+    B->normal += A->normal;
+
+    // ------ Normalize B, which now represents the merged point-----
+
+
+    B->position /= 2;
+    B->finalPosition /= 2;
+    B->normal /= 2;
+
+//    for( uint j = 0; j < jointModel->triangles.size(); j++)
+//    {
+//        Face* face = jointModel->triangles[j];
+
+//        for( uint k = 0; k < 3; k++)
+//        {
+
+//            if( face->vertices[k] == A)
+//                face->vertices[k] = B;
+//        }
+
+//    }
+
+    for( uint j = 0; j < incomingBranchFaces.size(); j++)
+    {
+        Face* face = incomingBranchFaces[j];
+
+        for( uint k = 0; k < 3; k++)
+        {
+
+           // if( face->vertices[k] == A)
+              //  face->vertices[k] = B;
+        }
+
+    }
 
 
     return B;
@@ -140,11 +184,7 @@ bool CollapseJoint(Mesh* jointModel, vector< Face* >& incomingBranchFaces)
 
     bool AtleastOneCollapse = false;
     SortByLength(jointModel->edges);
-    //    for (uint i = 0; i < jointModel->edges.size(); i++ )
-    //    {
-    //        float length =( jointModel->edges[i]->vertices[0]->position - jointModel->edges[i]->vertices[1]->position).length();
-    //        cout << length << endl;
-    //    }
+
     vector< Face* > facesToDelete;
     for (uint i = 0; i < jointModel->edges.size(); i++ )
     {
@@ -154,12 +194,6 @@ bool CollapseJoint(Mesh* jointModel, vector< Face* >& incomingBranchFaces)
             counter2--;
             if( counter2 < 0)
                 break;
-
-            if( counter2 == 0 )
-            {
-              //  for (uint r = 0; r < jointModel->edges.size(); r++ )
-                    //AddLine(jointModel->edges[r]->vertices[0]->position, jointModel->edges[r]->vertices[1]->position, CYAN);
-            }
         }
 
         Edge* edge = jointModel->edges[i];
@@ -173,7 +207,6 @@ bool CollapseJoint(Mesh* jointModel, vector< Face* >& incomingBranchFaces)
         if( DoStringsShareCharacters( A->loopID, B->loopID ) )
             continue;
 
-        //AddLine(A->position, B->position, GREEN );
         Face* faceA = edge->faces[0];
         Face* faceB = edge->faces[1];
 
@@ -186,36 +219,16 @@ bool CollapseJoint(Mesh* jointModel, vector< Face* >& incomingBranchFaces)
             continue;
 
         // ---- collapse ----
+        //
+        // float oppFaceVertA =NULL;
+        // for(int i = 0; i < 10)
+
 
         B  = weightedmMergeAwithedB( A, B );
         AtleastOneCollapse = true;
 
 
-        for( uint j = 0; j < jointModel->triangles.size(); j++)
-        {
-            Face* face = jointModel->triangles[j];
 
-            for( uint k = 0; k < 3; k++)
-            {
-
-                if( face->vertices[k] == A)
-                    face->vertices[k] = B;
-            }
-
-        }
-
-        for( uint j = 0; j < incomingBranchFaces.size(); j++)
-        {
-            Face* face = incomingBranchFaces[j];
-
-            for( uint k = 0; k < 3; k++)
-            {
-
-                if( face->vertices[k] == A)
-                    face->vertices[k] = B;
-            }
-
-        }
 
 
 
@@ -409,7 +422,7 @@ Vector3f GetHullCenter(vector< Face* >& hull)
 }
 
 
-Mesh* GenerateJoint2(vector< vector<Vertex*>* >& branches, vector< Face* >& incomingBranchFaces, vector< Vertex* >& otherVertices, Vector3f center)
+Mesh* GenerateJoint(vector< vector<Vertex*>* >& branches, vector< Face* >& incomingBranchFaces, vector< Vector3f >& brancheNormals)
 {
 
 
@@ -447,7 +460,7 @@ Mesh* GenerateJoint2(vector< vector<Vertex*>* >& branches, vector< Face* >& inco
         vector<Vertex*>& loop = *rootBoundaryLoops[i];
         for (unsigned int k = 0; k < loop.size(); k++)
         {
-             stringstream sstream;
+            stringstream sstream;
             // get the vertices
             Vertex* v1 = loop[k];
             v1->loopIndex = i;
@@ -509,7 +522,6 @@ Mesh* GenerateJoint2(vector< vector<Vertex*>* >& branches, vector< Face* >& inco
 
 
     // --------------- create convex hull -----------------
-    // cout << "DD DD " << rootVertices.size()<< endl;
     for(int i = 0; i < rootVertices.size(); i++)
     {
         Vertex* vertexToAdd = rootVertices[i];
@@ -557,12 +569,6 @@ Mesh* GenerateJoint2(vector< vector<Vertex*>* >& branches, vector< Face* >& inco
             if( edge->vertices[0]->index == edge->vertices[1]->index)
                 continue;
 
-            if( faces == 1 )
-            {
-                //AddLine( edge->vertices[1]->position,  edge->vertices[0]->position, CYAN );
-              //  AddLine( vertexToAdd->position,  edge->vertices[0]->position, GREEN );
-               // AddLine( edge->vertices[1]->position,  vertexToAdd->position, GREEN );
-            }
             Face* newFace = new Face(edge->vertices[0], edge->vertices[1], vertexToAdd );
 
 
@@ -607,11 +613,48 @@ Mesh* GenerateJoint2(vector< vector<Vertex*>* >& branches, vector< Face* >& inco
     }
 
 
-    //    if( retriangulate)
-    //    {
-    //        RetriangulateSharpEdges(jointModel );
-    //    }
+    // compare every branch pair and find the ones that are accute
+    for (unsigned int i = 0; i < brancheNormals.size(); i++)
+    {
 
+        Vector3f branchA = brancheNormals[i];
+        for (unsigned int j = i+1; j < branches.size(); j++)
+        {
+            Vector3f branchB = brancheNormals[j];
+
+            // --- if they are acute ---
+            float dot = branchA.dotProduct(branchB);
+            if( dot > 0 )
+            {
+                vector<Vertex*>& loopA = *branches[i];
+                vector<Vertex*>& loopB = *branches[j];
+
+                cout << "acute " << dot << endl;
+                float closest = 999999;
+                Vertex* closestA = NULL;
+                Vertex* closestB = NULL;
+                // find the closest verex pair
+                for( int a = 0; a < loopA.size(); a++ )
+                {
+                    Vertex* VertA =loopA[a];
+                    for( int b = 0; b < loopB.size(); b++ )
+                    {
+                        Vertex* VertB =loopB[b];
+                        float sqrDist = (VertB->position - VertA->position).lengthSq();
+                        if( sqrDist < closest )
+                        {
+                            closestA = VertA;
+                            closestB = VertB;
+                            closest = sqrDist;
+                        }
+                    }
+                }
+
+                AddLine(closestA->position, closestB->position, YELLOW);
+              //  regularMerge(closestA, closestB, jointModel, incomingBranchFaces);
+            }
+        }
+    }
 
 
     jointModel->ClearNeighourAndEdgeData();

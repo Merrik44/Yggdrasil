@@ -1,7 +1,7 @@
 /****************************************************************************
 ** Meta object code from reading C++ file 'mainwindow.h'
 **
-** Created: Fri Oct 26 02:11:55 2012
+** Created: Sun Oct 28 23:27:22 2012
 **      by: The Qt Meta Object Compiler version 63 (Qt 4.8.1)
 **
 ** WARNING! All changes made in this file will be lost!
@@ -23,7 +23,7 @@ static const uint qt_meta_data_MainWindow[] = {
        6,       // revision
        0,       // classname
        0,    0, // classinfo
-      31,   14, // methods
+      33,   14, // methods
        0,    0, // properties
        0,    0, // enums/sets
        0,    0, // constructors
@@ -62,6 +62,8 @@ static const uint qt_meta_data_MainWindow[] = {
      593,   11,   11,   11, 0x08,
      612,   11,   11,   11, 0x08,
      662,   11,   11,   11, 0x08,
+     705,   11,   11,   11, 0x08,
+     741,   11,   11,   11, 0x08,
 
        0        // eod
 };
@@ -86,6 +88,8 @@ static const char qt_meta_stringdata_MainWindow[] = {
     "setBrushSize(QString)\0cancelGeneration()\0"
     "on_actionExport_Cylinder_Model_to_OBJ_triggered()\0"
     "on_Export_to_Mesh_Model_to_OBJ_triggered()\0"
+    "on_actionCreate_Foliage_triggered()\0"
+    "on_actionCreate_Leaves_triggered()\0"
 };
 
 void MainWindow::qt_static_metacall(QObject *_o, QMetaObject::Call _c, int _id, void **_a)
@@ -125,6 +129,8 @@ void MainWindow::qt_static_metacall(QObject *_o, QMetaObject::Call _c, int _id, 
         case 28: _t->cancelGeneration(); break;
         case 29: _t->on_actionExport_Cylinder_Model_to_OBJ_triggered(); break;
         case 30: _t->on_Export_to_Mesh_Model_to_OBJ_triggered(); break;
+        case 31: _t->on_actionCreate_Foliage_triggered(); break;
+        case 32: _t->on_actionCreate_Leaves_triggered(); break;
         default: ;
         }
     }
@@ -162,9 +168,9 @@ int MainWindow::qt_metacall(QMetaObject::Call _c, int _id, void **_a)
     if (_id < 0)
         return _id;
     if (_c == QMetaObject::InvokeMetaMethod) {
-        if (_id < 31)
+        if (_id < 33)
             qt_static_metacall(this, _c, _id, _a);
-        _id -= 31;
+        _id -= 33;
     }
     return _id;
 }
