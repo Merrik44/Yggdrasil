@@ -5,6 +5,8 @@
 #include "sketchwidget.h"
 #include "TreeDrawGUI/Display/qtreedisplaywidget.h"
 #include <string>
+#include "LeafGenerator/leafwindow.h"
+#include "LeafGenerator/foliageparameters.h"
 
 QT_BEGIN_NAMESPACE
 class QAction;
@@ -75,6 +77,8 @@ private slots:
 
     void on_actionFoliage_Options_triggered();
 
+    void foliageChanged();
+
 private:
     Ui::MainWindow *ui;
     void connectActions();
@@ -110,6 +114,8 @@ private:
 
     QLabel *brushLabel;
     QComboBox *brushSize;
+    LeafWindow* leafWindow;
+    FoliageParameters* foliageParameters;
 
     std::string lastGeneratedFile;
     std::string lastLSTFile;

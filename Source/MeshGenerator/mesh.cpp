@@ -786,6 +786,12 @@ void Mesh::Draw2()
                 DrawLine(edges[i]->vertices[0]->position*scale, edges[i]->vertices[1]->position*scale);
             }
 
+             for ( uint i =0; i < vertices.size(); i++)
+             {
+                 SetColour(GREEN);
+                 DrawPoint(vertices[i]->position*scale);
+             }
+
 
         }
 

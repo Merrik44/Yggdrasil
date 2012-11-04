@@ -7,6 +7,8 @@
 #include "vmath.h"
 #include "vector"
 #include "mesh.h"
+#include <QString>
+#include <QtCore>
 
 class BranchNode
 {
@@ -55,6 +57,24 @@ public:
         endPosition = direction*length + startPosition;
 
         startOffset = endOffset = 0;
+
+        // --- recalulate rotation relative to the up vector ---
+        Vector3f axis = direction.crossProduct(Vector3f(0,1, 0));
+        if( direction == Vector3f(0,1, 0) )
+            axis = Vector3f(1, 0, 0);
+        else if( direction == Vector3f(0,-1, 0) )
+                axis = Vector3f(1, 0, 0);
+
+        float dot  =direction.dotProduct(Vector3f(0,1, 0));
+        float angle = acos(dot);
+        angle *=  57.2957795;
+
+        axis *= angle;
+      //  Quatf quat;
+        //quat.fromAxisRot(axis, angle );
+       // rotation = quat.rotMatrix();
+
+
     }
 
 
@@ -90,6 +110,31 @@ class BranchPoint
     public:
         Vector3f poistion;
         float radius;
+};
+
+
+class LSTLeafNode
+{
+    public:
+    LSTLeafNode()
+    {
+
+    }
+    float size;
+    float scale;
+    float attachment;
+    BranchNode* attachmentPoint;
+
+    QString name;
+    QString path;
+    QString tex;
+    int number;
+    Vector3f p1;
+    Vector3f p2;
+    Vector3f p3;
+    Vector3f p4;
+
+    Matrix3f rot;
 };
 
 

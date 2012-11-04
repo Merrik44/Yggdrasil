@@ -1,0 +1,21 @@
+newmtl dogma_5_top
+Ka 0.0435 0.0435 0.0435
+Kd 0.6
+Ks 0.5
+illum 2
+Ns 125
+
+map_Ka -clamp on -s 1 1 1 -o 0 0 0 -mm 0 1 dogma_5_top.png
+map_Kd -clamp on -s 1 1 1 -o 0 0 0 -mm 0 1 dogma_5_top.png
+bump -clamp on -imfchan r -s 1 1 1 -o 0 0 0 -bm 1 dogma_5_topN.png
+
+newmtl dogma_5_bottom
+Ka 0.0435 0.0435 0.0435
+Kd 0.6
+Ks 0.25
+illum 2
+Ns 125
+
+map_Ka -clamp on -s 1 1 1 -o 0 0 0 -mm 0 1 dogma_5_bottom.png
+map_Kd -clamp on -s 1 1 1 -o 0 0 0 -mm 0 1 dogma_5_bottom.png
+bump -clamp on -imfchan r -s 1 1 1 -o 0 0 0 -bm 1 dogma_5_bottomN.png

@@ -614,47 +614,47 @@ Mesh* GenerateJoint(vector< vector<Vertex*>* >& branches, vector< Face* >& incom
 
 
     // compare every branch pair and find the ones that are accute
-    for (unsigned int i = 0; i < brancheNormals.size(); i++)
-    {
+//    for (unsigned int i = 0; i < brancheNormals.size(); i++)
+//    {
 
-        Vector3f branchA = brancheNormals[i];
-        for (unsigned int j = i+1; j < branches.size(); j++)
-        {
-            Vector3f branchB = brancheNormals[j];
+//        Vector3f branchA = brancheNormals[i];
+//        for (unsigned int j = i+1; j < branches.size(); j++)
+//        {
+//            Vector3f branchB = brancheNormals[j];
 
-            // --- if they are acute ---
-            float dot = branchA.dotProduct(branchB);
-            if( dot > 0 )
-            {
-                vector<Vertex*>& loopA = *branches[i];
-                vector<Vertex*>& loopB = *branches[j];
+//            // --- if they are acute ---
+//            float dot = branchA.dotProduct(branchB);
+//            if( dot > 0 )
+//            {
+//                vector<Vertex*>& loopA = *branches[i];
+//                vector<Vertex*>& loopB = *branches[j];
 
-                cout << "acute " << dot << endl;
-                float closest = 999999;
-                Vertex* closestA = NULL;
-                Vertex* closestB = NULL;
-                // find the closest verex pair
-                for( int a = 0; a < loopA.size(); a++ )
-                {
-                    Vertex* VertA =loopA[a];
-                    for( int b = 0; b < loopB.size(); b++ )
-                    {
-                        Vertex* VertB =loopB[b];
-                        float sqrDist = (VertB->position - VertA->position).lengthSq();
-                        if( sqrDist < closest )
-                        {
-                            closestA = VertA;
-                            closestB = VertB;
-                            closest = sqrDist;
-                        }
-                    }
-                }
+//                cout << "acute " << dot << endl;
+//                float closest = 999999;
+//                Vertex* closestA = NULL;
+//                Vertex* closestB = NULL;
+//                // find the closest verex pair
+//                for( int a = 0; a < loopA.size(); a++ )
+//                {
+//                    Vertex* VertA =loopA[a];
+//                    for( int b = 0; b < loopB.size(); b++ )
+//                    {
+//                        Vertex* VertB =loopB[b];
+//                        float sqrDist = (VertB->position - VertA->position).lengthSq();
+//                        if( sqrDist < closest )
+//                        {
+//                            closestA = VertA;
+//                            closestB = VertB;
+//                            closest = sqrDist;
+//                        }
+//                    }
+//                }
 
-                AddLine(closestA->position, closestB->position, YELLOW);
-              //  regularMerge(closestA, closestB, jointModel, incomingBranchFaces);
-            }
-        }
-    }
+//                AddLine(closestA->position, closestB->position, YELLOW);
+//              //  regularMerge(closestA, closestB, jointModel, incomingBranchFaces);
+//            }
+//        }
+//    }
 
 
     jointModel->ClearNeighourAndEdgeData();

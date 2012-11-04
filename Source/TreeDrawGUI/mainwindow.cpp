@@ -11,6 +11,7 @@
 #include "optionsdialog.h"
 
 
+
 const int BRUSH_SIZE_COUNT = 10;
 const int BRUSH_SIZE_OPTION[] = { 1, 3, 5, 7, 9, 11, 15, 20, 25, 30 };
 
@@ -53,9 +54,11 @@ MainWindow::MainWindow()
 
     // QDir directory("./Resources/Textures/");
     // QStringList textureList = directory.entryList(acceptedImageFormats);
-
+    leafWindow = new LeafWindow();
+    foliageParameters = new FoliageParameters();
+    connect(foliageParameters,SIGNAL(foliageChanged()),this,SLOT(foliageChanged()));
     displayWidget->setBarkTexture("./Resources/Textures/bark.jpg");
-    displayWidget->setLeafTexture("./Resources/Generated Leaves/Leaf Textures/alphaTest.png");
+    displayWidget->setLeafTexture("./Resources/Generated_Leaves/Leaf_Textures/alphaTest.png");
 
 
 
@@ -214,7 +217,6 @@ void MainWindow::toggleTexture(bool toggle)
 
 void MainWindow::toggleFoliage(bool toggle)
 {
-    cout << "DDDD" << endl;
     displayWidget->renderFoliage = toggle;
 
     displayWidget->repaint();
@@ -652,12 +654,14 @@ void MainWindow::GenerateModel()
     // --- subdivision surface ---
     generateMeshFromLST( lastLSTFile );
 
-
+    cout <<  lastLSTFile << endl;
     // --- foliage ---
-    string foliageFile = "treefile112_foliage_branchRot.obj";
-    stringstream ss;
-    ss << "./Resources/Generated Leaves/Foliage Models/" << foliageFile;
-    displayWidget->LoadFoliage(ss.str());
+    string foliageFilepath = foliageParameters->createMesh(QString(lastLSTFile.c_str()));
+
+    // "treefile112_foliage_branchRot.obj";
+ //   stringstream ss;
+  //  ss << "./Resources/Generated_Leaves/Foliage_Models/" << foliageFile;
+    displayWidget->LoadFoliage(foliageFilepath);
 
 
     // --- Render ---
@@ -718,6 +722,7 @@ void MainWindow::connectActions()
     connect(ui->actionRedo, SIGNAL(triggered()), this, SLOT(redoAction()));
     ui->actionRedo->setShortcuts(QKeySequence::Redo);
     ui->actionRedo->setStatusTip(tr("Redo your last undone action"));
+
 
 }
 
@@ -942,14 +947,19 @@ void MainWindow::on_Export_to_Mesh_Model_to_OBJ_triggered()
 
 }
 
-// OVERHERE!!!!!!
 
 void MainWindow::on_actionCreate_Leaves_triggered()
 {
-    cout << "Leaves" << endl;
+
+    leafWindow->show();
 }
 
 void MainWindow::on_actionFoliage_Options_triggered()
 {
-    cout << "Foliage Options" << endl;
+    foliageParameters->setValues();
+}
+
+void  MainWindow::foliageChanged()
+{
+    GenerateModel();
 }

@@ -49,7 +49,21 @@ SOURCES += TreeDrawGUI/main.cpp \
     TextureSynthesis/pixelcoherence.cpp \
     TextureSynthesis/indexedtexture.cpp \
     TextureSynthesis/coherenttexture.cpp \
-    TextureSynthesis/texturesynthesisdialog.cpp
+    TextureSynthesis/texturesynthesisdialog.cpp \
+    LeafGenerator/variationchooser.cpp \
+    LeafGenerator/treenode.cpp \
+    LeafGenerator/sketcharea.cpp \
+    LeafGenerator/singlecolourchooser.cpp \
+    LeafGenerator/sidebar.cpp \
+    LeafGenerator/paramchooser.cpp \
+    LeafGenerator/leafwindow.cpp \
+    LeafGenerator/leaftemplate.cpp \
+    LeafGenerator/leafmodel.cpp \
+    LeafGenerator/leafchooser.cpp \
+    LeafGenerator/foliageparameters.cpp \
+    LeafGenerator/foliagechooser.cpp \
+    LeafGenerator/foliage.cpp \
+    LeafGenerator/colourchooser.cpp
 HEADERS += TreeDrawGUI/mainwindow.h \
     TreeDrawGUI/sketchwidget.h \
     TreeDrawGUI/branch.h \
@@ -96,6 +110,20 @@ HEADERS += TreeDrawGUI/mainwindow.h \
     TextureSynthesis/indexedtexture.h \
     TextureSynthesis/coherenttexture.h \
     TextureSynthesis/texturesynthesisdialog.h \\\
+    LeafGenerator/variationchooser.h \
+    LeafGenerator/treenode.h \
+    LeafGenerator/sketcharea.h \
+    LeafGenerator/singlecolourchooser.h \
+    LeafGenerator/sidebar.h \
+    LeafGenerator/paramchooser.h \
+    LeafGenerator/leafwindow.h \
+    LeafGenerator/leaftemplate.h \
+    LeafGenerator/leafmodel.h \
+    LeafGenerator/leafchooser.h \
+    LeafGenerator/foliageparameters.h \
+    LeafGenerator/foliagechooser.h \
+    LeafGenerator/foliage.h \
+    LeafGenerator/colourchooser.h
 
 INCLUDEPATH += /QTreeWidget/
 INCLUDEPATH += /TreeDrawGUI/
