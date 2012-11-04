@@ -48,8 +48,9 @@ private slots:
     void generateMeshFromLST( std::string lstfile);
     void exportCylindesAsOBJ();
     void exportMeshAsOBJ();
-    void displayAsCylinders();
-    void displayAsMesh();
+    void displayAsMesh(bool);
+    void toggleFoliage(bool);
+    void toggleTexture(bool);
     void SubdivSliderChange(int value);
     void SynthesizeTexture();
 
@@ -70,9 +71,9 @@ private slots:
 
     void on_Export_to_Mesh_Model_to_OBJ_triggered();
 
-    void on_actionCreate_Foliage_triggered();
-
     void on_actionCreate_Leaves_triggered();
+
+    void on_actionFoliage_Options_triggered();
 
 private:
     Ui::MainWindow *ui;
@@ -94,10 +95,11 @@ private:
     QAction *newVariation;
     QCheckBox *generateMesh;
     QAction *newSketch;
-    QAction *displayMesh;
+    QCheckBox *displayFoliage;
+    QCheckBox *displayTexture;
     QAction *texSynthOption;
-    QAction *displayCylinderForm;
-    QSlider *SubdivSlider;
+    QCheckBox *displaySubdivisionSurface;
+    QSpinBox *SubdivSpinBox;
 
     //QAction *newSketch;
 
@@ -112,11 +114,14 @@ private:
     std::string lastGeneratedFile;
     std::string lastLSTFile;
 
+    bool singleMesh, foliage, renderWithTexture;
     int optionD, optionB, optionP, textureIndex, storeRoot, subdivs;
     void errorMessage(const char* msg, const char* title);
     QStringList acceptedImageFormats;
 
     bool sketchWidgetCreated;
+    void GenerateModel();
+
 
 protected:
     void keyPressEvent(QKeyEvent *event);

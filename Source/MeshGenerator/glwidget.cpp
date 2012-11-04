@@ -166,16 +166,15 @@ void GLWidget::loadGLTextures()
     QImage t;
     QImage b;
 
-    if ( !b.load( "../images/stripes.jpg" ) )
+    if ( !b.load( "../images/alphaTest.png", "PNG") )
     {
-        b = QImage( 16, 16, (QImage::Format)32 );
+        b = QImage( 16, 16, (QImage::Format_ARGB32) );
         b.fill( Qt::green );
     }
 
     t = QGLWidget::convertToGLFormat( b );
 
     glGenTextures( 1, &texture[0] );
-    glBindTexture( GL_TEXTURE_2D, texture[0] );
     glTexImage2D( GL_TEXTURE_2D, 0, 3, t.width(), t.height(), 0, GL_RGBA, GL_UNSIGNED_BYTE, t.bits() );
     glTexParameteri( GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR );
     glTexParameteri( GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR );
@@ -206,9 +205,13 @@ void GLWidget::initializeGL()
     glEnable(GL_LIGHTING);
     glEnable(GL_LIGHT0);
     glEnable(GL_MULTISAMPLE);
-    glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
+
     glEnable( GL_BLEND );
+    glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
+
     // glFrontFace(GL_CW);
+  //  glEnable (GL_BLEND);
+   // glBlendFunc (GL_ONE, GL_ONE);
 
 
     static GLfloat lightPosition[4] = { 0.5, 5.0, 7.0, 1.0 };
@@ -231,6 +234,7 @@ void GLWidget::LoadModel( std::string filepath )
     if( model != NULL )
         delete model;
     model = new Mesh(filepath);
+    model->scale = 0.01f;
 
 }
 

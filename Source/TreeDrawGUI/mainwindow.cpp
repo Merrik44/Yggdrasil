@@ -22,13 +22,15 @@ MainWindow::MainWindow()
 
     //QDir::setCurrent(QApplication::applicationDirPath());
     sketchWidgetCreated = false;
-
+    singleMesh = true;
+    foliage = true;
+    renderWithTexture = true;
 
     lastGeneratedFile = "";
     optionD = 2;
     optionB = 500;
     optionP = -1;
-    textureIndex = 37;
+    textureIndex = 1;
     storeRoot = 1;
     subdivs = 0;
 
@@ -49,15 +51,14 @@ MainWindow::MainWindow()
     acceptedImageFormats.append("*.raw");
 
 
-    QDir directory("./Resources/Textures/");
-    QStringList textureList = directory.entryList(acceptedImageFormats);
+    // QDir directory("./Resources/Textures/");
+    // QStringList textureList = directory.entryList(acceptedImageFormats);
 
-    //  cout << "texture " << textureIndex << endl;
-    // displayWidget->setTexture("./Resources/Textures/blank.jpg");
-    if (textureList.size() > textureIndex && textureIndex >= 0)
-    {
-        displayWidget->setTexture("./Resources/Textures/" + textureList[textureIndex]);
-    }
+    displayWidget->setBarkTexture("./Resources/Textures/bark.jpg");
+    displayWidget->setLeafTexture("./Resources/Generated Leaves/Leaf Textures/alphaTest.png");
+
+
+
 }
 
 void MainWindow::keyPressEvent(QKeyEvent *event)
@@ -195,28 +196,27 @@ void MainWindow::generateFromXML()
     }
 }
 
-
-void MainWindow::displayAsCylinders()
+void MainWindow::displayAsMesh(bool toggle)
 {
-    //   cout << "SS " << endl;
-    displayWidget->displayGeneratedMesh = false;
-    displayCylinderForm->setEnabled(false);
+    displayWidget->renderSubdivisionSurface = toggle;
 
-    SubdivSlider->setEnabled(false);
-    displayMesh->setEnabled(true);
     displayWidget->repaint();
     displayWidget->updateGL();
 }
 
-void MainWindow::displayAsMesh()
+void MainWindow::toggleTexture(bool toggle)
 {
-    displayWidget->displayGeneratedMesh = true;
-    // --------------- Generate the mesh ---------------------------------
-    generateMeshFromLST(lastLSTFile);
+    displayWidget->renderTexture = toggle;
 
-    displayMesh->setEnabled(false);
-    displayCylinderForm->setEnabled(true);
-    SubdivSlider->setEnabled(true);
+    displayWidget->repaint();
+    displayWidget->updateGL();
+}
+
+void MainWindow::toggleFoliage(bool toggle)
+{
+    cout << "DDDD" << endl;
+    displayWidget->renderFoliage = toggle;
+
     displayWidget->repaint();
     displayWidget->updateGL();
 }
@@ -255,13 +255,7 @@ void MainWindow::generateFromCurrent()
     string filename;
     int count = 0;
 
-    QDir directory("./Resources/Textures/");
-    QStringList textureList = directory.entryList(acceptedImageFormats);
 
-    if (textureList.size() > textureIndex && textureIndex >= 0)
-    {
-        displayWidget->setTexture("./Resources/Textures/" + textureList[textureIndex]);
-    }
     stringstream ss;
 
     displayWidget->clearDisplay();
@@ -386,6 +380,7 @@ void MainWindow::generateFromCurrent()
         cancelGeneration();
         return;
     }
+    GenerateModel();
 
 
     p.setValue(100);
@@ -402,7 +397,6 @@ void MainWindow::generateFromCurrent()
 
     setCursor(QCursor(Qt::ArrowCursor));
     newVariation->setEnabled(true);
-    displayAsCylinders();
     // displayCylinderForm->setEnabled(true);
     //   displayCylinderForm->setEnabled(true);
     // generateMesh->setEnabled(true);
@@ -416,11 +410,6 @@ void MainWindow::generateMeshFromLST( std::string lstfile)
     if(lstfile == ""  )
         return;
     cout << "ff " << lstfile << endl;
-
-    //  stringstream ss;
-    // ss << lstfile;
-    // ss << ".lst";
-    //lstfile += lst;
 
     QProgressDialog progbar(this);
     //p.setCancelButton(NULL);
@@ -460,16 +449,6 @@ void MainWindow::generateNewVariation()
 {// This is also temporary
     string basefilename = "treefile";
     string filename;
-    int count = 0;
-
-
-    QDir directory("./Resources/Textures/");
-    QStringList textureList = directory.entryList(acceptedImageFormats);
-
-    if (textureList.size() > textureIndex && textureIndex >= 0)
-    {
-        displayWidget->setTexture("./Resources/Textures/" + textureList[textureIndex]);
-    }
 
     stringstream ss;
 
@@ -518,6 +497,7 @@ void MainWindow::generateNewVariation()
         return;
     }
 
+    GenerateModel();
 
     p.setValue(100);
     p.setLabelText("Generation complete");
@@ -555,7 +535,7 @@ void MainWindow::optionsAccepted(int v1, int v2, int v3, int v4, int v5, int sub
     QStringList textureList = directory.entryList(acceptedImageFormats);
 
     if (textureList.size() > textureIndex && textureIndex >= 0)
-        displayWidget->setTexture("./Resources/Textures/" + textureList[textureIndex]);
+        displayWidget->setBarkTexture("./Resources/Textures/" + textureList[textureIndex]);
 
 
     subdivs =subdValue;
@@ -572,7 +552,7 @@ void MainWindow::exportCylindesAsOBJ()
 
 
     // export the mesh that is in the viewport
-    if(displayMesh->isEnabled())
+    if(displayFoliage->isEnabled())
         displayWidget->exportToObj(path.toStdString());
     else
         displayWidget->exportMeshToObj(path.toStdString());
@@ -666,6 +646,32 @@ void MainWindow::sketchEmpty()
     generate->setEnabled(false);
 }
 
+void MainWindow::GenerateModel()
+{
+
+    // --- subdivision surface ---
+    generateMeshFromLST( lastLSTFile );
+
+
+    // --- foliage ---
+    string foliageFile = "treefile112_foliage_branchRot.obj";
+    stringstream ss;
+    ss << "./Resources/Generated Leaves/Foliage Models/" << foliageFile;
+    displayWidget->LoadFoliage(ss.str());
+
+
+    // --- Render ---
+    displayWidget->repaint();
+    displayWidget->updateGL();
+
+
+    // --- enable filters ---
+    displayTexture->setEnabled(true);
+    displaySubdivisionSurface->setEnabled(true);
+    displayFoliage->setEnabled(true);
+    SubdivSpinBox->setEnabled(true);
+}
+
 
 void MainWindow::connectActions()
 {
@@ -747,26 +753,37 @@ void MainWindow::createActions()
     newVariation->setEnabled(false);
 
 
-    displayMesh = new QAction(("&Display Mesh Model"), this);
+    displayFoliage = new QCheckBox(("&Foliage"), this);
+    displayFoliage->setChecked(true);
     //newVariation->setShortcuts(QKeySequence(Qt::CTRL + Qt::Key_G));
-    displayMesh->setStatusTip(tr("Generate a new variation of the last type of tree you generated"));
-    connect(displayMesh, SIGNAL(triggered()), this, SLOT(displayAsMesh()));
-    displayMesh->setEnabled(false);
+    displayFoliage->setStatusTip(tr("Display foliage"));
+    connect(displayFoliage, SIGNAL(toggled(bool)), this, SLOT(toggleFoliage( bool)));
+    displayFoliage->setEnabled(false);
+    displayFoliage->setChecked(true);
 
-
-    displayCylinderForm = new QAction(("&Display Cylinder Model"), this);
+    displayTexture = new QCheckBox(("&Texture"), this);
+    displayTexture->setChecked(true);
     //newVariation->setShortcuts(QKeySequence(Qt::CTRL + Qt::Key_G));
-    displayCylinderForm->setStatusTip(tr("Generate a new variation of the last type of tree you generated"));
-    connect(displayCylinderForm, SIGNAL(triggered()), this, SLOT(displayAsCylinders()));
-    displayCylinderForm->setEnabled(false);
+    displayTexture->setStatusTip(tr("Display texture"));
+    connect(displayTexture, SIGNAL(toggled(bool)), this, SLOT(toggleTexture(bool)));
+    displayTexture->setEnabled(false);
+    displayTexture->setChecked(true);
 
-    SubdivSlider = new QSlider( Qt::Horizontal);
+    displaySubdivisionSurface = new QCheckBox(("&Subdivision Surface"), this);
+    //newVariation->setShortcuts(QKeySequence(Qt::CTRL + Qt::Key_G));
+    displaySubdivisionSurface->setStatusTip(tr("Generate a subdivision surface for the trunk and branches"));
+    displaySubdivisionSurface->setChecked(true);
+    connect(displaySubdivisionSurface, SIGNAL(toggled(bool)), this, SLOT(displayAsMesh(bool)));
+    displaySubdivisionSurface->setEnabled(false);
 
-    SubdivSlider->setValue(subdivs);
-    SubdivSlider->setMaximum(4);
-    SubdivSlider->setEnabled(false);
+    SubdivSpinBox = new QSpinBox();
+    SubdivSpinBox->setSingleStep(1);
+    SubdivSpinBox->setMaximumWidth(40);
+    SubdivSpinBox->setValue(subdivs);
+    SubdivSpinBox->setMaximum(3);
+    SubdivSpinBox->setEnabled(false);
 
-    connect(SubdivSlider, SIGNAL( valueChanged(int)), this, SLOT(SubdivSliderChange(int)));
+    connect(SubdivSpinBox, SIGNAL( valueChanged(int)), this, SLOT(SubdivSliderChange(int)));
 
 
     undo = new QAction(QIcon("./Resources/Icons/Undo.png"),("&Undo"), this);
@@ -856,17 +873,22 @@ void MainWindow::createToolBars()
     sketchToolBar->addWidget(brushLabel);
     sketchToolBar->addWidget(brushSize);
     sketchToolBar->addSeparator();
-    sketchToolBar->addAction(texSynthOption);
+    //sketchToolBar->addAction(texSynthOption);
 
 
     displayToolBar = new QToolBar("Display Toolbar");
     displayToolBar->setFloatable(false);
     displayToolBar->setMovable(false);
     displayToolBar->addAction(newVariation);
+    displayToolBar->addSeparator();
     // displayToolBar->addWidget(generateMesh);
-    displayToolBar->addAction(displayCylinderForm);
-    displayToolBar->addAction(displayMesh);
-    displayToolBar->addWidget(SubdivSlider);
+
+    displayToolBar->addWidget(displayFoliage);
+    displayToolBar->addWidget(displayTexture);
+    displayToolBar->addWidget(displaySubdivisionSurface);
+    displayToolBar->addWidget(SubdivSpinBox);
+ //   displayToolBar->addWidget(new QLabel(" Smootness"));
+
 
 
 
@@ -891,9 +913,9 @@ void MainWindow::setupWidgets()
     connect(sketchWidget, SIGNAL(sketchChanged()), this, SLOT(sketchChanged()));
     connect(sketchWidget, SIGNAL(sketchEmpty()), this, SLOT(sketchEmpty()));
     connect(sketchWidget,SIGNAL(sketchNonEmpty()), this, SLOT(sketchNonEmpty()));
-    sketchWidget->setMinimumSize(700, 600);
+    sketchWidget->setMinimumSize(600, 600);
     displayWidget = new QTreeDisplayWidget(frame);
-    displayWidget->setMinimumSize(550, 600);
+    displayWidget->setMinimumSize(600, 600);
     frameLayout->addWidget(sketchToolBar, 0, 0);
     frameLayout->addWidget(sketchWidget, 1, 0);
     frameLayout->addWidget(displayToolBar, 0, 1);
@@ -921,12 +943,13 @@ void MainWindow::on_Export_to_Mesh_Model_to_OBJ_triggered()
 }
 
 // OVERHERE!!!!!!
-void MainWindow::on_actionCreate_Foliage_triggered()
-{
-    cout << "Foliage" << endl;
-}
 
 void MainWindow::on_actionCreate_Leaves_triggered()
 {
     cout << "Leaves" << endl;
+}
+
+void MainWindow::on_actionFoliage_Options_triggered()
+{
+    cout << "Foliage Options" << endl;
 }

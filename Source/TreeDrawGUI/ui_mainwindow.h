@@ -1,7 +1,7 @@
 /********************************************************************************
 ** Form generated from reading UI file 'mainwindow.ui'
 **
-** Created: Fri Oct 26 15:25:32 2012
+** Created: Sat Nov 3 22:45:50 2012
 **      by: Qt User Interface Compiler version 4.8.1
 **
 ** WARNING! All changes made in this file will be lost when recompiling UI file!
@@ -42,6 +42,8 @@ public:
     QAction *Export_to_Mesh_Model_to_OBJ;
     QAction *actionCreate_Leaves;
     QAction *actionCreate_Foliage;
+    QAction *actionSynthesise_a_Texture;
+    QAction *actionFoliage_Options;
     QWidget *centralWidget;
     QMenuBar *menuBar;
     QMenu *menuFile;
@@ -49,7 +51,6 @@ public:
     QMenu *menuEdit;
     QMenu *menuSynthesise_Texture;
     QMenu *menuGenerate_Leaves;
-    QMenu *menuDafasdf;
     QStatusBar *statusBar;
 
     void setupUi(QMainWindow *MainWindow)
@@ -92,6 +93,10 @@ public:
         actionCreate_Leaves->setObjectName(QString::fromUtf8("actionCreate_Leaves"));
         actionCreate_Foliage = new QAction(MainWindow);
         actionCreate_Foliage->setObjectName(QString::fromUtf8("actionCreate_Foliage"));
+        actionSynthesise_a_Texture = new QAction(MainWindow);
+        actionSynthesise_a_Texture->setObjectName(QString::fromUtf8("actionSynthesise_a_Texture"));
+        actionFoliage_Options = new QAction(MainWindow);
+        actionFoliage_Options->setObjectName(QString::fromUtf8("actionFoliage_Options"));
         centralWidget = new QWidget(MainWindow);
         centralWidget->setObjectName(QString::fromUtf8("centralWidget"));
         MainWindow->setCentralWidget(centralWidget);
@@ -108,8 +113,6 @@ public:
         menuSynthesise_Texture->setObjectName(QString::fromUtf8("menuSynthesise_Texture"));
         menuGenerate_Leaves = new QMenu(menuBar);
         menuGenerate_Leaves->setObjectName(QString::fromUtf8("menuGenerate_Leaves"));
-        menuDafasdf = new QMenu(menuBar);
-        menuDafasdf->setObjectName(QString::fromUtf8("menuDafasdf"));
         MainWindow->setMenuBar(menuBar);
         statusBar = new QStatusBar(MainWindow);
         statusBar->setObjectName(QString::fromUtf8("statusBar"));
@@ -120,7 +123,6 @@ public:
         menuBar->addAction(menuDisplay->menuAction());
         menuBar->addAction(menuSynthesise_Texture->menuAction());
         menuBar->addAction(menuGenerate_Leaves->menuAction());
-        menuBar->addAction(menuDafasdf->menuAction());
         menuFile->addAction(actionOpen_XML_file);
         menuFile->addAction(actionSave_XML_file);
         menuFile->addSeparator();
@@ -135,8 +137,9 @@ public:
         menuDisplay->addAction(actionWhite_background);
         menuEdit->addAction(actionUndo);
         menuEdit->addAction(actionRedo);
+        menuSynthesise_Texture->addAction(actionSynthesise_a_Texture);
         menuGenerate_Leaves->addAction(actionCreate_Leaves);
-        menuGenerate_Leaves->addAction(actionCreate_Foliage);
+        menuGenerate_Leaves->addAction(actionFoliage_Options);
 
         retranslateUi(MainWindow);
 
@@ -160,14 +163,15 @@ public:
         actionWhite_background->setText(QApplication::translate("MainWindow", "White background", 0, QApplication::UnicodeUTF8));
         actionOpen_XML_file_2->setText(QApplication::translate("MainWindow", "Open XML file", 0, QApplication::UnicodeUTF8));
         Export_to_Mesh_Model_to_OBJ->setText(QApplication::translate("MainWindow", "Export to Mesh Model to OBJ", 0, QApplication::UnicodeUTF8));
-        actionCreate_Leaves->setText(QApplication::translate("MainWindow", "Create Leaves", 0, QApplication::UnicodeUTF8));
-        actionCreate_Foliage->setText(QApplication::translate("MainWindow", "Create Foliage", 0, QApplication::UnicodeUTF8));
+        actionCreate_Leaves->setText(QApplication::translate("MainWindow", "Generate a Leaf", 0, QApplication::UnicodeUTF8));
+        actionCreate_Foliage->setText(QApplication::translate("MainWindow", "Foliage Options", 0, QApplication::UnicodeUTF8));
+        actionSynthesise_a_Texture->setText(QApplication::translate("MainWindow", "Synthesise a Texture", 0, QApplication::UnicodeUTF8));
+        actionFoliage_Options->setText(QApplication::translate("MainWindow", "Foliage Options", 0, QApplication::UnicodeUTF8));
         menuFile->setTitle(QApplication::translate("MainWindow", "File", 0, QApplication::UnicodeUTF8));
         menuDisplay->setTitle(QApplication::translate("MainWindow", "Display", 0, QApplication::UnicodeUTF8));
         menuEdit->setTitle(QApplication::translate("MainWindow", "Edit", 0, QApplication::UnicodeUTF8));
         menuSynthesise_Texture->setTitle(QApplication::translate("MainWindow", "Synthesise Texture", 0, QApplication::UnicodeUTF8));
-        menuGenerate_Leaves->setTitle(QApplication::translate("MainWindow", "Generate Leaves", 0, QApplication::UnicodeUTF8));
-        menuDafasdf->setTitle(QApplication::translate("MainWindow", "dafasdf", 0, QApplication::UnicodeUTF8));
+        menuGenerate_Leaves->setTitle(QApplication::translate("MainWindow", "Leaves and Foliage", 0, QApplication::UnicodeUTF8));
     } // retranslateUi
 
 };

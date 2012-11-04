@@ -548,11 +548,13 @@ void Mesh::Draw()
                     Vector3f mid;
                     for ( int k = 0; k < 3; k++ )
                     {
+                        // --- normal ----
                         Vector3f normal = -tri->normal;
 
                         glNormal3f( normal.x, normal.y, normal.z );
 
 
+                        // --- Tex coord ----
                         if( display4Texture)
                         {
 
@@ -560,6 +562,8 @@ void Mesh::Draw()
                             glTexCoord2f(texCoord.x, texCoord.y);
                         }
 
+
+                        // --- position ---
                         Vector3f vert = tri->vertices[k]->position;
 
                         //  vert *= scale;
@@ -584,7 +588,15 @@ void Mesh::Draw()
 
                     for ( int k = 0; k < 4; k++ )
                     {
+                        // --- normal ----
+                        Vector3f normal ;
+                        if(smoothShading)
+                            normal = quad->vertices[k]->normal;
+                        else
+                            normal = quad->normal;
+                        glNormal3f( normal.x, normal.y, normal.z );
 
+                        // --- Tex coord ----
                         if( display4Texture)
                         {
 
@@ -592,13 +604,7 @@ void Mesh::Draw()
                             glTexCoord2f(texCoord.x, texCoord.y);
                         }
 
-                        Vector3f normal ;
-                        if(smoothShading)
-                            normal = quad->vertices[k]->normal;
-                        else
-                            normal = quad->normal;
-                        glNormal3f( normal.x, normal.y, normal.z ); // this needs to be fixed
-
+                        // --- position ---
                         Vector3f vert = quad->vertices[k]->position;
                         vert *= scale;
                         vert+=position;
@@ -688,37 +694,11 @@ void Mesh::Draw2()
                 {
                     Face* tri = triangles[j];
 
-                    //                    if( j==8 )
-                    //                    {
-                    //                    AddPoint(tri->vertices[0]->position, (Colours)0);
-                    //                    AddPoint(tri->vertices[1]->position, (Colours)1);
-                    //                    AddPoint(tri->vertices[2]->position, (Colours)2);
-
-                    //                    for( int n = 0; n < 3; n++)
-                    //                    {
-                    //                        Vector3f A = tri->edges[n]->vertices[0]->position;
-                    //                        Vector3f B = tri->edges[n]->vertices[1]->position;
-                    //                        AddLine( A, (A+B)/2, (Colours)n);
-                    //                 }
-                    //                    }
-
-                    //                    if(  tri->normal == Vector3f(0, 0, 0)  )
-                    //                    {
-                    //                       AddPoint(tri->vertices[0]->position, GREEN);
-                    //                       AddPoint(tri->vertices[1]->position, RED);
-                    //                       AddPoint(tri->vertices[2]->position, BLUE);
-
-                    ////                       cout<< "triangles[i]->vertices[0]" << endl;
-                    ////                       cout<< tri->vertices[0]->position << endl;
-                    ////                       cout<< tri->vertices[1]->position << endl;
-                    ////                       cout<< tri->vertices[2]->position << endl;
-                    //                    }
-
                     Vector3f mid;
                     for ( int k = 0; k < 3; k++ )
                     {
 
-                        //Vector3f normal = tri->vertices[k]->normal;
+                        // --- normal ----
                         Vector3f normal ;
                         if(smoothShading)
                             normal = tri->vertices[k]->normal;
@@ -729,7 +709,7 @@ void Mesh::Draw2()
 
                         glNormal3f( normal.x, normal.y, normal.z );
 
-
+                        // --- Tex coord ----
                         if( display4Texture)
                         {
 
@@ -737,6 +717,7 @@ void Mesh::Draw2()
                             glTexCoord2f(texCoord.x, texCoord.y);
                         }
 
+                        // --- position ---
                         Vector3f vert = tri->vertices[k]->position;
 
 
@@ -746,24 +727,6 @@ void Mesh::Draw2()
 
                         mid += vert;
 
-                        //                        Vector3f texDirY;
-                        //                        texDirY.y = texCoord.y;
-                        //texDirY*=0.05;
-                        //                        AddRay(vert, texDirY, CYAN);
-
-                        //                          Vector3f texDirX;
-                        //                          texDirX.x = texCoord.x;
-                        //                        //cout << texCoord << endl;
-                        //                          texDirX*=0.05;
-
-                        //                          AddRay(vert, texDirX, CYAN);
-
-                        //                        Vector3f offset = Vector3f(1, 1, 1);
-                        //                        offset *= Debug::RandomFloat()*0.02f;
-                        //                           AddText(texCoord.x, vert + offset, CYAN);
-
-
-                        // cout << vert << endl;
                     }
                     mid/=3;
                     // AddRay(mid, tri->normal*0.01f*scale, YELLOW);
@@ -782,20 +745,23 @@ void Mesh::Draw2()
                     for ( int k = 0; k < 4; k++ )
                     {
 
-                        if( display4Texture)
-                        {
 
-                            Vector2f texCoord = quad->texCoords[k];
-                            glTexCoord2f(texCoord.x, texCoord.y);
-                        }
-
+                        // --- normal ----
                         Vector3f normal ;
                         if(smoothShading)
                             normal = quad->vertices[k]->normal;
                         else
                             normal = quad->normal;
                         glNormal3f( normal.x, normal.y, normal.z ); // this needs to be fixed
-                        // glTexCoord2f( pTri->m_s[k], pTri->m_t[k] );
+
+                        // --- Tex coord ----
+                        if( display4Texture)
+                        {
+                            Vector2f texCoord = quad->texCoords[k];
+                            glTexCoord2f(texCoord.x, texCoord.y);
+                        }
+
+                        // --- position ---
                         Vector3f vert = quad->vertices[k]->position;
                         vert *= scale;
                         vert+=position;
@@ -813,24 +779,24 @@ void Mesh::Draw2()
 
             for ( uint i =0; i < edges.size(); i++)
             {
-                 if(edges[i]->vertices[0]->isSeam && edges[i]->vertices[1]->isSeam)
-                      SetColour(RED);
-                 else
-                      SetColour(WHITE);
+                if(edges[i]->vertices[0]->isSeam && edges[i]->vertices[1]->isSeam)
+                    SetColour(RED);
+                else
+                    SetColour(WHITE);
                 DrawLine(edges[i]->vertices[0]->position*scale, edges[i]->vertices[1]->position*scale);
             }
 
 
         }
 
-//        for ( uint i =0; i < vertices.size(); i++)
-//        {
-//            if(vertices[i]->isSeam)
-//                SetColour(GREEN);
-//            else
-//                SetColour(RED);
-//            DrawPoint(vertices[i]->position *scale);
-//        }
+        //        for ( uint i =0; i < vertices.size(); i++)
+        //        {
+        //            if(vertices[i]->isSeam)
+        //                SetColour(GREEN);
+        //            else
+        //                SetColour(RED);
+        //            DrawPoint(vertices[i]->position *scale);
+        //        }
         // SetColour(RED);
         //for ( uint i =0; i < vertices.size(); i++)
         // DrawRay(vertices[i]->position,vertices[i]->normal*0.05f );

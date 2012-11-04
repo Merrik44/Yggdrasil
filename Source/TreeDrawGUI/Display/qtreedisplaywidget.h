@@ -35,13 +35,18 @@ private:
     float zoomFactor;
 
     int backgroundColour;
+    GLuint barkTexture, leafTexture;
+
 
     bool isCurrent;
 
-    Mesh* model;
+    Mesh* subdivisionSurface;
+    Mesh* foliageMesh;
+
     LstSkeleton* lstGraph;
 
 public:
+    bool renderSubdivisionSurface, renderTexture, renderFoliage;
     QTreeDisplayWidget(QWidget *parent = 0);
     ~QTreeDisplayWidget();
     bool setSourceFile(const std::string &fileName);
@@ -51,7 +56,8 @@ public:
     void exportMeshToObj(const string &fileName);
 
     void setBackgroundColour(int colour);
-    void setTexture(const QString &path);
+    void setBarkTexture(const QString &path);
+     void setLeafTexture(const QString &path);
 
     void setOutOfDate();
     void setCurrent();
@@ -60,6 +66,8 @@ public:
     void GenerateMeshFromLST(QProgressDialog *progressBar);
     void ApplySubdivisionToMesh( int numberOfSubdvisions,  QProgressDialog* progressBar );
     bool displayGeneratedMesh;
+    void LoadFoliage(std::string filepath);
+
 
 protected:
     void initializeGL();

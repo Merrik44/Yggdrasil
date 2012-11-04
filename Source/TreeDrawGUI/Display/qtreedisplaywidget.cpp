@@ -41,7 +41,6 @@ GLuint texture;
 
 GLuint CreateGLTexture(const char * filename, int width, int height)
 {
-
     GLuint texture;
     QImage t;
     QImage b;
@@ -66,41 +65,6 @@ GLuint CreateGLTexture(const char * filename, int width, int height)
     return texture;
 }
 
-//
-//GLuint CreateGLTexture(const char * filename, int width, int height)
-//{
-//    GLuint texture;
-//    char * image;
-//    std::ifstream fin(filename,std::ios::in | std::ios::binary);
-//
-//    if (!fin.is_open()) return 0;
-//
-//    image = new char[height*width*3];
-//    fin.read(image,height*width*3);
-//    fin.close();
-//
-//    glGenTextures(0, &texture);
-//
-//    glBindTexture(GL_TEXTURE_2D, texture);
-//
-//    glTexEnvf(GL_TEXTURE_ENV, GL_TEXTURE_ENV_MODE, GL_MODULATE);
-//
-//    glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER,
-//                    GL_LINEAR_MIPMAP_NEAREST);
-//    glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
-//
-//    glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT);
-//    glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT);
-//
-//    gluBuild2DMipmaps(GL_TEXTURE_2D, 3, width, height,
-//                      GL_RGB, GL_UNSIGNED_BYTE, image);
-//
-//
-//
-//    delete[] image;
-//    return texture;
-//}
-
 QTreeDisplayWidget::QTreeDisplayWidget(QWidget *parent) :
     QGLWidget(parent),
     cameraRotationX(DefaultCameraRotationX),
@@ -114,10 +78,12 @@ QTreeDisplayWidget::QTreeDisplayWidget(QWidget *parent) :
     centerZ = 0.0f;
     panX = 0.0f;
     panY = 0.0f;
-    zoomFactor = 1.0f;
+    zoomFactor = 0.0001f;
     panFactor = 1.0f;
     isCurrent = false;
     displayGeneratedMesh = false;
+    //barkTexture = 0;
+   // barkTexture = 0;
 
     backgroundColour = BACKGROUND_COLOUR_BLACK;
 
@@ -133,8 +99,15 @@ QTreeDisplayWidget::QTreeDisplayWidget(QWidget *parent) :
     glDisable(GL_CULL_FACE);
 
     lstGraph = NULL;
-    model = NULL;
+    subdivisionSurface = NULL;
+    foliageMesh = NULL;
+    renderFoliage = true;
+    renderSubdivisionSurface = true;
+    renderTexture = true;
 
+
+    cout << "eeee" << endl;
+    //setTexture("./Resources/Textures/bark.jpg");
     //    LoadLST("./lst files/treefile4.lst" );
     //    model = generateMesh( lstGraph->branches);
     //    model->scale = 60;
@@ -151,15 +124,23 @@ QTreeDisplayWidget::~QTreeDisplayWidget()
         delete lstGraph;
     lstGraph = NULL;
 
-    if( model != NULL )
-        delete model;
-    model = NULL;
+    if( subdivisionSurface != NULL )
+        delete subdivisionSurface;
+    subdivisionSurface = NULL;
 }
 
-void QTreeDisplayWidget::setTexture(const QString &path)
+void QTreeDisplayWidget::setBarkTexture(const QString &path)
 {
-    texture = CreateGLTexture(path.toStdString().c_str(), TEXTURE_SIZE, TEXTURE_SIZE);
+    glDeleteTextures( 1, &barkTexture );
+    barkTexture = CreateGLTexture(path.toStdString().c_str(), TEXTURE_SIZE, TEXTURE_SIZE);
 }
+
+void QTreeDisplayWidget::setLeafTexture(const QString &path)
+{
+    glDeleteTextures( 1, &leafTexture );
+    leafTexture = CreateGLTexture(path.toStdString().c_str(), TEXTURE_SIZE, TEXTURE_SIZE);
+}
+
 
 void QTreeDisplayWidget::initializeGL()
 {
@@ -191,26 +172,35 @@ void QTreeDisplayWidget::LoadLST( std::string filepath )
 void QTreeDisplayWidget::GenerateMeshFromLST( QProgressDialog* progressBar)
 {
 
-    if( model != NULL )
-        delete model;
-    model = generateMesh( lstGraph->branches, progressBar);
+    if( subdivisionSurface != NULL )
+        delete subdivisionSurface;
+    subdivisionSurface = generateMesh( lstGraph->branches, progressBar);
 }
 
 void QTreeDisplayWidget::ApplySubdivisionToMesh( int numberOfSubdvisions,  QProgressDialog* progressBar )
 {
 
-    if( model == NULL )
+    if( subdivisionSurface == NULL )
         return;
 
 
-    model->RestoreMeshState();
-    model->ClearNeighourAndEdgeData();
-    model->ReconstructMeshDataStructure();
-    model->CalculateNormals();
+    subdivisionSurface->RestoreMeshState();
+    subdivisionSurface->ClearNeighourAndEdgeData();
+    subdivisionSurface->ReconstructMeshDataStructure();
+    subdivisionSurface->CalculateNormals();
 
 
-    ApplyLoopSubvision(model, numberOfSubdvisions, progressBar);
+    ApplyLoopSubvision(subdivisionSurface, numberOfSubdvisions, progressBar);
 
+}
+
+void QTreeDisplayWidget::LoadFoliage(std::string filepath)
+{
+    cout << "loading foliage " << endl;
+    if( foliageMesh != NULL)
+        delete foliageMesh;
+
+    foliageMesh = new Mesh(filepath);
 }
 
 void qtGluPerspective(double fovy,double aspect, double zNear, double zFar)
@@ -260,10 +250,11 @@ void QTreeDisplayWidget::paintGL()
 
     glLoadIdentity();
 
-    if (tree != 0)
-    {
 
-        glBindTexture(GL_TEXTURE_2D, texture);
+        if(renderTexture)
+           glEnable(GL_TEXTURE_2D);
+        else
+             glDisable(GL_TEXTURE_2D);
 
 
 
@@ -280,23 +271,26 @@ void QTreeDisplayWidget::paintGL()
         glColor3f(1.0f,1.0f,1.0f);
 
 
-        if( displayGeneratedMesh )
+        glBindTexture(GL_TEXTURE_2D, barkTexture);
+        if( renderSubdivisionSurface )
         {
-            if(model!= NULL)
-            {
-                DebugClear();
-                model->Draw();
-                DebugDraw();
-            }
+            if(subdivisionSurface!= NULL)
+                subdivisionSurface->Draw();
         }
         else
         {
-            tree->Render();
+            if(tree != NULL)
+                tree->Render();
         }
 
-        //  cout << "rendering " << endl;
+         glBindTexture(GL_TEXTURE_2D, leafTexture);
+        if(renderFoliage)
+        {
+            if( foliageMesh != NULL )
+                foliageMesh->Draw();
+        }
 
-    }
+
 
 
 }
@@ -376,9 +370,9 @@ void QTreeDisplayWidget::clearDisplay()
         delete lstGraph;
     lstGraph = NULL;
 
-    if( model != NULL )
-        delete model;
-    model = NULL;
+    if( subdivisionSurface != NULL )
+        delete subdivisionSurface;
+    subdivisionSurface = NULL;
 
 }
 
@@ -412,7 +406,7 @@ bool QTreeDisplayWidget::setSourceFile(const std::string &fileName)
 
 
         cameraDistance = fmax(boundX * 3, fmax(boundY * 3, boundZ * 1.2));
-        zoomFactor = cameraDistance * (0.06f/90.0f);
+        zoomFactor = cameraDistance * (0.03f/90.0f);
         panFactor = cameraDistance * 0.85f;
         panX = 0.0f;
         panY = 0.0f;
@@ -528,8 +522,8 @@ void QTreeDisplayWidget::exportToObj(const std::string &fileName)
 
 void QTreeDisplayWidget::exportMeshToObj(const std::string &fileName)
 {
-    if (model != 0)
-        ExportModel( fileName, model );
+    if (subdivisionSurface != 0)
+        ExportModel( fileName, subdivisionSurface );
 }
 
 void QTreeDisplayWidget::setOutOfDate()
