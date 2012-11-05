@@ -49,7 +49,7 @@ private slots:
     void optionsAccepted(int v1, int v2, int v3, int v4, int v5, int subdValue);
     void generateMeshFromLST( std::string lstfile);
     void exportCylindesAsOBJ();
-    void exportMeshAsOBJ();
+    //void exportMeshAsOBJ();
     void displayAsMesh(bool);
     void toggleFoliage(bool);
     void toggleTexture(bool);

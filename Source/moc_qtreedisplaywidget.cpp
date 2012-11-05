@@ -1,7 +1,7 @@
 /****************************************************************************
 ** Meta object code from reading C++ file 'qtreedisplaywidget.h'
 **
-** Created: Sun Nov 4 16:31:58 2012
+** Created: Mon Nov 5 02:42:17 2012
 **      by: The Qt Meta Object Compiler version 63 (Qt 4.8.1)
 **
 ** WARNING! All changes made in this file will be lost!

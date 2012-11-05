@@ -305,7 +305,7 @@ string FoliageParameters::createLeaves()
         out<<"vt 0 1\n";
         out<<"vt 1 0\n";
         out<<"vt 1 1\n";
-        out<<"f "<<count<<"/1 "<<count+1<<"/4 "<<count+2<<"/3 "<<count+3<<"/2\n";
+        out<<"f "<<count<<"/1 "<<count+1<<"/3 "<<count+2<<"/4 "<<count+3<<"/2\n";
         count+= 4;
         out<<"\n";
         //out<<"usemtl "<< leaf.tex<<"_bottom\n";

@@ -58,7 +58,7 @@ MainWindow::MainWindow()
     foliageParameters = new FoliageParameters();
     connect(foliageParameters,SIGNAL(foliageChanged()),this,SLOT(foliageChanged()));
     displayWidget->setBarkTexture("./Resources/Textures/bark.jpg");
-    displayWidget->setLeafTexture("./Resources/Generated_Leaves/Leaf_Textures/alphaTest.png");
+    displayWidget->setLeafTexture("./Resources/Generated_Leaves/Leaf_Textures/default/default_top.png");
 
 
 
@@ -178,6 +178,7 @@ void MainWindow::displayLSTFile()
         lastLSTFile = path.toStdString();
         displayWidget->setSourceFile(path.toStdString());
         displayWidget->setCurrent();
+        GenerateModel();
         displayWidget->repaint();
         displayWidget->updateGL();
     }
@@ -554,8 +555,8 @@ void MainWindow::exportCylindesAsOBJ()
 
 
     // export the mesh that is in the viewport
-    if(displayFoliage->isEnabled())
-        displayWidget->exportToObj(path.toStdString());
+    if(displaySubdivisionSurface->isChecked() == false)
+        displayWidget->exportCylinderModelToObj(path.toStdString());
     else
         displayWidget->exportMeshToObj(path.toStdString());
 
@@ -563,23 +564,6 @@ void MainWindow::exportCylindesAsOBJ()
 
 }
 
-void MainWindow::exportMeshAsOBJ()
-{
-    QString path = QFileDialog::getSaveFileName(
-                this,
-                "OBJ",
-                QDir::currentPath(),
-                "OBJ file (*.obj)");
-
-    cout << "!!!!" << endl;
-
-
-
-
-
-
-
-}
 
 
 void MainWindow::blackBackground()
@@ -650,17 +634,17 @@ void MainWindow::sketchEmpty()
 
 void MainWindow::GenerateModel()
 {
-
+    if( lastLSTFile == "" )
+        return;
     // --- subdivision surface ---
     generateMeshFromLST( lastLSTFile );
 
     cout <<  lastLSTFile << endl;
     // --- foliage ---
+        cout << "foliageFilepath" << lastLSTFile << "D" << endl;
     string foliageFilepath = foliageParameters->createMesh(QString(lastLSTFile.c_str()));
 
-    // "treefile112_foliage_branchRot.obj";
- //   stringstream ss;
-  //  ss << "./Resources/Generated_Leaves/Foliage_Models/" << foliageFile;
+
     displayWidget->LoadFoliage(foliageFilepath);
 
 

@@ -374,6 +374,10 @@ void QTreeDisplayWidget::clearDisplay()
         delete subdivisionSurface;
     subdivisionSurface = NULL;
 
+    if( foliageMesh != NULL )
+        delete foliageMesh;
+    foliageMesh = NULL;
+
 }
 
 
@@ -514,7 +518,7 @@ void QTreeDisplayWidget::setSourceXMLFile(const std::string &fileName)
 
 }
 
-void QTreeDisplayWidget::exportToObj(const std::string &fileName)
+void QTreeDisplayWidget::exportCylinderModelToObj(const std::string &fileName)
 {
     if (tree != 0)
         tree->writeToObj(fileName);
