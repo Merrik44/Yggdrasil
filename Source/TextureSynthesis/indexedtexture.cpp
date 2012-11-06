@@ -7,7 +7,7 @@ IndexedTexture::IndexedTexture(): Texture()
 {
     createBlankImageIndex();
 }
-IndexedTexture::IndexedTexture(Vector2 dimensions): Texture(dimensions)
+IndexedTexture::IndexedTexture(Vector2D dimensions): Texture(dimensions)
 {
     createBlankImageIndex();
 }
@@ -15,15 +15,15 @@ IndexedTexture::IndexedTexture(QImage& imageInput)
 {
     image = imageInput;
     
-    size = Vector2(image.width(),image.height());
+    size = Vector2D(image.width(),image.height());
         
     pixels = new QRgb*[(int)size.x];
-    pixelLocations = new Vector2*[size.xInt()];
+    pixelLocations = new Vector2D*[size.xInt()];
     
     for(int x = 0;x<size.x;x++)
     {
         pixels[x] = new QRgb[(int)size.y];
-        pixelLocations[x] = new Vector2[size.yInt()];
+        pixelLocations[x] = new Vector2D[size.yInt()];
     }
     
     for(int y = 0; y<size.y;y++)
@@ -32,7 +32,7 @@ IndexedTexture::IndexedTexture(QImage& imageInput)
         for(int x = 0;x<size.x;x++)
         {
             pixels[x][y] = pixelRow[x];
-            Vector2 index = Vector2(x,y);
+            Vector2D index = Vector2D(x,y);
             pixelLocations[x][y] = index;
         }
     }
@@ -41,15 +41,15 @@ IndexedTexture::IndexedTexture(const IndexedTexture &input)
 {
     image = input.image;
     
-    size = Vector2(input.size.x,input.size.y);
+    size = Vector2D(input.size.x,input.size.y);
         
     pixels = new QRgb*[(int)size.x];
-    pixelLocations = new Vector2*[size.xInt()];
+    pixelLocations = new Vector2D*[size.xInt()];
     
     for(int x = 0;x<size.x;x++)
     {
         pixels[x] = new QRgb[(int)size.y];
-        pixelLocations[x] = new Vector2[size.yInt()];
+        pixelLocations[x] = new Vector2D[size.yInt()];
     }
     
     for(int y = 0; y<size.y;y++)
@@ -62,18 +62,18 @@ IndexedTexture::IndexedTexture(const IndexedTexture &input)
     }
 }
 
-IndexedTexture::IndexedTexture(Vector2 startPoint,Vector2 dimensions, Texture& input)
+IndexedTexture::IndexedTexture(Vector2D startPoint,Vector2D dimensions, Texture& input)
 {
     size = dimensions;
     
     pixels = new QRgb*[(int)size.x];
-    pixelLocations = new Vector2*[size.xInt()];
+    pixelLocations = new Vector2D*[size.xInt()];
     
     inputTexture = &input;
     for(int x = 0;x<size.x;x++)
     {
         pixels[x] = new QRgb[(int)size.y];
-        pixelLocations[x] = new Vector2[size.yInt()];
+        pixelLocations[x] = new Vector2D[size.yInt()];
     }
     
     for(int y = 0; y<size.y;y++)
@@ -84,7 +84,7 @@ IndexedTexture::IndexedTexture(Vector2 startPoint,Vector2 dimensions, Texture& i
 
             pixels[x][y] = temp;
             
-            Vector2 index = Vector2(startPoint.xInt()+x,startPoint.yInt()+y);
+            Vector2D index = Vector2D(startPoint.xInt()+x,startPoint.yInt()+y);
             pixelLocations[x][y] = index;
         }
     }
@@ -92,13 +92,13 @@ IndexedTexture::IndexedTexture(Vector2 startPoint,Vector2 dimensions, Texture& i
 
 void IndexedTexture::createBlankImageIndex()
 {
-    pixelLocations = new Vector2*[size.xInt()];
+    pixelLocations = new Vector2D*[size.xInt()];
     for(int x = 0; x<size.x;x++)
     {
-        pixelLocations[x] = new Vector2[size.yInt()];
+        pixelLocations[x] = new Vector2D[size.yInt()];
         for(int y = 0; y<size.y;y++)
         {
-            Vector2 index = Vector2();
+            Vector2D index = Vector2D();
             pixelLocations[x][y] = index;
         }
     }
@@ -109,17 +109,17 @@ void IndexedTexture::doubleSize(CoherentTexture &originalImage)
     
     
     
-    Vector2 sizeTemp = size;
+    Vector2D sizeTemp = size;
     sizeTemp*=2;
     QRgb** pixelsTemp = new QRgb*[(int)sizeTemp.x];
-    Vector2** pixelLocationsTemp = new Vector2*[sizeTemp.xInt()];
+    Vector2D** pixelLocationsTemp = new Vector2D*[sizeTemp.xInt()];
     
     for(int x = 0;x<sizeTemp.x;x++)
     {
         pixelsTemp[x] = new QRgb[(int)sizeTemp.y];
-        pixelLocationsTemp[x] = new Vector2[sizeTemp.yInt()];
+        pixelLocationsTemp[x] = new Vector2D[sizeTemp.yInt()];
     }
-    Vector2 temp = Vector2();
+    Vector2D temp = Vector2D();
     for(int y = 0; y<size.y;y++)
     {
         for(int x = 0;x<size.x;x++)
@@ -129,7 +129,7 @@ void IndexedTexture::doubleSize(CoherentTexture &originalImage)
                 for(int j=0;j<2;j++)
                 {
                     temp = pixelLocations[x][y];
-                    Vector2 index = Vector2(temp.x*2,temp.y*2);
+                    Vector2D index = Vector2D(temp.x*2,temp.y*2);
 //                    Vector2 index = Vector2(temp.x*2+i,temp.y*2+j);
 //                    cout<<"x "<<index.x<<" y "<<index.y<<endl;
 //                    cout<<"-x "<<x*2+1+i<<" y "<<y*2+1+j<<endl;

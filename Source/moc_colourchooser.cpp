@@ -1,8 +1,8 @@
 /****************************************************************************
 ** Meta object code from reading C++ file 'colourchooser.h'
 **
-** Created: Sun Nov 4 16:22:46 2012
-**      by: The Qt Meta Object Compiler version 63 (Qt 4.8.1)
+** Created: Tue Nov 6 17:47:03 2012
+**      by: The Qt Meta Object Compiler version 62 (Qt 4.7.4)
 **
 ** WARNING! All changes made in this file will be lost!
 *****************************************************************************/
@@ -10,8 +10,8 @@
 #include "LeafGenerator/colourchooser.h"
 #if !defined(Q_MOC_OUTPUT_REVISION)
 #error "The header file 'colourchooser.h' doesn't include <QObject>."
-#elif Q_MOC_OUTPUT_REVISION != 63
-#error "This file was generated using the moc from 4.8.1. It"
+#elif Q_MOC_OUTPUT_REVISION != 62
+#error "This file was generated using the moc from 4.7.4. It"
 #error "cannot be used with the include files from this version of Qt."
 #error "(The moc has changed too much.)"
 #endif
@@ -20,7 +20,7 @@ QT_BEGIN_MOC_NAMESPACE
 static const uint qt_meta_data_ColourChooser[] = {
 
  // content:
-       6,       // revision
+       5,       // revision
        0,       // classname
        0,    0, // classinfo
        2,   14, // methods
@@ -42,26 +42,9 @@ static const char qt_meta_stringdata_ColourChooser[] = {
     "setConstant(bool,QString)\0btnClicked()\0"
 };
 
-void ColourChooser::qt_static_metacall(QObject *_o, QMetaObject::Call _c, int _id, void **_a)
-{
-    if (_c == QMetaObject::InvokeMetaMethod) {
-        Q_ASSERT(staticMetaObject.cast(_o));
-        ColourChooser *_t = static_cast<ColourChooser *>(_o);
-        switch (_id) {
-        case 0: _t->setConstant((*reinterpret_cast< bool(*)>(_a[1])),(*reinterpret_cast< QString(*)>(_a[2]))); break;
-        case 1: _t->btnClicked(); break;
-        default: ;
-        }
-    }
-}
-
-const QMetaObjectExtraData ColourChooser::staticMetaObjectExtraData = {
-    0,  qt_static_metacall 
-};
-
 const QMetaObject ColourChooser::staticMetaObject = {
     { &QWidget::staticMetaObject, qt_meta_stringdata_ColourChooser,
-      qt_meta_data_ColourChooser, &staticMetaObjectExtraData }
+      qt_meta_data_ColourChooser, 0 }
 };
 
 #ifdef Q_NO_DATA_RELOCATION
@@ -87,8 +70,11 @@ int ColourChooser::qt_metacall(QMetaObject::Call _c, int _id, void **_a)
     if (_id < 0)
         return _id;
     if (_c == QMetaObject::InvokeMetaMethod) {
-        if (_id < 2)
-            qt_static_metacall(this, _c, _id, _a);
+        switch (_id) {
+        case 0: setConstant((*reinterpret_cast< bool(*)>(_a[1])),(*reinterpret_cast< QString(*)>(_a[2]))); break;
+        case 1: btnClicked(); break;
+        default: ;
+        }
         _id -= 2;
     }
     return _id;

@@ -1,7 +1,7 @@
 /****************************************************************************
 ** Meta object code from reading C++ file 'texturesynthesisdialog.h'
 **
-** Created: Tue Nov 6 12:03:09 2012
+** Created: Tue Nov 6 17:20:47 2012
 **      by: The Qt Meta Object Compiler version 62 (Qt 4.7.4)
 **
 ** WARNING! All changes made in this file will be lost!

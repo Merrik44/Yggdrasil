@@ -14,7 +14,7 @@ CoherentTexture::CoherentTexture(): Texture()
     createCoherence();
 }
 
-CoherentTexture::CoherentTexture(Vector2 dimensions): Texture(dimensions)
+CoherentTexture::CoherentTexture(Vector2D dimensions): Texture(dimensions)
 {
     createCoherence();
 }
@@ -24,7 +24,7 @@ CoherentTexture::CoherentTexture(QImage& imageInput): Texture(imageInput)
     createCoherence();
 }
 
-CoherentTexture::CoherentTexture(Vector2 startPoint,Vector2 dimensions, Texture& patch): Texture(startPoint,dimensions,patch)
+CoherentTexture::CoherentTexture(Vector2D startPoint,Vector2D dimensions, Texture& patch): Texture(startPoint,dimensions,patch)
 {
     createCoherence();
 }
@@ -86,7 +86,7 @@ CoherentTexture::CoherentTexture(QImage& imageInput,CoherentTexture lowerResolut
 //                cout<<"++++++\n++++++\n++++++\n++++++\n++++++\n"<<endl;
 //            }
 //            else
-                pixelCoherence[x][y] = PixelCoherence(*this,lowerResolution.pixelCoherence[xHalf][yHalf],Vector2(x,y),&neighbourhoodSizes);
+                pixelCoherence[x][y] = PixelCoherence(*this,lowerResolution.pixelCoherence[xHalf][yHalf],Vector2D(x,y),&neighbourhoodSizes);
         }
     }
 }
@@ -122,13 +122,13 @@ void CoherentTexture::createCoherence()
     {
         for(int y = 0; y<size.yInt();y++)
         {
-            pixelCoherence[x][y] = PixelCoherence(*this,Vector2(x,y),&neighbourhoodSizes);
+            pixelCoherence[x][y] = PixelCoherence(*this,Vector2D(x,y),&neighbourhoodSizes);
         }
     }
 }
 
 //void CoherentTexture::findCandidates(Vector2& centrePoint,Vector2& samplePoint,IndexedTexture& otherTexture,Vector2& otherPoint, int neighbourhoodSizeIndex, int coherenceQuality, std::vector<Vector2> & candidateSet)
-void CoherentTexture::findCandidates(IndexedTexture& otherTexture,Vector2& otherPoint, int neighbourhoodSizeIndex, int coherenceQuality, std::vector<Vector2> & candidateSet)
+void CoherentTexture::findCandidates(IndexedTexture& otherTexture,Vector2D& otherPoint, int neighbourhoodSizeIndex, int coherenceQuality, std::vector<Vector2D> & candidateSet)
 {
     //the set of 11 closest neighbourhoods, created from the pixels neighbourhood coherence
     //vector<Vector2> candidateSet = vector<Vector2>();
@@ -152,19 +152,19 @@ void CoherentTexture::findCandidates(IndexedTexture& otherTexture,Vector2& other
             //the refrence point to the next pixel in the neighbourhood
 //            Vector2 referencePoint = centrePoint;
 //            Vector2 referencePoint = samplePoint;
-            Vector2 referencePoint = otherPoint;
+            Vector2D referencePoint = otherPoint;
             referencePoint.x +=x;
             referencePoint.y +=y;
             
             //the next point, temporarily holds the coherence point
-            Vector2 nextpoint = Vector2();
+            Vector2D nextpoint = Vector2D();
 //            cout<< "referencePoint "<<referencePoint.x<<" _ "<<referencePoint.y<<endl;
 //            cout<< "otherTexture.size "<<otherTexture.size.x<<" _ "<<otherTexture.size.y<<endl;
             //mirror the point if its not in bounds
             referencePoint = otherTexture.wrapNotInBounds(referencePoint);
 //            cout<< "referencePoint2 "<<referencePoint.x<<" _ "<<referencePoint.y<<endl;
             //get the sample texture index from the indexedtexture, according to the referencepoint
-            Vector2 inputPoint = otherTexture.pixelLocations[referencePoint.xInt()][referencePoint.yInt()];
+            Vector2D inputPoint = otherTexture.pixelLocations[referencePoint.xInt()][referencePoint.yInt()];
             
             
             
@@ -250,12 +250,12 @@ void CoherentTexture::findCandidates(IndexedTexture& otherTexture,Vector2& other
 }
 
 
-Pixel CoherentTexture::findClosestNeighbourhood(IndexedTexture& otherTexture,Vector2& otherPoint, int neighbourhoodSizeIndex, int coherenceQuality)
+Pixel CoherentTexture::findClosestNeighbourhood(IndexedTexture& otherTexture,Vector2D& otherPoint, int neighbourhoodSizeIndex, int coherenceQuality)
 {
     //the overloaded method for finding the closest neighbourhood with k-coherence
 //    cout<<"quality "<<coherenceQuality<<endl;
     //the set of 11 closest neighbourhoods, created from the pixels neighbourhood coherence
-    vector<Vector2> candidateSet = vector<Vector2>();
+    vector<Vector2D> candidateSet = vector<Vector2D>();
 //    cout<<"=============================================================="<<endl;
 //    cout<<"creating the candidate set"<<endl;
 //    cout<< "closest x - "<<otherPoint.x<< " y - "<<otherPoint.y<<endl;
@@ -278,19 +278,19 @@ Pixel CoherentTexture::findClosestNeighbourhood(IndexedTexture& otherTexture,Vec
 //        {            
             
             //the refrence point to the next pixel in the neighbourhood
-            Vector2 referencePoint = otherPoint;
+            Vector2D referencePoint = otherPoint;
             referencePoint.x +=x;
             referencePoint.y +=y;
             
             //the next point 
-            Vector2 nextpoint = Vector2();
+            Vector2D nextpoint = Vector2D();
             
             if(otherTexture.isInBounds(referencePoint))
             {
 //                cout<< "referencePoint x - "<<referencePoint.x<< " y - "<<referencePoint.y<<endl;
                 
                 //get the sample texture index from the indexedtexture, according to the referencepoint
-                Vector2 inputPoint = otherTexture.pixelLocations[referencePoint.xInt()][referencePoint.yInt()];
+                Vector2D inputPoint = otherTexture.pixelLocations[referencePoint.xInt()][referencePoint.yInt()];
                 
     //            cout<< "inputPoint x - "<<inputPoint.x<< " y - "<<inputPoint.y<<endl;
                 
@@ -326,7 +326,7 @@ Pixel CoherentTexture::findClosestNeighbourhood(IndexedTexture& otherTexture,Vec
     Pixel closest = Pixel();
     closest.dist = 1000000;
     
-    Vector2 current = Vector2();
+    Vector2D current = Vector2D();
     int currentDist = 0;
     
     //loop through the candidate set

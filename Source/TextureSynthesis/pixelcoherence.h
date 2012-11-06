@@ -6,14 +6,14 @@
 #include <vector>
 struct Pixel
 {
-    Vector2 pos;
+    Vector2D pos;
     int dist;
     Pixel()
     {
-        pos = Vector2();
+        pos = Vector2D();
         dist = 0;
     }
-    Pixel(Vector2 position, int distance)
+    Pixel(Vector2D position, int distance)
     {
         pos = position;
         dist = distance;
@@ -40,15 +40,15 @@ class PixelCoherence
     public:
         PixelCoherence();
         
-        PixelCoherence(CoherentTexture& sampleTexture, Vector2 pos, std::vector<int>* neighbourhood_Sizes);
-        PixelCoherence(CoherentTexture& sampleTexture, PixelCoherence& lowResCoherence,Vector2 pos, std::vector<int>* neighbourhood_Sizes);
+        PixelCoherence(CoherentTexture& sampleTexture, Vector2D pos, std::vector<int>* neighbourhood_Sizes);
+        PixelCoherence(CoherentTexture& sampleTexture, PixelCoherence& lowResCoherence,Vector2D pos, std::vector<int>* neighbourhood_Sizes);
         
         std::vector<int>* neighbourhoodSizes;
         
-        Vector2 ** neighbourPos;
+        Vector2D ** neighbourPos;
 //        int neighbourhoodSize;s
         int neighbourPosDim;
-        Vector2 pixelPos;
+        Vector2D pixelPos;
         
 };
 

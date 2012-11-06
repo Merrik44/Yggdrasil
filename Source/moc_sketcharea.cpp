@@ -1,8 +1,8 @@
 /****************************************************************************
 ** Meta object code from reading C++ file 'sketcharea.h'
 **
-** Created: Sun Nov 4 16:22:35 2012
-**      by: The Qt Meta Object Compiler version 63 (Qt 4.8.1)
+** Created: Tue Nov 6 17:46:47 2012
+**      by: The Qt Meta Object Compiler version 62 (Qt 4.7.4)
 **
 ** WARNING! All changes made in this file will be lost!
 *****************************************************************************/
@@ -10,8 +10,8 @@
 #include "LeafGenerator/sketcharea.h"
 #if !defined(Q_MOC_OUTPUT_REVISION)
 #error "The header file 'sketcharea.h' doesn't include <QObject>."
-#elif Q_MOC_OUTPUT_REVISION != 63
-#error "This file was generated using the moc from 4.8.1. It"
+#elif Q_MOC_OUTPUT_REVISION != 62
+#error "This file was generated using the moc from 4.7.4. It"
 #error "cannot be used with the include files from this version of Qt."
 #error "(The moc has changed too much.)"
 #endif
@@ -20,7 +20,7 @@ QT_BEGIN_MOC_NAMESPACE
 static const uint qt_meta_data_SketchArea[] = {
 
  // content:
-       6,       // revision
+       5,       // revision
        0,       // classname
        0,    0, // classinfo
        7,   14, // methods
@@ -58,32 +58,9 @@ static const char qt_meta_stringdata_SketchArea[] = {
     "ntF*,QPointF*,QPointF*,QPointF*,QColor*,QColor*,QPointF*)\0"
 };
 
-void SketchArea::qt_static_metacall(QObject *_o, QMetaObject::Call _c, int _id, void **_a)
-{
-    if (_c == QMetaObject::InvokeMetaMethod) {
-        Q_ASSERT(staticMetaObject.cast(_o));
-        SketchArea *_t = static_cast<SketchArea *>(_o);
-        switch (_id) {
-        case 0: _t->setStatusText((*reinterpret_cast< QString(*)>(_a[1]))); break;
-        case 1: _t->clearImage(); break;
-        case 2: _t->print(); break;
-        case 3: _t->changeMode((*reinterpret_cast< QString(*)>(_a[1]))); break;
-        case 4: { bool _r = _t->validate();
-            if (_a[0]) *reinterpret_cast< bool*>(_a[0]) = _r; }  break;
-        case 5: _t->createLeaves((*reinterpret_cast< const int(*)>(_a[1]))); break;
-        case 6: _t->setValues((*reinterpret_cast< int(*)>(_a[1])),(*reinterpret_cast< QPointF*(*)>(_a[2])),(*reinterpret_cast< QPointF*(*)>(_a[3])),(*reinterpret_cast< QPointF*(*)>(_a[4])),(*reinterpret_cast< int(*)>(_a[5])),(*reinterpret_cast< QColor*(*)>(_a[6])),(*reinterpret_cast< QColor*(*)>(_a[7])),(*reinterpret_cast< QColor*(*)>(_a[8])),(*reinterpret_cast< QColor*(*)>(_a[9])),(*reinterpret_cast< QColor*(*)>(_a[10])),(*reinterpret_cast< QColor*(*)>(_a[11])),(*reinterpret_cast< QColor*(*)>(_a[12])),(*reinterpret_cast< QColor*(*)>(_a[13])),(*reinterpret_cast< QPointF*(*)>(_a[14])),(*reinterpret_cast< QPointF*(*)>(_a[15])),(*reinterpret_cast< QPointF*(*)>(_a[16])),(*reinterpret_cast< QPointF*(*)>(_a[17])),(*reinterpret_cast< QPointF*(*)>(_a[18])),(*reinterpret_cast< QPointF*(*)>(_a[19])),(*reinterpret_cast< QPointF*(*)>(_a[20])),(*reinterpret_cast< QColor*(*)>(_a[21])),(*reinterpret_cast< QColor*(*)>(_a[22])),(*reinterpret_cast< QPointF*(*)>(_a[23]))); break;
-        default: ;
-        }
-    }
-}
-
-const QMetaObjectExtraData SketchArea::staticMetaObjectExtraData = {
-    0,  qt_static_metacall 
-};
-
 const QMetaObject SketchArea::staticMetaObject = {
     { &QWidget::staticMetaObject, qt_meta_stringdata_SketchArea,
-      qt_meta_data_SketchArea, &staticMetaObjectExtraData }
+      qt_meta_data_SketchArea, 0 }
 };
 
 #ifdef Q_NO_DATA_RELOCATION
@@ -109,8 +86,17 @@ int SketchArea::qt_metacall(QMetaObject::Call _c, int _id, void **_a)
     if (_id < 0)
         return _id;
     if (_c == QMetaObject::InvokeMetaMethod) {
-        if (_id < 7)
-            qt_static_metacall(this, _c, _id, _a);
+        switch (_id) {
+        case 0: setStatusText((*reinterpret_cast< QString(*)>(_a[1]))); break;
+        case 1: clearImage(); break;
+        case 2: print(); break;
+        case 3: changeMode((*reinterpret_cast< QString(*)>(_a[1]))); break;
+        case 4: { bool _r = validate();
+            if (_a[0]) *reinterpret_cast< bool*>(_a[0]) = _r; }  break;
+        case 5: createLeaves((*reinterpret_cast< const int(*)>(_a[1]))); break;
+        case 6: setValues((*reinterpret_cast< int(*)>(_a[1])),(*reinterpret_cast< QPointF*(*)>(_a[2])),(*reinterpret_cast< QPointF*(*)>(_a[3])),(*reinterpret_cast< QPointF*(*)>(_a[4])),(*reinterpret_cast< int(*)>(_a[5])),(*reinterpret_cast< QColor*(*)>(_a[6])),(*reinterpret_cast< QColor*(*)>(_a[7])),(*reinterpret_cast< QColor*(*)>(_a[8])),(*reinterpret_cast< QColor*(*)>(_a[9])),(*reinterpret_cast< QColor*(*)>(_a[10])),(*reinterpret_cast< QColor*(*)>(_a[11])),(*reinterpret_cast< QColor*(*)>(_a[12])),(*reinterpret_cast< QColor*(*)>(_a[13])),(*reinterpret_cast< QPointF*(*)>(_a[14])),(*reinterpret_cast< QPointF*(*)>(_a[15])),(*reinterpret_cast< QPointF*(*)>(_a[16])),(*reinterpret_cast< QPointF*(*)>(_a[17])),(*reinterpret_cast< QPointF*(*)>(_a[18])),(*reinterpret_cast< QPointF*(*)>(_a[19])),(*reinterpret_cast< QPointF*(*)>(_a[20])),(*reinterpret_cast< QColor*(*)>(_a[21])),(*reinterpret_cast< QColor*(*)>(_a[22])),(*reinterpret_cast< QPointF*(*)>(_a[23]))); break;
+        default: ;
+        }
         _id -= 7;
     }
     return _id;

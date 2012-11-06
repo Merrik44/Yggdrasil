@@ -9,7 +9,7 @@
 #include <QProgressDialog>
 #include <QKeySequence>
 #include "optionsdialog.h"
-
+#include "TextureSynthesis/texturesynthesisdialog.h"
 
 
 const int BRUSH_SIZE_COUNT = 10;
@@ -60,7 +60,7 @@ MainWindow::MainWindow()
     displayWidget->setBarkTexture("./Resources/Textures/bark.jpg");
     displayWidget->setLeafTexture("./Resources/Generated_Leaves/Leaf_Textures/default/default_top.png");
 
-
+    synthDialog = new TextureSynthesisDialog();
 
 }
 
@@ -946,4 +946,10 @@ void MainWindow::on_actionFoliage_Options_triggered()
 void  MainWindow::foliageChanged()
 {
     GenerateModel();
+}
+
+void MainWindow::on_actionSynthesise_a_Texture_triggered()
+{
+    cout<<"Synthesise"<<endl;
+    synthDialog->show();
 }

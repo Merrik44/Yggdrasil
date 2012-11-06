@@ -13,6 +13,8 @@
 #include "vector2.h"
 #include <vector>
 #include "QTime"
+#include "iostream"
+//#include "QDir"
 
 using namespace std;
 TextureSynthesisDialog::TextureSynthesisDialog(QWidget *parent) :
@@ -29,7 +31,7 @@ TextureSynthesisDialog::TextureSynthesisDialog(QWidget *parent) :
     worker = new DisplayLabelThread();
 //    worker->moveToThread(thread);
 //    connect(worker, SIGNAL(error(QString)), this, SLOT(errorString(QString)));
-    connect(thread, SIGNAL(started()), worker, SLOT(slotSetLabel(Vector2&, Texture &, QLabel *)));
+    connect(thread, SIGNAL(started()), worker, SLOT(slotSetLabel(Vector2D&, Texture &, QLabel *)));
 //    connect(worker, SIGNAL(finished()), thread, SLOT(quit()));
 //    connect(worker, SIGNAL(finished()), worker, SLOT(deleteLater()));
     connect(thread, SIGNAL(finished()), thread, SLOT(deleteLater()));
@@ -80,7 +82,7 @@ void TextureSynthesisDialog::on_pushButton_released()
         synthesis->loadImage(imagePath);
         
         //this is the size of the preview image
-        Vector2 size = Vector2(160,160);
+        Vector2D size = Vector2D(160,160);
         QImage temp = synthesis->originalTextures[synthesis->originalTextures.size()-1].getImage();
         //display the preview
         scaleAndDisplayImage(size,temp, ui->label);
@@ -88,9 +90,17 @@ void TextureSynthesisDialog::on_pushButton_released()
 
 void TextureSynthesisDialog::on_pushButton_4_released()
 {
+    QString directory = QDir().currentPath();
+    
+    cout<<"ImagePath "<<directory.toStdString()<<endl;
+    
+    directory = directory + "/Resources/Textures";
+    
+    
     QString imagePath = QFileDialog::getSaveFileName(this, tr("Save File"),
-                                                  "",
+                                                  directory,
                                                   tr("PNG Format(*.png *.PNG);;JPEG Format(*.jpg *.jpeg *.jpe);;All Files (*)"));
+    
     cout<<"ImagePath \""<<imagePath.toStdString()<<"\""<<endl;
 //    imagePath.remove(0,1);
     cout<<"ImagePath \""<<imagePath.toStdString()<<"\""<<endl;
@@ -105,24 +115,24 @@ void TextureSynthesisDialog::on_pushButton_4_released()
 
 void TextureSynthesisDialog::on_pushButton_2_released()
 {
-    Vector2 v = Vector2(ui->spinBox->value(),ui->spinBox->value());
+    Vector2D v = Vector2D(ui->spinBox->value(),ui->spinBox->value());
     
     int iterations = ui->spinBox_3->value();
     synthesis->synthesise(v,iterations);
     
     QImage temp = synthesis->patchedTexture->getImage();
     
-    Vector2 size = Vector2(400,400);
+    Vector2D size = Vector2D(400,400);
     scaleAndDisplayImage(size,temp, ui->label_2);
 }
 
 void TextureSynthesisDialog::setPreviewImage(QImage & image)
 {
-    Vector2 size = Vector2(400,400);
+    Vector2D size = Vector2D(400,400);
     scaleAndDisplayImage(size,image, ui->label_2);
 }
 
-void TextureSynthesisDialog ::scaleAndDisplayImage(Vector2 & sizeScaledPatched, QImage & texture, QLabel * label)
+void TextureSynthesisDialog ::scaleAndDisplayImage(Vector2D & sizeScaledPatched, QImage & texture, QLabel * label)
 {
     worker->slotSetLabel(sizeScaledPatched, texture, label);
 }

@@ -17,11 +17,11 @@ TextureSynthesis::TextureSynthesis()
 }
 void TextureSynthesis::synthesise()
 {
-    Vector2 v = Vector2(256,256);
+    Vector2D v = Vector2D(256,256);
     synthesise(v, 10);
 }
 
-void TextureSynthesis::synthesise(Vector2 & size, int iterations)
+void TextureSynthesis::synthesise(Vector2D & size, int iterations)
 {
     
     //==========================The patch image===================================
@@ -33,7 +33,7 @@ void TextureSynthesis::synthesise(Vector2 & size, int iterations)
     int sizeSquare = originalTextures[0].size.x;
    
     
-    Vector2 sizePatchedImage = size;
+    Vector2D sizePatchedImage = size;
     for(int i = 0; i<originalTextures.size()-1; i++)
     {
         sizePatchedImage/=2;
@@ -44,7 +44,7 @@ void TextureSynthesis::synthesise(Vector2 & size, int iterations)
     
     //the size of each patch in the random texture
     int sizePatchSquare = originalTextures[0].size.x/8;
-    Vector2 sizePatches = Vector2(sizePatchSquare,sizePatchSquare);
+    Vector2D sizePatches = Vector2D(sizePatchSquare,sizePatchSquare);
     QSize sizePatchesTemp = QSize((int)sizePatches.x,(int)sizePatches.y);
     
     
@@ -66,7 +66,7 @@ void TextureSynthesis::synthesise(Vector2 & size, int iterations)
     float numPatchesYTemp = 1 + (float)(sizePatchedImage.y-sizePatches.y) / (float)(sizePatches.y-overlap);
     
     //create a vector for the amount of patches needed
-    Vector2 numPatches = Vector2((float)ceil(numPatchesXTemp),(float)ceil(numPatchesYTemp));
+    Vector2D numPatches = Vector2D((float)ceil(numPatchesXTemp),(float)ceil(numPatchesYTemp));
     
     //======================Old code================================
     
@@ -89,7 +89,7 @@ void TextureSynthesis::synthesise(Vector2 & size, int iterations)
     //create twice the amount of needed patches, this can be taken down to the required amount
     for(int y = 0;y<numPatches.y*numPatches.x*2;y++)
     {
-        Vector2 startingPosition = Vector2();
+        Vector2D startingPosition = Vector2D();
         startingPosition.x = rand()%(originalTextures[0].image.width()- (int)sizePatches.x);
         startingPosition.y = rand()%(originalTextures[0].image.height()-(int)sizePatches.y);
 
@@ -103,7 +103,7 @@ void TextureSynthesis::synthesise(Vector2 & size, int iterations)
     
     
     //size of the previews
-    Vector2 sizeScaledPatched = Vector2(128,128);
+    Vector2D sizeScaledPatched = Vector2D(128,128);
     cout<<"seze======"<<endl;
     //optimization and display preview of textures
     
@@ -148,7 +148,7 @@ void TextureSynthesis::loadImage(QString path)
     QImage::Format f = QImage::Format_ARGB32;
     originalImage = originalImage.convertToFormat(f,flags);
     
-    Vector2 currentSize = Vector2(originalImage.size().width(),originalImage.size().height());
+    Vector2D currentSize = Vector2D(originalImage.size().width(),originalImage.size().height());
     
     vector<QImage> imageSizes;
     
@@ -226,7 +226,7 @@ void TextureSynthesis::loadImage(QString path)
     
 }
 
-QImage TextureSynthesis::scaleImage(Vector2 & sizeScaled, QImage & image)
+QImage TextureSynthesis::scaleImage(Vector2D & sizeScaled, QImage & image)
 {
     
     //==============================Display Logic=========================================
@@ -276,14 +276,14 @@ IndexedTexture TextureSynthesis::discreetOptimization(IndexedTexture & patchedTe
     int neighbourhoodSize = sampleTexture.neighbourhoodSizes[neighbourhoodSizeIndex];
 //    cout<< "discreetOptimization2"<<endl;
     
-    Vector2 sizeScaledPatched = Vector2(128,128);
+    Vector2D sizeScaledPatched = Vector2D(128,128);
     for(int n = 0; n <iterations; n++)
     {
         newDist = 0;
 //        cout<< "discreetOptimization iteration"<< n <<endl;
         newTexture.clearPixelValues();
         Pixel closest = Pixel();
-        Vector2 current = Vector2();
+        Vector2D current = Vector2D();
         
         //this loops through each pixel in the neighbourhood of the pixel being synthesized
         //atm there is a border of pixels not being synthsized, should implement wrapping or mirroring of pixels
@@ -381,34 +381,34 @@ IndexedTexture TextureSynthesis::discreetOptimization2(IndexedTexture & patchedT
     
     //hold the current best distance for each pixel
     
-    vector<Vector2> ** distancelist = new vector<Vector2>*[oldTexture.size.xInt()];
+    vector<Vector2D> ** distancelist = new vector<Vector2D>*[oldTexture.size.xInt()];
     for(int x = 0; x<oldTexture.size.x;x++)
     {
-        distancelist[x] = new vector<Vector2>[oldTexture.size.yInt()];
+        distancelist[x] = new vector<Vector2D>[oldTexture.size.yInt()];
     }
     
-    vector<Vector2> ** closestNeighbourhoods = new vector<Vector2>*[oldTexture.size.xInt()];
+    vector<Vector2D> ** closestNeighbourhoods = new vector<Vector2D>*[oldTexture.size.xInt()];
     for(int x = 0; x<oldTexture.size.x;x++)
     {
-        closestNeighbourhoods[x] = new vector<Vector2>[oldTexture.size.yInt()];
+        closestNeighbourhoods[x] = new vector<Vector2D>[oldTexture.size.yInt()];
     }
     
     
-    Vector2 sizeScaledPatched = Vector2(128,128);
+    Vector2D sizeScaledPatched = Vector2D(128,128);
     for(int n = 0; n <iterations; n++)
     {
         for(int x = 0; x<oldTexture.size.x;x++)
         {
             for(int y = 0; y<oldTexture.size.y;y++)
             {
-                distancelist[x][y] = vector<Vector2>();
+                distancelist[x][y] = vector<Vector2D>();
             }
         }
         for(int x = 0; x<oldTexture.size.x;x++)
         {
             for(int y = 0; y<oldTexture.size.y;y++)
             {
-                closestNeighbourhoods[x][y] = vector<Vector2>();
+                closestNeighbourhoods[x][y] = vector<Vector2D>();
             }
         }
         
@@ -416,7 +416,7 @@ IndexedTexture TextureSynthesis::discreetOptimization2(IndexedTexture & patchedT
 //        cout<< "discreetOptimization iteration"<< n <<endl;
         newTexture.clearPixelValues();
         Pixel closest = Pixel();
-        Vector2 current = Vector2();
+        Vector2D current = Vector2D();
         
         //this loops through each pixel in the neighbourhood of the pixel being synthesized
         //atm there is a border of pixels not being synthsized, should implement wrapping or mirroring of pixels
@@ -448,11 +448,11 @@ IndexedTexture TextureSynthesis::discreetOptimization2(IndexedTexture & patchedT
                     {
 //                        cout<<"?"<<x<<" - "<<y<<endl;
                         
-                        Vector2 closestTemp = closest.pos;
+                        Vector2D closestTemp = closest.pos;
                         closestTemp.x +=i;
                         closestTemp.y +=j;
                         
-                        Vector2 currentTemp = current;
+                        Vector2D currentTemp = current;
                         currentTemp.x +=i;
                         currentTemp.y +=j;
                                                 
@@ -510,7 +510,7 @@ IndexedTexture TextureSynthesis::discreetOptimization2(IndexedTexture & patchedT
                         
                         
                         //the current position in the neighbourhood (of oldTexture)
-                        Vector2 currentTemp = Vector2();
+                        Vector2D currentTemp = Vector2D();
                         currentTemp.x =x;
                         currentTemp.y =y;
                         sampleTexture.findCandidates(oldTexture,currentTemp,neighbourhoodSizeIndex,quality, distancelist[currentTemp.xInt()][currentTemp.yInt()]);
@@ -528,7 +528,7 @@ IndexedTexture TextureSynthesis::discreetOptimization2(IndexedTexture & patchedT
 //                        Pixel closest = Pixel();
 //                        closest.dist = 1000000;
                         
-                        Vector2 currentPoint = Vector2();
+                        Vector2D currentPoint = Vector2D();
                         int currentDist = 0;
                         int lowestDist = 100000000;
                         
@@ -548,40 +548,43 @@ IndexedTexture TextureSynthesis::discreetOptimization2(IndexedTexture & patchedT
                             //get the neighbourhood distance
                             for(int c = 0;c<closestNeighbourhoods[currentTemp.xInt()][currentTemp.yInt()].size();c++)
                             {
-                                Vector2 closestTemp = closestNeighbourhoods[currentTemp.xInt()][currentTemp.yInt()][c];
+                                Vector2D closestTemp = closestNeighbourhoods[currentTemp.xInt()][currentTemp.yInt()][c];
                                 
                                 closestTemp = sampleTexture.mirrorNotInBounds(closestTemp);
-//                                cout<< "closestTemp x - "<<closestTemp.x<< " y - "<<closestTemp.y<<endl;
-//                                currentDist += sampleTexture.euclideanDistanceSquared(closestTemp, sampleTexture, currentPoint);
-                                currentDist = sampleTexture.euclideanDistanceSquared(closestTemp, sampleTexture, currentPoint);
-                                
-                                if(currentDist < lowestDist)
+//                                if(sampleTexture.isInBounds(closestTemp))
                                 {
+        //                                cout<< "closestTemp x - "<<closestTemp.x<< " y - "<<closestTemp.y<<endl;
+        //                                currentDist += sampleTexture.euclideanDistanceSquared(closestTemp, sampleTexture, currentPoint);
+                                    currentDist = sampleTexture.euclideanDistanceSquared(closestTemp, sampleTexture, currentPoint);
                                     
-                                    
-                                    
-                                    
-    //                                closest.dist = currentDist;
-    //                                closest.pos = current;
-                                    #pragma omp critical
+                                    if(currentDist < lowestDist)
                                     {
-//                                        cout<< "<<<<currentDist - "<<currentDist<< " lowestDist - "<<lowestDist<<endl;
-                                        lowestDist = currentDist;
-                                    //                                cout<< "nextClosest x - "<<nextClosest.pos.x<< " y - "<<nextClosest.pos.y<<endl;
-                                    //                                cout<< "currentTemp x - "<<currentTemp.x<< " y - "<<currentTemp.y<<endl;
-    //                                    distance[currentTemp.xInt()][currentTemp.yInt()] = nextClosest.dist;
-                                        
-                                        newTexture.pixels[currentTemp.xInt()][currentTemp.yInt()] = sampleTexture.pixels[closestTemp.xInt()][closestTemp.yInt()];
-                                        
-                                        newTexture.pixelLocations[currentTemp.xInt()][currentTemp.yInt()] = closestTemp;
-                                        
-                                    //                                    int pp = neighbourhoodSize*2+1;
-                                        
-                                    //                                    newTexture.pixels[currentTemp.xInt()+pp][currentTemp.yInt()+pp] = sampleTexture.pixels[closestTemp.xInt()][closestTemp.yInt()];
-                                        
-                                    //                                    newTexture.pixelLocations[currentTemp.xInt()+pp][currentTemp.yInt()+pp] = closestTemp;
                                         
                                         
+                                        
+                                        
+        //                                closest.dist = currentDist;
+        //                                closest.pos = current;
+                                        #pragma omp critical
+                                        {
+        //                                        cout<< "<<<<currentDist - "<<currentDist<< " lowestDist - "<<lowestDist<<endl;
+                                            lowestDist = currentDist;
+                                        //                                cout<< "nextClosest x - "<<nextClosest.pos.x<< " y - "<<nextClosest.pos.y<<endl;
+                                        //                                cout<< "currentTemp x - "<<currentTemp.x<< " y - "<<currentTemp.y<<endl;
+        //                                    distance[currentTemp.xInt()][currentTemp.yInt()] = nextClosest.dist;
+                                            
+                                            newTexture.pixels[currentTemp.xInt()][currentTemp.yInt()] = sampleTexture.pixels[closestTemp.xInt()][closestTemp.yInt()];
+                                            
+                                            newTexture.pixelLocations[currentTemp.xInt()][currentTemp.yInt()] = closestTemp;
+                                            
+                                        //                                    int pp = neighbourhoodSize*2+1;
+                                            
+                                        //                                    newTexture.pixels[currentTemp.xInt()+pp][currentTemp.yInt()+pp] = sampleTexture.pixels[closestTemp.xInt()][closestTemp.yInt()];
+                                            
+                                        //                                    newTexture.pixelLocations[currentTemp.xInt()+pp][currentTemp.yInt()+pp] = closestTemp;
+                                            
+                                            
+                                        }
                                     }
                                 }
                                 currentDist = 0;
@@ -688,7 +691,7 @@ IndexedTexture TextureSynthesis::discreetOptimization2(IndexedTexture & patchedT
     return oldTexture;
 }
 //creates a random texture from patches with each pixels location
-IndexedTexture TextureSynthesis::createRandomTexture(IndexedTexture & patchedTexture,  IndexedTexture* & patchList, Vector2& numPatches)
+IndexedTexture TextureSynthesis::createRandomTexture(IndexedTexture & patchedTexture,  IndexedTexture* & patchList, Vector2D& numPatches)
 {
      //loop through all the patches
     for(int x = 0;x<numPatches.x;x++)
@@ -706,7 +709,7 @@ IndexedTexture TextureSynthesis::createRandomTexture(IndexedTexture & patchedTex
             {
                 for(int j =0 ;j<patchDetails.size.y;j++)
                 {
-                    Vector2 pixelPosition = Vector2(x*patchDetails.size.x+i,y*patchDetails.size.y+j);
+                    Vector2D pixelPosition = Vector2D(x*patchDetails.size.x+i,y*patchDetails.size.y+j);
                     
                     if(patchedTexture.isInBounds(pixelPosition))
                     {
@@ -739,8 +742,8 @@ Texture TextureSynthesis::textureOptimization(Texture & patchedTexture, Texture&
     for(int n = 0; n <iterations; n++)
     {
         newTexture.clearPixelValues();
-        Vector2 closest = Vector2();
-        Vector2 current = Vector2();
+        Vector2D closest = Vector2D();
+        Vector2D current = Vector2D();
         
         for(int x = neighbourhoodSize;x< oldTexture.size.x-neighbourhoodSize;x+=neighbourhoodIncrement)
         {
@@ -750,8 +753,8 @@ Texture TextureSynthesis::textureOptimization(Texture & patchedTexture, Texture&
                 current.y = y;
 //                cout<< "current x - "<<current.x<< " y - "<<current.y<<endl;
                 closest = sampleTexture.findClosestNeighbourhood(oldTexture, current, neighbourhoodSize);
-                Vector2 posPatch = Vector2();
-                Vector2 posSample = Vector2();
+                Vector2D posPatch = Vector2D();
+                Vector2D posSample = Vector2D();
 //                cout<< "closest x - "<<closest.x<< " y - "<<closest.y<<endl;
                 for(int i = -neighbourhoodSize;i<=neighbourhoodSize;i++)
                 {
@@ -790,7 +793,7 @@ Texture TextureSynthesis::textureOptimization(Texture & patchedTexture, Texture&
 }
 
 //creates a random texture from patches
-Texture TextureSynthesis::createRandomTexture(Texture & patchedTexture,  Texture* & patchList, Vector2& numPatches,int overlap)
+Texture TextureSynthesis::createRandomTexture(Texture & patchedTexture,  Texture* & patchList, Vector2D& numPatches,int overlap)
 {
     //loop through all the patches
     for(int x = 0;x<numPatches.x;x++)
@@ -806,7 +809,7 @@ Texture TextureSynthesis::createRandomTexture(Texture & patchedTexture,  Texture
             {
                 for(int j =0 ;j<patchDetails.size.y;j++)
                 {
-                    Vector2 pixelPosition = Vector2(x*patchDetails.size.x+i,y*patchDetails.size.y+j);
+                    Vector2D pixelPosition = Vector2D(x*patchDetails.size.x+i,y*patchDetails.size.y+j);
                     
                     if(patchedTexture.isInBounds(pixelPosition))
                     {

@@ -19,6 +19,8 @@ namespace Ui {
     class MainWindow;
 }
 
+class TextureSynthesisDialog;
+
 class MainWindow : public QMainWindow
 {
     Q_OBJECT
@@ -79,6 +81,8 @@ private slots:
 
     void foliageChanged();
 
+    void on_actionSynthesise_a_Texture_triggered();
+    
 private:
     Ui::MainWindow *ui;
     void connectActions();
@@ -88,6 +92,7 @@ private:
     //void createStatusBar();
     void setupWidgets();
 
+    TextureSynthesisDialog *synthDialog;
     SketchWidget *sketchWidget;
     QTreeDisplayWidget *displayWidget;
     QToolBar *sketchToolBar;

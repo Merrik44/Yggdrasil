@@ -3,7 +3,7 @@
 #include "QThread"
 class QLabel;
 class Texture;
-class Vector2;
+class Vector2D;
 class QImage;
 class DisplayLabelThread : public QThread
 {
@@ -11,7 +11,7 @@ class DisplayLabelThread : public QThread
   public:
     DisplayLabelThread();
   public slots:
-    void slotSetLabel(Vector2 & sizeScaledPatched,  QImage & texture, QLabel * label);
+    void slotSetLabel(Vector2D & sizeScaledPatched,  QImage & texture, QLabel * label);
 //  signals:
 //    void finished();
 //    void error(QString err);

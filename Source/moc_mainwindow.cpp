@@ -1,8 +1,8 @@
 /****************************************************************************
 ** Meta object code from reading C++ file 'mainwindow.h'
 **
-** Created: Mon Nov 5 02:46:06 2012
-**      by: The Qt Meta Object Compiler version 63 (Qt 4.8.1)
+** Created: Tue Nov 6 17:46:36 2012
+**      by: The Qt Meta Object Compiler version 62 (Qt 4.7.4)
 **
 ** WARNING! All changes made in this file will be lost!
 *****************************************************************************/
@@ -10,8 +10,8 @@
 #include "TreeDrawGUI/mainwindow.h"
 #if !defined(Q_MOC_OUTPUT_REVISION)
 #error "The header file 'mainwindow.h' doesn't include <QObject>."
-#elif Q_MOC_OUTPUT_REVISION != 63
-#error "This file was generated using the moc from 4.8.1. It"
+#elif Q_MOC_OUTPUT_REVISION != 62
+#error "This file was generated using the moc from 4.7.4. It"
 #error "cannot be used with the include files from this version of Qt."
 #error "(The moc has changed too much.)"
 #endif
@@ -20,10 +20,10 @@ QT_BEGIN_MOC_NAMESPACE
 static const uint qt_meta_data_MainWindow[] = {
 
  // content:
-       6,       // revision
+       5,       // revision
        0,       // classname
        0,    0, // classinfo
-      34,   14, // methods
+      35,   14, // methods
        0,    0, // properties
        0,    0, // enums/sets
        0,    0, // constructors
@@ -65,6 +65,7 @@ static const uint qt_meta_data_MainWindow[] = {
      710,   11,   11,   11, 0x08,
      745,   11,   11,   11, 0x08,
      782,   11,   11,   11, 0x08,
+     799,   11,   11,   11, 0x08,
 
        0        // eod
 };
@@ -92,60 +93,12 @@ static const char qt_meta_stringdata_MainWindow[] = {
     "on_actionCreate_Leaves_triggered()\0"
     "on_actionFoliage_Options_triggered()\0"
     "foliageChanged()\0"
-};
-
-void MainWindow::qt_static_metacall(QObject *_o, QMetaObject::Call _c, int _id, void **_a)
-{
-    if (_c == QMetaObject::InvokeMetaMethod) {
-        Q_ASSERT(staticMetaObject.cast(_o));
-        MainWindow *_t = static_cast<MainWindow *>(_o);
-        switch (_id) {
-        case 0: _t->sketchChanged(); break;
-        case 1: _t->sketchNonEmpty(); break;
-        case 2: _t->sketchEmpty(); break;
-        case 3: _t->openTreeFromXML(); break;
-        case 4: _t->saveTreeToXML(); break;
-        case 5: _t->clearSketch(); break;
-        case 6: _t->undoAction(); break;
-        case 7: _t->redoAction(); break;
-        case 8: _t->displayXMLFile(); break;
-        case 9: _t->displayLSTFile(); break;
-        case 10: _t->generateFromXML(); break;
-        case 11: _t->generateFromCurrent(); break;
-        case 12: _t->generateNewVariation(); break;
-        case 13: _t->generationOptions(); break;
-        case 14: _t->optionsAccepted((*reinterpret_cast< int(*)>(_a[1])),(*reinterpret_cast< int(*)>(_a[2])),(*reinterpret_cast< int(*)>(_a[3])),(*reinterpret_cast< int(*)>(_a[4])),(*reinterpret_cast< int(*)>(_a[5])),(*reinterpret_cast< int(*)>(_a[6]))); break;
-        case 15: _t->generateMeshFromLST((*reinterpret_cast< std::string(*)>(_a[1]))); break;
-        case 16: _t->exportCylindesAsOBJ(); break;
-        case 17: _t->displayAsMesh((*reinterpret_cast< bool(*)>(_a[1]))); break;
-        case 18: _t->toggleFoliage((*reinterpret_cast< bool(*)>(_a[1]))); break;
-        case 19: _t->toggleTexture((*reinterpret_cast< bool(*)>(_a[1]))); break;
-        case 20: _t->SubdivSliderChange((*reinterpret_cast< int(*)>(_a[1]))); break;
-        case 21: _t->SynthesizeTexture(); break;
-        case 22: _t->blackBackground(); break;
-        case 23: _t->whiteBackground(); break;
-        case 24: _t->setLineMode(); break;
-        case 25: _t->setSelectMode(); break;
-        case 26: _t->setPencilMode(); break;
-        case 27: _t->setBrushSize((*reinterpret_cast< const QString(*)>(_a[1]))); break;
-        case 28: _t->cancelGeneration(); break;
-        case 29: _t->on_actionExport_Cylinder_Model_to_OBJ_triggered(); break;
-        case 30: _t->on_Export_to_Mesh_Model_to_OBJ_triggered(); break;
-        case 31: _t->on_actionCreate_Leaves_triggered(); break;
-        case 32: _t->on_actionFoliage_Options_triggered(); break;
-        case 33: _t->foliageChanged(); break;
-        default: ;
-        }
-    }
-}
-
-const QMetaObjectExtraData MainWindow::staticMetaObjectExtraData = {
-    0,  qt_static_metacall 
+    "on_actionSynthesise_a_Texture_triggered()\0"
 };
 
 const QMetaObject MainWindow::staticMetaObject = {
     { &QMainWindow::staticMetaObject, qt_meta_stringdata_MainWindow,
-      qt_meta_data_MainWindow, &staticMetaObjectExtraData }
+      qt_meta_data_MainWindow, 0 }
 };
 
 #ifdef Q_NO_DATA_RELOCATION
@@ -171,9 +124,45 @@ int MainWindow::qt_metacall(QMetaObject::Call _c, int _id, void **_a)
     if (_id < 0)
         return _id;
     if (_c == QMetaObject::InvokeMetaMethod) {
-        if (_id < 34)
-            qt_static_metacall(this, _c, _id, _a);
-        _id -= 34;
+        switch (_id) {
+        case 0: sketchChanged(); break;
+        case 1: sketchNonEmpty(); break;
+        case 2: sketchEmpty(); break;
+        case 3: openTreeFromXML(); break;
+        case 4: saveTreeToXML(); break;
+        case 5: clearSketch(); break;
+        case 6: undoAction(); break;
+        case 7: redoAction(); break;
+        case 8: displayXMLFile(); break;
+        case 9: displayLSTFile(); break;
+        case 10: generateFromXML(); break;
+        case 11: generateFromCurrent(); break;
+        case 12: generateNewVariation(); break;
+        case 13: generationOptions(); break;
+        case 14: optionsAccepted((*reinterpret_cast< int(*)>(_a[1])),(*reinterpret_cast< int(*)>(_a[2])),(*reinterpret_cast< int(*)>(_a[3])),(*reinterpret_cast< int(*)>(_a[4])),(*reinterpret_cast< int(*)>(_a[5])),(*reinterpret_cast< int(*)>(_a[6]))); break;
+        case 15: generateMeshFromLST((*reinterpret_cast< std::string(*)>(_a[1]))); break;
+        case 16: exportCylindesAsOBJ(); break;
+        case 17: displayAsMesh((*reinterpret_cast< bool(*)>(_a[1]))); break;
+        case 18: toggleFoliage((*reinterpret_cast< bool(*)>(_a[1]))); break;
+        case 19: toggleTexture((*reinterpret_cast< bool(*)>(_a[1]))); break;
+        case 20: SubdivSliderChange((*reinterpret_cast< int(*)>(_a[1]))); break;
+        case 21: SynthesizeTexture(); break;
+        case 22: blackBackground(); break;
+        case 23: whiteBackground(); break;
+        case 24: setLineMode(); break;
+        case 25: setSelectMode(); break;
+        case 26: setPencilMode(); break;
+        case 27: setBrushSize((*reinterpret_cast< const QString(*)>(_a[1]))); break;
+        case 28: cancelGeneration(); break;
+        case 29: on_actionExport_Cylinder_Model_to_OBJ_triggered(); break;
+        case 30: on_Export_to_Mesh_Model_to_OBJ_triggered(); break;
+        case 31: on_actionCreate_Leaves_triggered(); break;
+        case 32: on_actionFoliage_Options_triggered(); break;
+        case 33: foliageChanged(); break;
+        case 34: on_actionSynthesise_a_Texture_triggered(); break;
+        default: ;
+        }
+        _id -= 35;
     }
     return _id;
 }

@@ -24,7 +24,7 @@ Texture::~Texture()
 
 Texture::Texture()
 {
-    size = Vector2(32,32);
+    size = Vector2D(32,32);
     pixels = NULL;
     pixels = new QRgb*[(int)size.x];
     for(int x = 0; x<size.x;x++)
@@ -38,10 +38,10 @@ Texture::Texture()
     }
 }
 
-Texture::Texture(Vector2 dimensions)
+Texture::Texture(Vector2D dimensions)
 {
     pixels = NULL;
-    size = Vector2(dimensions.x,dimensions.y);
+    size = Vector2D(dimensions.x,dimensions.y);
     pixels = new QRgb*[(int)size.x];
     for(int x = 0; x<size.x;x++)
     {
@@ -59,7 +59,7 @@ Texture::Texture(QImage &imageInput)
     pixels = NULL;
     image = imageInput;
     
-    size = Vector2(image.width(),image.height());
+    size = Vector2D(image.width(),image.height());
         
     pixels = new QRgb*[(int)size.x];
     
@@ -78,7 +78,7 @@ Texture::Texture(QImage &imageInput)
     }
 }
 
-Texture::Texture(Vector2 startPoint, Vector2 dimensions, Texture &input)
+Texture::Texture(Vector2D startPoint, Vector2D dimensions, Texture &input)
 {
     pixels = NULL;
     size = dimensions;
@@ -144,7 +144,7 @@ QImage Texture::getImage()
     return image;
 }
 
-bool Texture::isInBounds(Vector2& point)
+bool Texture::isInBounds(Vector2D& point)
 {
     if(point.x<0 || point.y<0)
     {
@@ -190,7 +190,7 @@ int Texture::euclideanDistanceSquared(Texture &t)
     
     return red + blue + green + alpha;
 }
-int Texture::euclideanDistanceSquared(Vector2 inputPoint, Texture &otherTexture, Vector2 otherPoint)
+int Texture::euclideanDistanceSquared(Vector2D inputPoint, Texture &otherTexture, Vector2D otherPoint)
 {
     int red = 0;
     int blue = 0;
@@ -209,7 +209,7 @@ int Texture::euclideanDistanceSquared(Vector2 inputPoint, Texture &otherTexture,
     return red + blue + green + alpha;
 }
 
-int Texture::euclideanDistanceSquaredNeighbourhood(Vector2 inputPoint, Texture& otherTexture,Vector2 otherPoint, int neighbourhoodSize)
+int Texture::euclideanDistanceSquaredNeighbourhood(Vector2D inputPoint, Texture& otherTexture,Vector2D otherPoint, int neighbourhoodSize)
 {
     //the total squared distance for each colour
     int red = 0;
@@ -226,8 +226,8 @@ int Texture::euclideanDistanceSquaredNeighbourhood(Vector2 inputPoint, Texture& 
     //    int totalpixels = (neighbourhoodSize*2+1)*(neighbourhoodSize*2+1);
     int totalpixels = 0;
     
-    Vector2 thisPos = Vector2();
-    Vector2 otherPos = Vector2();
+    Vector2D thisPos = Vector2D();
+    Vector2D otherPos = Vector2D();
     
     for(int x = -neighbourhoodSize;x<=neighbourhoodSize;x++)
     {
@@ -276,7 +276,7 @@ int Texture::euclideanDistanceSquaredNeighbourhood(Vector2 inputPoint, Texture& 
     return red + blue + green + alpha;
 }
 
-int Texture::euclideanDistanceSquaredNeighbourhoodWrap(Vector2 inputPoint, Texture& otherTexture,Vector2 otherPoint, int neighbourhoodSize)
+int Texture::euclideanDistanceSquaredNeighbourhoodWrap(Vector2D inputPoint, Texture& otherTexture,Vector2D otherPoint, int neighbourhoodSize)
 {
     //the total squared distance for each colour
     int red = 0;
@@ -293,8 +293,8 @@ int Texture::euclideanDistanceSquaredNeighbourhoodWrap(Vector2 inputPoint, Textu
     //    int totalpixels = (neighbourhoodSize*2+1)*(neighbourhoodSize*2+1);
     int totalpixels = 0;
     
-    Vector2 thisPos = Vector2();
-    Vector2 otherPos = Vector2();
+    Vector2D thisPos = Vector2D();
+    Vector2D otherPos = Vector2D();
     
     for(int x = -neighbourhoodSize;x<=neighbourhoodSize;x++)
     {
@@ -342,9 +342,9 @@ int Texture::euclideanDistanceSquaredNeighbourhoodWrap(Vector2 inputPoint, Textu
 //    return red + blue + green;
     return red + blue + green + alpha;
 }
-Vector2 Texture::mirrorNotInBounds(Vector2 & point)
+Vector2D Texture::mirrorNotInBounds(Vector2D & point)
 {
-    Vector2 temp = point;
+    Vector2D temp = point;
     
     if(point.x<0)
     {
@@ -365,9 +365,9 @@ Vector2 Texture::mirrorNotInBounds(Vector2 & point)
     
     return temp;
 }
-Vector2 Texture::wrapNotInBounds(Vector2 & point)
+Vector2D Texture::wrapNotInBounds(Vector2D & point)
 {
-    Vector2 temp = point;
+    Vector2D temp = point;
     
     if(point.x<0)
     {
@@ -388,12 +388,12 @@ Vector2 Texture::wrapNotInBounds(Vector2 & point)
     
     return temp;
 }
-Vector2 Texture::findClosestNeighbourhood(Texture& otherTexture,Vector2& otherPoint, int neighbourhoodSize)
+Vector2D Texture::findClosestNeighbourhood(Texture& otherTexture,Vector2D& otherPoint, int neighbourhoodSize)
 {
-    Vector2 closest = Vector2();
+    Vector2D closest = Vector2D();
     int closestDist = 1000000;
     
-    Vector2 current = Vector2();
+    Vector2D current = Vector2D();
     int currentDist = 0;
     int neighbourhoodIncrement = (int)(neighbourhoodSize*2+1)/4;
     for(int x = 0;x< size.x;x+=neighbourhoodIncrement)
@@ -417,7 +417,7 @@ Vector2 Texture::findClosestNeighbourhood(Texture& otherTexture,Vector2& otherPo
 
 void Texture::halfSize()
 {
-    Vector2 sizeTemp = size;
+    Vector2D sizeTemp = size;
     sizeTemp/=2;
     sizeTemp.x = (int) sizeTemp.x;
     sizeTemp.y = (int) sizeTemp.y;
@@ -429,7 +429,7 @@ void Texture::halfSize()
         pixelsTemp[x] = new QRgb[(int)sizeTemp.y];
 //        pixelLocationsTemp[x] = new Vector2[sizeTemp.yInt()];
     }
-    Vector2 temp = Vector2();
+    Vector2D temp = Vector2D();
     
     for(int y = 0; y<sizeTemp.y;y++)
     {

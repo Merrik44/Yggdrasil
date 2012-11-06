@@ -4,7 +4,7 @@
 #include <vector>
 #include <QString>
 #include <QImage>
-class Vector2;
+class Vector2D;
 class CoherentTexture;
 class IndexedTexture;
 class Texture;
@@ -28,19 +28,19 @@ class TextureSynthesis
         
         void loadImage(QString path);
         void synthesise();
-        void synthesise(Vector2 & size, int iterations);
+        void synthesise(Vector2D & size, int iterations);
         TextureSynthesisDialog * dialog;
         
     private: 
         QRgb featheredPixel(QRgb& patchedPixel, QRgb& patchPixel, float ratio);
-        Texture createRandomTexture(Texture & patchedTexture, Texture*& patchList, Vector2& numPatches,int overlap);
-        IndexedTexture createRandomTexture(IndexedTexture & patchedTexture, IndexedTexture*& patchList, Vector2& numPatches);
+        Texture createRandomTexture(Texture & patchedTexture, Texture*& patchList, Vector2D& numPatches,int overlap);
+        IndexedTexture createRandomTexture(IndexedTexture & patchedTexture, IndexedTexture*& patchList, Vector2D& numPatches);
         
         Texture textureOptimization(Texture & patchedTexture, Texture& sampleTexture, int iterations);
         IndexedTexture discreetOptimization(IndexedTexture & patchedTexture, CoherentTexture& sampleTexture, int iterations, int neighbourhoodSizeIndex);
         IndexedTexture discreetOptimization2(IndexedTexture & patchedTexture, CoherentTexture& sampleTexture, int iterations, int neighbourhoodSizeIndex);
         
-         QImage scaleImage(Vector2 & sizeScaled, QImage & image);
+         QImage scaleImage(Vector2D & sizeScaled, QImage & image);
 };
 
 #endif // TEXTURESYNTHESIS_H

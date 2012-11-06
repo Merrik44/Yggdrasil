@@ -1,13 +1,13 @@
 /****************************************************************************
 ** Meta object code from reading C++ file 'displaylabelthread.h'
 **
-** Created: Tue Nov 6 17:20:47 2012
+** Created: Tue Nov 6 17:47:05 2012
 **      by: The Qt Meta Object Compiler version 62 (Qt 4.7.4)
 **
 ** WARNING! All changes made in this file will be lost!
 *****************************************************************************/
 
-#include "../displaylabelthread.h"
+#include "TextureSynthesis/displaylabelthread.h"
 #if !defined(Q_MOC_OUTPUT_REVISION)
 #error "The header file 'displaylabelthread.h' doesn't include <QObject>."
 #elif Q_MOC_OUTPUT_REVISION != 62
@@ -38,7 +38,7 @@ static const uint qt_meta_data_DisplayLabelThread[] = {
 
 static const char qt_meta_stringdata_DisplayLabelThread[] = {
     "DisplayLabelThread\0\0sizeScaledPatched,texture,label\0"
-    "slotSetLabel(Vector2&,QImage&,QLabel*)\0"
+    "slotSetLabel(Vector2D&,QImage&,QLabel*)\0"
 };
 
 const QMetaObject DisplayLabelThread::staticMetaObject = {
@@ -70,7 +70,7 @@ int DisplayLabelThread::qt_metacall(QMetaObject::Call _c, int _id, void **_a)
         return _id;
     if (_c == QMetaObject::InvokeMetaMethod) {
         switch (_id) {
-        case 0: slotSetLabel((*reinterpret_cast< Vector2(*)>(_a[1])),(*reinterpret_cast< QImage(*)>(_a[2])),(*reinterpret_cast< QLabel*(*)>(_a[3]))); break;
+        case 0: slotSetLabel((*reinterpret_cast< Vector2D(*)>(_a[1])),(*reinterpret_cast< QImage(*)>(_a[2])),(*reinterpret_cast< QLabel*(*)>(_a[3]))); break;
         default: ;
         }
         _id -= 1;

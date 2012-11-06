@@ -1,8 +1,8 @@
 /****************************************************************************
 ** Meta object code from reading C++ file 'sidebar.h'
 **
-** Created: Sun Nov 4 16:22:38 2012
-**      by: The Qt Meta Object Compiler version 63 (Qt 4.8.1)
+** Created: Tue Nov 6 17:46:50 2012
+**      by: The Qt Meta Object Compiler version 62 (Qt 4.7.4)
 **
 ** WARNING! All changes made in this file will be lost!
 *****************************************************************************/
@@ -10,8 +10,8 @@
 #include "LeafGenerator/sidebar.h"
 #if !defined(Q_MOC_OUTPUT_REVISION)
 #error "The header file 'sidebar.h' doesn't include <QObject>."
-#elif Q_MOC_OUTPUT_REVISION != 63
-#error "This file was generated using the moc from 4.8.1. It"
+#elif Q_MOC_OUTPUT_REVISION != 62
+#error "This file was generated using the moc from 4.7.4. It"
 #error "cannot be used with the include files from this version of Qt."
 #error "(The moc has changed too much.)"
 #endif
@@ -20,7 +20,7 @@ QT_BEGIN_MOC_NAMESPACE
 static const uint qt_meta_data_SideBar[] = {
 
  // content:
-       6,       // revision
+       5,       // revision
        0,       // classname
        0,    0, // classinfo
        8,   14, // methods
@@ -52,33 +52,9 @@ static const char qt_meta_stringdata_SideBar[] = {
     "drawClicked()\0"
 };
 
-void SideBar::qt_static_metacall(QObject *_o, QMetaObject::Call _c, int _id, void **_a)
-{
-    if (_c == QMetaObject::InvokeMetaMethod) {
-        Q_ASSERT(staticMetaObject.cast(_o));
-        SideBar *_t = static_cast<SideBar *>(_o);
-        switch (_id) {
-        case 0: { bool _r = _t->isValid();
-            if (_a[0]) *reinterpret_cast< bool*>(_a[0]) = _r; }  break;
-        case 1: _t->changeMode((*reinterpret_cast< QString(*)>(_a[1]))); break;
-        case 2: _t->reset(); break;
-        case 3: _t->validate(); break;
-        case 4: _t->paramsSet(); break;
-        case 5: _t->paramsOk(); break;
-        case 6: _t->create_okClicked(); break;
-        case 7: _t->drawClicked(); break;
-        default: ;
-        }
-    }
-}
-
-const QMetaObjectExtraData SideBar::staticMetaObjectExtraData = {
-    0,  qt_static_metacall 
-};
-
 const QMetaObject SideBar::staticMetaObject = {
     { &QWidget::staticMetaObject, qt_meta_stringdata_SideBar,
-      qt_meta_data_SideBar, &staticMetaObjectExtraData }
+      qt_meta_data_SideBar, 0 }
 };
 
 #ifdef Q_NO_DATA_RELOCATION
@@ -104,8 +80,18 @@ int SideBar::qt_metacall(QMetaObject::Call _c, int _id, void **_a)
     if (_id < 0)
         return _id;
     if (_c == QMetaObject::InvokeMetaMethod) {
-        if (_id < 8)
-            qt_static_metacall(this, _c, _id, _a);
+        switch (_id) {
+        case 0: { bool _r = isValid();
+            if (_a[0]) *reinterpret_cast< bool*>(_a[0]) = _r; }  break;
+        case 1: changeMode((*reinterpret_cast< QString(*)>(_a[1]))); break;
+        case 2: reset(); break;
+        case 3: validate(); break;
+        case 4: paramsSet(); break;
+        case 5: paramsOk(); break;
+        case 6: create_okClicked(); break;
+        case 7: drawClicked(); break;
+        default: ;
+        }
         _id -= 8;
     }
     return _id;

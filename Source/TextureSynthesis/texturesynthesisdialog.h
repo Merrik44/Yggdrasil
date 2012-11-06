@@ -5,7 +5,7 @@
 #include <QLabel>
 #include <QImage>
 class TextureSynthesis;
-class Vector2;
+class Vector2D;
 
 class DisplayLabelThread;
 namespace Ui {
@@ -21,7 +21,7 @@ public:
     ~TextureSynthesisDialog();
     DisplayLabelThread* worker;
     
-    void scaleAndDisplayImage(Vector2& sizeScaledPatched, QImage & texture, QLabel* label);
+    void scaleAndDisplayImage(Vector2D& sizeScaledPatched, QImage & texture, QLabel* label);
     void setPreviewImage(QImage & image);
     
 private slots:
