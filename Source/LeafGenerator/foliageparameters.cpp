@@ -20,7 +20,7 @@ FoliageParameters::FoliageParameters(QObject *parent) : QObject(parent)
 
 bool FoliageParameters::setValues()
 {
-    FoliageChooser* f = new FoliageChooser();
+    FoliageChooser* f = new FoliageChooser(this);
     connect(f, SIGNAL(returnValues(QList<QString>*, QList<int>*,
                                    int, int, float, float, float, float)),
            this, SLOT(valuesReturned(QList<QString>*,QList<int>*,
@@ -188,7 +188,7 @@ string FoliageParameters::createLeaves()
     string objName;
     QVector<QString> leafChoices;
     QVector<int> leafAttachment;
-    QVector<LSTLeafNode*> nodes;
+    nodes = QVector<LSTLeafNode*>();
 
 
     QListIterator<QString> leafIt(*leaves);
@@ -281,11 +281,17 @@ string FoliageParameters::createLeaves()
     //SO we should have just the lst name
     //ie john/files/tree3.lst gives us
     //tree3
-    QString name = QString(lst);
+    name = QString(lst);
     name.chop(name.length()-name.lastIndexOf("."));
     name = name.mid(name.lastIndexOf("/")+1);
 
-    QString obj = QString("Resources/Generated_Leaves/Foliage_Models/")+name+QString("_foliage.obj");
+    QDir().mkdir(QString("Resources"));
+    QDir(QString("Resources")).mkdir(QString("Generated_Leaves"));
+    QDir(QString("Resources/Generated_Leaves")).mkdir(QString("Foliage_Models"));
+    QDir(QString("Resources/Generated_Leaves/Foliage_Models")).mkdir(name);
+
+    //Top side leaves
+    QString obj = QString("Resources/Generated_Leaves/Foliage_Models/")+name+QString("/")+name+QString("_foliage_top.obj");
     objName = obj.toStdString();
     QFile file(obj);
     file.open(QIODevice::WriteOnly | QIODevice::Text);
@@ -295,7 +301,7 @@ string FoliageParameters::createLeaves()
     {
         LSTLeafNode leaf = *nodes[i];
         out<<"g "<<leaf.name<<"\n";
-        out<<"mtllib "<<leaf.path<<".mtl\n";
+        out<<"mtllib textures/"<<leaf.name<<".mtl\n";
         out<<"usemtl "<< leaf.name<<"_top\n";
         out<<"v "<<leaf.p1.x<<" "<<leaf.p1.y<<" "<<leaf.p1.z<<"\n";
         out<<"v "<<leaf.p2.x<<" "<<leaf.p2.y<<" "<<leaf.p2.z<<"\n";
@@ -305,16 +311,41 @@ string FoliageParameters::createLeaves()
         out<<"vt 0 1\n";
         out<<"vt 1 0\n";
         out<<"vt 1 1\n";
-        out<<"f "<<count<<"/1 "<<count+1<<"/3 "<<count+2<<"/4 "<<count+3<<"/2\n";
+       out<<"f "<<count<<"/1 "<<count+1<<"/3 "<<count+2<<"/4 "<<count+3<<"/2\n";
         count+= 4;
         out<<"\n";
-        //out<<"usemtl "<< leaf.tex<<"_bottom\n";
-        //out<<"f "<<count-4<<"/2 "<<count-1<<"/1 "<<count-2<<"/3 "<<count-3<<"/4\n";//reversed order
-        //out<<"\n";
-
     }
 
     file.close();
+
+    //Bottom Side leaves
+    obj = QString("Resources/Generated_Leaves/Foliage_Models/")+name+QString("/")+name+QString("_foliage_bottom.obj");
+    objName = obj.toStdString();
+    QFile file2(obj);
+    file2.open(QIODevice::WriteOnly | QIODevice::Text);
+    QTextStream out2(&file2);
+    count = 1;
+    for(int i = 0; i< nodes.count();i++)
+    {
+        LSTLeafNode leaf = *nodes[i];
+        out2<<"g "<<leaf.name<<"\n";
+        out2<<"mtllib textures/"<<leaf.name<<".mtl\n";
+        out2<<"usemtl "<< leaf.name<<"_bottom\n";
+        out2<<"v "<<leaf.p1.x<<" "<<leaf.p1.y<<" "<<leaf.p1.z<<"\n";
+        out2<<"v "<<leaf.p2.x<<" "<<leaf.p2.y<<" "<<leaf.p2.z<<"\n";
+        out2<<"v "<<leaf.p3.x<<" "<<leaf.p3.y<<" "<<leaf.p3.z<<"\n";
+        out2<<"v "<<leaf.p4.x<<" "<<leaf.p4.y<<" "<<leaf.p4.z<<"\n";
+        out2<<"vt 0 0\n";
+        out2<<"vt 0 1\n";
+        out2<<"vt 1 0\n";
+        out2<<"vt 1 1\n";
+        out2<<"f "<<count+3<<"/2 "<<count+2<<"/4 "<<count+1<<"/3 "<<count<<"/1\n";
+        count+= 4;
+        out2<<"\n";
+    }
+
+    file2.close();
+
     if(file.exists(obj))
     {
         qDebug()<<obj;
@@ -322,6 +353,36 @@ string FoliageParameters::createLeaves()
     }
     else
         return NULL;
+}
+
+bool FoliageParameters::exportFoliage(QString path, QString filename)
+{
+    QFile().copy(QString("Resources/Generated_Leaves/Foliage_Models/")+name+QString("/")+name+QString("_foliage_top.obj"),path+filename+QString("/")+filename+QString("_foliage_top.obj"));
+    QFile().copy(QString("Resources/Generated_Leaves/Foliage_Models/")+name+QString("/")+name+QString("_foliage_bottom.obj"),path+filename+QString("/")+filename+QString("_foliage_bottom.obj"));
+
+    path = path+filename +QString("/textures/");
+    for(int i = 0; i< nodes.count();i++)
+    {
+        LSTLeafNode leaf = *nodes[i];
+        //if the leaf hasn't already been copied over
+        if(!QFile().exists(path+leaf.name+QString(".mtl")))
+        {
+            QFile().copy(leaf.path+QString(".mtl"),path+leaf.name+QString(".mtl"));
+            QFile().copy(leaf.path+QString("_bottom.png"),path+leaf.name+QString("_bottom.png"));
+            QFile().copy(leaf.path+QString("_bottomN.png"),path+leaf.name+QString("_bottomN.png"));
+            QFile().copy(leaf.path+QString("_bottomAlpha.png"),path+leaf.name+QString("_bottomAlpha.png"));
+
+            QFile().copy(leaf.path+QString("_top.png"),path+leaf.name+QString("_top.png"));
+            QFile().copy(leaf.path+QString("_topN.png"),path+leaf.name+QString("_topN.png"));
+            QFile().copy(leaf.path+QString("_topAlpha.png"),path+leaf.name+QString("_topAlpha.png"));
+        }
+    }
+}
+
+QString FoliageParameters::getDefaultLeaf()
+{
+    QString defaultLeaf = leaves->first()+ QString("_top.png");
+    return defaultLeaf;
 }
 
 int FoliageParameters::findAttachment(QString mtl)

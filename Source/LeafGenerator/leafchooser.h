@@ -16,6 +16,7 @@ public:
     QString getName();
     int getRatio();
     QSize sizeHint();
+    void setSelected(bool selected);
     
 signals:
     //Sends the leaf name, adds to list is true, removes if false

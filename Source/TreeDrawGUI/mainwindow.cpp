@@ -41,7 +41,7 @@ MainWindow::MainWindow()
     createToolBars();
     setupWidgets();
     this->releaseKeyboard();
-    setWindowTitle(tr("TreeDraw"));
+    setWindowTitle(tr("YggdrasilTreeDraw"));
     setLineMode();
 
     brushSize->setCurrentIndex(2);
@@ -59,8 +59,8 @@ MainWindow::MainWindow()
     connect(foliageParameters,SIGNAL(foliageChanged()),this,SLOT(foliageChanged()));
     displayWidget->setBarkTexture("./Resources/Textures/bark.jpg");
 
-   // displayWidget->setLeafTexture("./Resources/Generated_Leaves/Leaf_Textures/default/default_top.png");
-    displayWidget->setLeafTexture("./Resources/Generated_Leaves/Leaf_Textures/default/alphaTest.png");
+    displayWidget->setLeafTexture("./Resources/Generated_Leaves/Leaf_Textures/default/default_top.png");
+    //displayWidget->setLeafTexture("./Resources/Generated_Leaves/Leaf_Textures/default/alphaTest.png");
 
     synthDialog = new TextureSynthesisDialog();
 
@@ -547,22 +547,45 @@ void MainWindow::optionsAccepted(int v1, int v2, int v3, int v4, int v5, int sub
 }
 
 
-void MainWindow::exportCylindesAsOBJ()
+void MainWindow::Export()
 {
+    stringstream defaultlocation;
+    QString defaultname =  QString(lastLSTFile.c_str()).split(".").first();
+     defaultlocation << "./ExportedModels/" <<defaultname.toStdString();
+
+
     QString path = QFileDialog::getSaveFileName(
                 this,
-                "OBJ",
-                QDir::currentPath(),
-                "OBJ file (*.obj)");
+                "Enter A model Name. A directory is created with this name and the models and textures exported into it",
+                defaultlocation.str().c_str(),
+                "");
+    path = path.split(".").first();
 
+    QString ModelName, modelDirectory;
+    ModelName = path.split("/").last();
+    modelDirectory = path;
+    modelDirectory.chop(modelDirectory.length()-modelDirectory.lastIndexOf("/")-1);
 
-    // export the mesh that is in the viewport
+    QDir().mkdir(QString("ExportedModels/") + ModelName);
+    QDir().mkdir(QString("ExportedModels/") + ModelName + "/textures");
+
+ //   QDir(QString("ExportedModels")).mkdir(name);
+    // copy bark
+
+    QString textureName(displayWidget->currentBarkFilePath.c_str()) ;
+    textureName = textureName.split("/").last();
+    QFile().copy(QString(displayWidget->currentBarkFilePath.c_str()), path + "/textures/" + textureName);
+
+    // export the mesh
+
     if(displaySubdivisionSurface->isChecked() == false)
-        displayWidget->exportCylinderModelToObj(path.toStdString());
+        displayWidget->exportCylinderModelToObj((path + "/"+ModelName +"_trunk.obj").toStdString());
     else
-        displayWidget->exportMeshToObj(path.toStdString());
+        displayWidget->exportMeshToObj((path + "/"+ ModelName +"_trunk.obj").toStdString());
 
+    // export the foliage
 
+    foliageParameters->exportFoliage(modelDirectory, ModelName);
 
 }
 
@@ -641,12 +664,8 @@ void MainWindow::GenerateModel()
     // --- subdivision surface ---
     generateMeshFromLST( lastLSTFile );
 
-    cout <<  lastLSTFile << endl;
     // --- foliage ---
-        cout << "foliageFilepath" << lastLSTFile << "D" << endl;
     string foliageFilepath = foliageParameters->createMesh(QString(lastLSTFile.c_str()));
-
-
     displayWidget->LoadFoliage(foliageFilepath);
 
 
@@ -690,7 +709,7 @@ void MainWindow::connectActions()
     connect(ui->actionGenerate_from_current, SIGNAL(triggered()), this, SLOT(generateFromCurrent()));
     ui->actionGenerate_from_current->setStatusTip(tr("Generate rendered output from the current sketch"));
 
-    connect(ui->actionExport_Cylinder_Model_to_OBJ, SIGNAL(triggered()), this, SLOT(exportCylindesAsOBJ()));
+    connect(ui->actionExport_Cylinder_Model_to_OBJ, SIGNAL(triggered()), this, SLOT(Export()));
     ui->actionExport_Cylinder_Model_to_OBJ->setStatusTip(tr("Export current view to OBJ file"));
 
     connect(ui->actionBlack_background, SIGNAL(triggered()), this, SLOT(blackBackground()));
@@ -943,15 +962,19 @@ void MainWindow::on_actionCreate_Leaves_triggered()
 void MainWindow::on_actionFoliage_Options_triggered()
 {
     foliageParameters->setValues();
+
 }
 
 void  MainWindow::foliageChanged()
 {
-    GenerateModel();
+    // --- foliage ---
+    string foliageFilepath = foliageParameters->createMesh(QString(lastLSTFile.c_str()));
+    displayWidget->LoadFoliage(foliageFilepath);
+    displayWidget->setLeafTexture(foliageParameters->getDefaultLeaf());
+
 }
 
 void MainWindow::on_actionSynthesise_a_Texture_triggered()
 {
-    cout<<"Synthesise"<<endl;
     synthDialog->show();
 }

@@ -7,7 +7,7 @@
 #include <QTime>
 #include <QVector>
 
-#include "MeshGenerator/branchnode.h"
+#include "../MeshGenerator/branchnode.h"
 #include "fstream"
 #include "math.h"
 #include "stdlib.h"
@@ -18,6 +18,7 @@
 using namespace std;
 using namespace boost;
 class BranchNode;
+class LSTLeafNode;
 
 class FoliageParameters : public QObject
 {
@@ -25,6 +26,8 @@ class FoliageParameters : public QObject
 
 public:
     FoliageParameters(QObject *parent = 0);
+    bool exportFoliage(QString path, QString filename);
+    QString getDefaultLeaf();
 
     QList<QString>* leaves;
     QList<int>* ratios;
@@ -61,6 +64,8 @@ private:
     QVector<BranchNode*> endPoints;
     int treeHeight;
     QString lst;
+    QString name;
+    QVector<LSTLeafNode*> nodes;
 };
 
 #endif // FOLIAGEPARAMETERS_H

@@ -114,8 +114,6 @@ QTreeDisplayWidget::QTreeDisplayWidget(QWidget *parent) :
     renderSubdivisionSurface = true;
     renderTexture = true;
 
-
-    cout << "eeee" << endl;
     //setTexture("./Resources/Textures/bark.jpg");
     //    LoadLST("./lst files/treefile4.lst" );
     //    model = generateMesh( lstGraph->branches);
@@ -136,10 +134,12 @@ QTreeDisplayWidget::~QTreeDisplayWidget()
     if( subdivisionSurface != NULL )
         delete subdivisionSurface;
     subdivisionSurface = NULL;
+    currentBarkFilePath = "";
 }
 
 void QTreeDisplayWidget::setBarkTexture(const QString &path)
 {
+    currentBarkFilePath = path.toStdString();
     glDeleteTextures( 1, &barkTexture );
     barkTexture = CreateGLTexture(path.toStdString().c_str(), TEXTURE_SIZE, TEXTURE_SIZE);
 }
@@ -529,12 +529,15 @@ void QTreeDisplayWidget::setSourceXMLFile(const std::string &fileName)
 
 void QTreeDisplayWidget::exportCylinderModelToObj(const std::string &fileName)
 {
+    cout << "expmssesh" << fileName << endl;
     if (tree != 0)
         tree->writeToObj(fileName);
 }
 
 void QTreeDisplayWidget::exportMeshToObj(const std::string &fileName)
 {
+
+    cout << "expmesh" << fileName << endl;
     if (subdivisionSurface != 0)
         ExportModel( fileName, subdivisionSurface );
 }

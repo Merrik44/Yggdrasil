@@ -15,7 +15,7 @@ class FoliageChooser : public QWidget
 {
     Q_OBJECT
 public:
-    explicit FoliageChooser(QWidget *parent = 0);
+    explicit FoliageChooser(FoliageParameters *f, QWidget *parent = 0);
 
 signals:
     void returnValues(QList<QString>* leaves, QList<int>* ratios ,
@@ -27,7 +27,7 @@ private slots:
     void leafMouseOver(QString name);
 
 private:
-    void createWidgets();
+    void createWidgets(FoliageParameters* f);
     void createConnections();
 
 

@@ -138,13 +138,19 @@ LeafModel::LeafModel( QList<QVector2D*>* edges, QPointF* root,
     showMessage(QString("Creating Textures"));
     topTexture = new QImage(size,size, QImage::Format_ARGB32);
     bottomTexture = new QImage(size,size, QImage::Format_ARGB32);
-    topTexture->fill(QColor(0,0,0,0).rgba());
-    bottomTexture->fill(QColor(0,0,0,0).rgba());
+    topTexture->fill(QColor(0,0,0,0));
+    bottomTexture->fill(QColor(0,0,0,0));
 
     topBumpMap = new QImage(size,size, QImage::Format_ARGB32);
     bottomBumpMap  = new QImage(size,size, QImage::Format_ARGB32);
-    topBumpMap ->fill(QColor(0,0,0,0).rgba());
-    bottomBumpMap ->fill(QColor(0,0,0,0).rgba());
+    topBumpMap ->fill(QColor(0,0,0,0));
+    bottomBumpMap ->fill(QColor(0,0,0,0));
+
+    topAlpha = new QImage(size,size, QImage::Format_ARGB32);
+    bottomAlpha = new QImage(size,size, QImage::Format_ARGB32);
+
+    topAlpha->fill(Qt::black);
+    bottomAlpha->fill(Qt::black);
 
     drawPetiole(topTexture);
     drawTexture(topTexture, baseColour, altColour);
@@ -176,6 +182,7 @@ LeafModel::LeafModel( QList<QVector2D*>* edges, QPointF* root,
     createBumpMaps();
     bottomTexture = new QImage(bottomTexture->mirrored(true, false));
     bottomBumpMap = new QImage(bottomBumpMap->mirrored(true, false));
+    bottomAlpha = new QImage(topAlpha->mirrored(true,false));
 
 
     // + QString::number(i);
@@ -183,7 +190,11 @@ LeafModel::LeafModel( QList<QVector2D*>* edges, QPointF* root,
 
      //For texturing reasons
      name = name.replace(QChar(' '),QChar('_'),Qt::CaseInsensitive);
+     QDir().mkdir(QString("Resources"));
+     QDir(QString("Resources")).mkdir(QString("Generated_Leaves"));
+     QDir(QString("Resources/Generated_Leaves")).mkdir(QString("Leaf_Textures"));
      QDir(QString("Resources/Generated_Leaves/Leaf_Textures")).mkdir(name);
+
      //While there are still leaves from the same group
      while(QFile().exists(QString("Resources/Generated_Leaves/Leaf_Textures/")+name+QString("/")+name+QString("_")+QString::number(i)+QString("_top.png")))
      {
@@ -194,6 +205,9 @@ LeafModel::LeafModel( QList<QVector2D*>* edges, QPointF* root,
 
      topBumpMap->save(QString("Resources/Generated_Leaves/Leaf_Textures/")+name+QString("/")+name+QString("_")+QString::number(i)+QString("_topN.png"), "png");
      bottomBumpMap->save(QString("Resources/Generated_Leaves/Leaf_Textures/")+name+QString("/")+name+QString("_")+QString::number(i)+QString("_bottomN.png"), "png");
+
+     topAlpha->save(QString("Resources/Generated_Leaves/Leaf_Textures/")+name+QString("/")+name+QString("_")+QString::number(i)+QString("_topAlpha.png"), "png");
+     bottomAlpha->save(QString("Resources/Generated_Leaves/Leaf_Textures/")+name+QString("/")+name+QString("_")+QString::number(i)+QString("_bottomAlpha.png"), "png");
 
      createMaterialFile(name+QString("_")+QString::number(i), QString("Resources/Generated_Leaves/Leaf_Textures/")+name+QString("/"));
 
@@ -1527,7 +1541,7 @@ void LeafModel::drawDebugGrid(QPointF *p)
     int x = p->toPoint().x()/gridSize;
     int y = p->toPoint().y()/gridSize;
     QImage image = QImage(gridCount,gridCount,QImage::Format_ARGB32);
-    image.fill(QColor(255,255,255).rgba());
+    image.fill(QColor(255,255,255));
 
 
     for(int i=0; i< gridCount; i++)
@@ -1636,7 +1650,7 @@ QImage* LeafModel::fromSpeckled(QImage* image, QColor altColor, int intensity)
 QImage* LeafModel::drawVeinsOutline(QString name)
 {
     QImage* veinImage = new QImage(size,size,QImage::Format_ARGB32);
-    veinImage->fill(QColor(0,0,0,0).rgba());
+    veinImage->fill(QColor(0,0,0,0));
     fillTexture(veinImage, QColor(255,255,255,255));
     QListIterator<QVector2D*> edgesIt(*edges);
     //First, draw in vector edges
@@ -1684,9 +1698,10 @@ void LeafModel::createMaterialFile(QString name, QString path)
     out<< "illum 2\n";
     out<< "Ns "<<spec*spec*500<<"\n";
     out<< "\n";
-    out<< "map_Ka -clamp on -s 1 1 1 -o 0 0 0 -mm 0 1 ./GeneratedLeaves/"<<name<<"_top.png"<<"\n";
-    out<< "map_Kd -clamp on -s 1 1 1 -o 0 0 0 -mm 0 1 ./GeneratedLeaves/"<<name<<"_top.png"<<"\n";
-    out<< "bump -clamp on -imfchan r -s 1 1 1 -o 0 0 0 -bm 1 ./GeneratedLeaves/"<<name<<"_topN.png"<<"\n";
+    out<< "map_Ka -clamp on -s 1 1 1 -o 0 0 0 -mm 0 1 "<<name<<"_top.png"<<"\n";
+    out<< "map_Kd -clamp on -s 1 1 1 -o 0 0 0 -mm 0 1 "<<name<<"_top.png"<<"\n";
+    out<< "bump -clamp on -imfchan r -s 1 1 1 -o 0 0 0 -bm 1 "<<name<<"_topN.png"<<"\n";
+    out<< "map_d -clamp on -imfchan r -s 1 1 1 -o 0 0 0 "<<name<<"_topAlpha.png"<<"\n";
 
     out<< "\n";
     out<< "newmtl "<<name<<"_bottom\n";
@@ -1697,24 +1712,28 @@ void LeafModel::createMaterialFile(QString name, QString path)
     out<< "illum 2\n";
     out<< "Ns "<<spec*spec*500<<"\n";
     out<< "\n";
-    out<< "map_Ka -clamp on -s 1 1 1 -o 0 0 0 -mm 0 1 ./GeneratedLeaves/"<<name<<"_bottom.png"<<"\n";
-    out<< "map_Kd -clamp on -s 1 1 1 -o 0 0 0 -mm 0 1 ./GeneratedLeaves/"<<name<<"_bottom.png"<<"\n";
-    out<< "bump -clamp on -imfchan r -s 1 1 1 -o 0 0 0 -bm 1 ./GeneratedLeaves/"<<name<<"_bottomN.png"<<"\n";
+    out<< "map_Ka -clamp on -s 1 1 1 -o 0 0 0 -mm 0 1 "<<name<<"_bottom.png"<<"\n";
+    out<< "map_Kd -clamp on -s 1 1 1 -o 0 0 0 -mm 0 1 "<<name<<"_bottom.png"<<"\n";
+    out<< "bump -clamp on -imfchan r -s 1 1 1 -o 0 0 0 -bm 1 "<<name<<"_bottomN.png"<<"\n";
+    out<< "map_d -clamp on -imfchan r -s 1 1 1 -o 0 0 0 "<<name<<"_bottomAlpha.png"<<"\n";
 
     file.close();
 }
 
 void LeafModel::createBumpMaps()
 {
+    //Alpha Maps white on black
+    topAlpha = fillTexture(topAlpha, QColor(255,255,255,255));
+
     //Bump maps on red channel
     //first create bottom map, curving slightly inwards
     QColor depth = QColor(64,0,0,255);
     float max = (2/(float)128)*pow(256,2);
     depth.setRedF(0);
-    topBumpMap->fill(QColor(0,0,0,0).rgba());
+    topBumpMap->fill(QColor(0,0,0,0));
     topBumpMap = fillTexture(topBumpMap,depth);
     depth.setRedF(bump);
-    bottomBumpMap->fill(QColor(0,0,0,0).rgba());
+    bottomBumpMap->fill(QColor(0,0,0,0));
     bottomBumpMap = fillTexture(bottomBumpMap,depth);
 
     depth.setRedF(bump/3);
@@ -1733,17 +1752,23 @@ void LeafModel::createBumpMaps()
 
                 float val = (1/(float)128)*pow(i,2)+(1/(float)128)*pow(j,2);
 
-                /*if(val/max > bump)
-                    depth.setRedF(val/max - vein);
-                else*/
                     depth.setRedF(vein);
                 topBumpMap->setPixel(i+size/2,j+size/2,depth.rgb());
+            }
 
-                /*if(val/max > bump)
-                    depth.setRedF(1-val/max + vein);
-                else*/
+            if(bottomTexture->pixel(i+size/2,j+size/2) == rootColour->rgba())
+            {
+                    vein = bump;
+
+                float val = (1/(float)128)*pow(i,2)+(1/(float)128)*pow(j,2);
+
                     depth.setRedF(bump-vein);
                 bottomBumpMap->setPixel(i+size/2,j+size/2,depth.rgb());
+            }
+
+            if(bottomTexture->pixel(i+size/2,j+size/2) == rootColour->rgba())
+            {
+                topAlpha->setPixel(i+size/2,j+size/2, QColor(255,255,255,255).rgb());
             }
         }
 }

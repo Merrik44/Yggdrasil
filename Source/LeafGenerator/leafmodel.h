@@ -37,6 +37,8 @@ private:
     QImage *bottomTexture;
     QImage *topBumpMap;
     QImage *bottomBumpMap;
+    QImage* topAlpha;
+    QImage* bottomAlpha;
 
     //Leaf Parameters
     QList<QVector2D*> *edges;

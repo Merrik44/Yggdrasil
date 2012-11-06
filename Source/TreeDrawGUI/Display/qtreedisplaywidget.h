@@ -68,7 +68,7 @@ public:
     bool displayGeneratedMesh;
     void LoadFoliage(std::string filepath);
 
-
+    string currentBarkFilePath;
 protected:
     void initializeGL();
 

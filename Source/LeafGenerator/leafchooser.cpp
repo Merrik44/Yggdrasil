@@ -74,3 +74,8 @@ void LeafChooser::enterEvent(QEvent *)
 {
     emit leafMousedOver(leafName);
 }
+
+void LeafChooser::setSelected(bool selected)
+{
+    isUsed->setChecked(selected);
+}

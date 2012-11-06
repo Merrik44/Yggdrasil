@@ -1,7 +1,7 @@
 /****************************************************************************
 ** Meta object code from reading C++ file 'mainwindow.h'
 **
-** Created: Tue Nov 6 19:08:54 2012
+** Created: Tue Nov 6 21:41:04 2012
 **      by: The Qt Meta Object Compiler version 63 (Qt 4.8.1)
 **
 ** WARNING! All changes made in this file will be lost!
@@ -48,24 +48,24 @@ static const uint qt_meta_data_MainWindow[] = {
      275,  250,   11,   11, 0x08,
      324,  316,   11,   11, 0x08,
      357,   11,   11,   11, 0x08,
-     379,   11,   11,   11, 0x08,
-     399,   11,   11,   11, 0x08,
-     419,   11,   11,   11, 0x08,
-     445,  439,   11,   11, 0x08,
-     469,   11,   11,   11, 0x08,
-     489,   11,   11,   11, 0x08,
-     507,   11,   11,   11, 0x08,
-     525,   11,   11,   11, 0x08,
-     539,   11,   11,   11, 0x08,
-     555,   11,   11,   11, 0x08,
-     576,  571,   11,   11, 0x08,
-     598,   11,   11,   11, 0x08,
-     617,   11,   11,   11, 0x08,
-     667,   11,   11,   11, 0x08,
-     710,   11,   11,   11, 0x08,
-     745,   11,   11,   11, 0x08,
-     782,   11,   11,   11, 0x08,
-     799,   11,   11,   11, 0x08,
+     366,   11,   11,   11, 0x08,
+     386,   11,   11,   11, 0x08,
+     406,   11,   11,   11, 0x08,
+     432,  426,   11,   11, 0x08,
+     456,   11,   11,   11, 0x08,
+     476,   11,   11,   11, 0x08,
+     494,   11,   11,   11, 0x08,
+     512,   11,   11,   11, 0x08,
+     526,   11,   11,   11, 0x08,
+     542,   11,   11,   11, 0x08,
+     563,  558,   11,   11, 0x08,
+     585,   11,   11,   11, 0x08,
+     604,   11,   11,   11, 0x08,
+     654,   11,   11,   11, 0x08,
+     697,   11,   11,   11, 0x08,
+     732,   11,   11,   11, 0x08,
+     769,   11,   11,   11, 0x08,
+     786,   11,   11,   11, 0x08,
 
        0        // eod
 };
@@ -81,7 +81,7 @@ static const char qt_meta_stringdata_MainWindow[] = {
     "v1,v2,v3,v4,v5,subdValue\0"
     "optionsAccepted(int,int,int,int,int,int)\0"
     "lstfile\0generateMeshFromLST(std::string)\0"
-    "exportCylindesAsOBJ()\0displayAsMesh(bool)\0"
+    "Export()\0displayAsMesh(bool)\0"
     "toggleFoliage(bool)\0toggleTexture(bool)\0"
     "value\0SubdivSliderChange(int)\0"
     "SynthesizeTexture()\0blackBackground()\0"
@@ -118,7 +118,7 @@ void MainWindow::qt_static_metacall(QObject *_o, QMetaObject::Call _c, int _id, 
         case 13: _t->generationOptions(); break;
         case 14: _t->optionsAccepted((*reinterpret_cast< int(*)>(_a[1])),(*reinterpret_cast< int(*)>(_a[2])),(*reinterpret_cast< int(*)>(_a[3])),(*reinterpret_cast< int(*)>(_a[4])),(*reinterpret_cast< int(*)>(_a[5])),(*reinterpret_cast< int(*)>(_a[6]))); break;
         case 15: _t->generateMeshFromLST((*reinterpret_cast< std::string(*)>(_a[1]))); break;
-        case 16: _t->exportCylindesAsOBJ(); break;
+        case 16: _t->Export(); break;
         case 17: _t->displayAsMesh((*reinterpret_cast< bool(*)>(_a[1]))); break;
         case 18: _t->toggleFoliage((*reinterpret_cast< bool(*)>(_a[1]))); break;
         case 19: _t->toggleTexture((*reinterpret_cast< bool(*)>(_a[1]))); break;

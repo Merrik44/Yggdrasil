@@ -8,7 +8,7 @@ QT += opengl
 QMAKE_CXXFLAGS += -fopenmp
 QMAKE_LFLAGS *= -fopenmp
 
-TARGET = TreeDrawGUI/TreeDrawGUI
+TARGET = YggdrasilTreeDraw
 TEMPLATE = app
 SOURCES += TreeDrawGUI/main.cpp \
     TreeDrawGUI/mainwindow.cpp \

@@ -1,0 +1,23 @@
+newmtl bla_0_top
+Ka 0.0435 0.0435 0.0435
+Kd 0.6
+Ks 0.5
+illum 2
+Ns 125
+
+map_Ka -clamp on -s 1 1 1 -o 0 0 0 -mm 0 1 bla_0_top.png
+map_Kd -clamp on -s 1 1 1 -o 0 0 0 -mm 0 1 bla_0_top.png
+bump -clamp on -imfchan r -s 1 1 1 -o 0 0 0 -bm 1 bla_0_topN.png
+map_d -clamp on -imfchan r -s 1 1 1 -o 0 0 0 bla_0_topAlpha.png
+
+newmtl bla_0_bottom
+Ka 0.0435 0.0435 0.0435
+Kd 0.6
+Ks 0.25
+illum 2
+Ns 125
+
+map_Ka -clamp on -s 1 1 1 -o 0 0 0 -mm 0 1 bla_0_bottom.png
+map_Kd -clamp on -s 1 1 1 -o 0 0 0 -mm 0 1 bla_0_bottom.png
+bump -clamp on -imfchan r -s 1 1 1 -o 0 0 0 -bm 1 bla_0_bottomN.png
+map_d -clamp on -imfchan r -s 1 1 1 -o 0 0 0 bla_0_bottomAlpha.png

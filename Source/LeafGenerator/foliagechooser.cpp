@@ -1,12 +1,12 @@
 #include "foliagechooser.h"
 
 
-FoliageChooser::FoliageChooser(QWidget *parent) :
+FoliageChooser::FoliageChooser(FoliageParameters* f, QWidget *parent) :
     QWidget(parent)
 {
     leaves = new QList<QString>();
     ratios = new QList<int>();
-    createWidgets();
+    createWidgets(f);
     createConnections();
 
     QGroupBox* leafBoxOutside = new QGroupBox(tr("Leaves For Foliage"));
@@ -40,6 +40,8 @@ FoliageChooser::FoliageChooser(QWidget *parent) :
             QString leaf  = j.next();
             leaf.chop(leaf.length()-leaf.lastIndexOf("."));
             LeafChooser* l = new LeafChooser(groupFolder.path()+QString("/")+leaf);
+            if(leaves->contains(l->getName()))
+                l->setSelected(true);
             leafOptions.append(l);
             layout->addWidget(l,row,column);
             connect(l,SIGNAL(leafMousedOver(QString)),this,SLOT(leafMouseOver(QString)));
@@ -99,6 +101,7 @@ FoliageChooser::FoliageChooser(QWidget *parent) :
 
 void FoliageChooser::okClicked()
 {
+    leaves->clear();
     QListIterator<LeafChooser*> optIt(leafOptions);
     while(optIt.hasNext())
     {
@@ -124,7 +127,7 @@ void FoliageChooser::okClicked()
 }
 
 
-void FoliageChooser::createWidgets()
+void FoliageChooser::createWidgets(FoliageParameters* f)
 {
     okButton = new QPushButton(tr("&Ok"));
     okButton->setDefault(true);
@@ -142,10 +145,14 @@ void FoliageChooser::createWidgets()
     previewTop->setPixmap(temp);
     previewBottom->setPixmap(temp);
 
-    QList<QString> leaves = QList<QString>();
+    leaves = new QList<QString>(*f->leaves);
     numberLeaves = new VariationChooser(tr("Leaves per Endpoint"),3,1,0, false);
+    numberLeaves->setValues(f->numberLeavesMin, f->numberLeavesMax);
     leafSpread = new VariationChooser(tr("Angle spread (degrees)"),20,0.1,2, false);
+    leafSpread->setValues(f->spreadMin, f->spreadMax);
     scaleVar = new VariationChooser(tr("Leaf Scale"),10,1,0,false);
+    scaleVar->setValues(f->scaleMin, f->scaleMax);
+
 }
 
 void FoliageChooser::createConnections()
