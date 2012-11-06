@@ -33,12 +33,15 @@ class Texture
         void createSets();
         
         bool isInBounds(Vector2& point);
-        Vector2 mirrorNotInBounds(Vector2 & point, Vector2 & bounds);
-        Vector2 wrapNotInBounds(Vector2 & point, Vector2 & bounds);
+        Vector2 mirrorNotInBounds(Vector2 & point);
+        Vector2 wrapNotInBounds(Vector2 & point);
         
         int euclideanDistanceSquared(Texture & texture);
         int euclideanDistanceSquared(Vector2 inputPoint,Texture &otherTexture, Vector2 otherPoint);
         int euclideanDistanceSquaredNeighbourhood(Vector2 inputPoint, Texture& otherTexture,Vector2 otherPoint, int neighbourhoodSize);
+        
+        int euclideanDistanceSquaredNeighbourhoodWrap(Vector2 inputPoint, Texture& otherTexture,Vector2 otherPoint, int neighbourhoodSize);
+        
         
         Vector2 findClosestNeighbourhood(Texture& otherTexture,Vector2& otherPoint, int neighbourhoodSize);
         void halfSize();

@@ -7,6 +7,7 @@ DisplayLabelThread::DisplayLabelThread()
 {
     
 }
+
 //DisplayLabelThread::DisplayLabelThread()
 void DisplayLabelThread::slotSetLabel(Vector2 & sizeScaledPatched, QImage & texture, QLabel * label) 
 {

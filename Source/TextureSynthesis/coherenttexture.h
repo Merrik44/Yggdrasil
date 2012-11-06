@@ -17,7 +17,8 @@ public:
     PixelCoherence ** pixelCoherence;
     std::vector<int> neighbourhoodSizes;
     Pixel findClosestNeighbourhood(IndexedTexture& otherTexture,Vector2& otherPoint, int neighbourhoodSizeIndex, int coherenceQuality);
-    Pixel findClosestPoint(Vector2& centrePoint,Vector2& samplePoint,IndexedTexture& otherTexture,Vector2& otherPoint, int neighbourhoodSizeIndex, int coherenceQuality);
+//    void findCandidates(Vector2& centrePoint,Vector2& samplePoint,IndexedTexture& otherTexture,Vector2& otherPoint, int neighbourhoodSizeIndex, int coherenceQuality, std::vector<Vector2> & candidateSet);
+    void findCandidates(IndexedTexture& otherTexture,Vector2& otherPoint, int neighbourhoodSizeIndex, int coherenceQuality, std::vector<Vector2> & candidateSet);
     
     void createCoherence();
 };

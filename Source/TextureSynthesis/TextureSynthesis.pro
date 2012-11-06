@@ -22,7 +22,8 @@ SOURCES += main.cpp\
     coherenttexture.cpp \
     indexedtexture.cpp \
     displaylabelthread.cpp \
-    texturesynthesis.cpp
+    texturesynthesis.cpp \
+    texturesynthesisdialog.cpp
 
 HEADERS  += mainwindow.h \
     texture.h \
@@ -31,6 +32,8 @@ HEADERS  += mainwindow.h \
     coherenttexture.h \
     indexedtexture.h \
     displaylabelthread.h \
-    texturesynthesis.h
+    texturesynthesis.h \
+    texturesynthesisdialog.h
 QT += opengl 
-FORMS    += mainwindow.ui
+FORMS    += mainwindow.ui \
+    texturesynthesisdialog.ui

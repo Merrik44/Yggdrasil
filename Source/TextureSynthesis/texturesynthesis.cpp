@@ -6,7 +6,12 @@
 #include <iostream>
 #include "pixelcoherence.h"
 #include "indexedtexture.h"
+#include "texturesynthesisdialog.h"
 using namespace std;
+TextureSynthesis::~TextureSynthesis()
+{
+//    Texture * patchList;
+}
 TextureSynthesis::TextureSynthesis()
 {
 }
@@ -147,7 +152,7 @@ void TextureSynthesis::loadImage(QString path)
     
     vector<QImage> imageSizes;
     
-//    Texture first = Texture(originalImage);
+    Texture first = Texture(originalImage);
     imageSizes.push_back(originalImage);
     
     
@@ -155,25 +160,26 @@ void TextureSynthesis::loadImage(QString path)
     //if the image is > 40x40 pixels in size then make low res copies of the images until there is one thats smaller
     //each copy is half the size of one lower in the heirarchy
 //    Texture tempImage = first;
-    
+    cout<<"<<<<< half"<<endl;
     while(currentSize.x>40 && currentSize.y>40)
     {
         currentSize.x = ceil(currentSize.x/2);
         currentSize.y = ceil(currentSize.y/2);
 //        cout<<"<<<<<START "<<endl;
-//        first.halfSize();
+        first.halfSize();
 //        cout<<"<<<<<FIN "<<endl;
-//        QImage tempImage = first.getImage();
-        QImage tempImage = scaleImage(currentSize,originalImage);
+        QImage tempImage = first.getImage();
+//        QImage tempImage = scaleImage(currentSize,originalImage);
+        
         imageSizes.push_back(tempImage);
     }
     
-//    cout<<"<<<<<START "<<endl;
+    cout<<"<<<<<START "<<endl;
     
     //loop through all the resolutions and create a k-coherence map for it
     for(int i = imageSizes.size()-1; i>=0;i--)
     {
-        cout<<"<<<<<START "<<i<<endl;
+        cout<<"<<<<<START2 "<<i<<endl;
         QImage current = imageSizes[i];
         CoherentTexture coherentTexture;
         cout<<"<<<<< "<<i<<endl;
@@ -192,6 +198,7 @@ void TextureSynthesis::loadImage(QString path)
            cout<<"---end "<<current.width()<<" "<<current.height()<<endl;
         }
         originalTextures.push_back(coherentTexture);
+//        delete coherentTexture;
         cout<<"<<<<<END "<<i<<endl;
     }
     
@@ -373,10 +380,17 @@ IndexedTexture TextureSynthesis::discreetOptimization2(IndexedTexture & patchedT
 //    cout<< "discreetOptimization2"<<endl;
     
     //hold the current best distance for each pixel
-    float** distance = new float*[oldTexture.size.xInt()];
+    
+    vector<Vector2> ** distancelist = new vector<Vector2>*[oldTexture.size.xInt()];
     for(int x = 0; x<oldTexture.size.x;x++)
     {
-        distance[x] = new float[oldTexture.size.yInt()];
+        distancelist[x] = new vector<Vector2>[oldTexture.size.yInt()];
+    }
+    
+    vector<Vector2> ** closestNeighbourhoods = new vector<Vector2>*[oldTexture.size.xInt()];
+    for(int x = 0; x<oldTexture.size.x;x++)
+    {
+        closestNeighbourhoods[x] = new vector<Vector2>[oldTexture.size.yInt()];
     }
     
     
@@ -387,10 +401,16 @@ IndexedTexture TextureSynthesis::discreetOptimization2(IndexedTexture & patchedT
         {
             for(int y = 0; y<oldTexture.size.y;y++)
             {
-                distance[x][y] = 100000;
+                distancelist[x][y] = vector<Vector2>();
             }
         }
-        
+        for(int x = 0; x<oldTexture.size.x;x++)
+        {
+            for(int y = 0; y<oldTexture.size.y;y++)
+            {
+                closestNeighbourhoods[x][y] = vector<Vector2>();
+            }
+        }
         
         newDist = 0;
 //        cout<< "discreetOptimization iteration"<< n <<endl;
@@ -400,14 +420,16 @@ IndexedTexture TextureSynthesis::discreetOptimization2(IndexedTexture & patchedT
         
         //this loops through each pixel in the neighbourhood of the pixel being synthesized
         //atm there is a border of pixels not being synthsized, should implement wrapping or mirroring of pixels
-        int min =(neighbourhoodSize*2+1)/2;
+//        int min =(neighbourhoodSize*2+1)/2;
+        int min = 0;
         int xmax = oldTexture.size.x;
         int ymax = oldTexture.size.y;
+//        int iterationDistance = (neighbourhoodSize*2+1)/4;
         int iterationDistance = (neighbourhoodSize*2+1)/4;
 //        cout<< "ymax x - "<<xmax<< " y - "<<ymax<<endl;
-        
+        cout<<"find candidates"<<endl;
         //#pragma omp parallel for shared(newTexture, oldTexture, sampleTexture) num_threads(8)
-//        #pragma omp parallel for private(closest,current) reduction(+:newDist) num_threads(8) 
+        #pragma omp parallel for private(current) num_threads(8) 
         for(int x = min;x<xmax ;x+=iterationDistance)
         {
             for(int y = min; y< ymax;y+=iterationDistance)
@@ -415,10 +437,60 @@ IndexedTexture TextureSynthesis::discreetOptimization2(IndexedTexture & patchedT
                 current.x = x;
                 current.y = y;
                 
+//                current = sampleTexture.mirrorNotInBounds(current);
+                
+                closest = sampleTexture.findClosestNeighbourhood(oldTexture, current, neighbourhoodSizeIndex, quality);
+                
+                
+                for(int i = -neighbourhoodSize; i < neighbourhoodSize ;i++)
+                {
+                    for(int j = -neighbourhoodSize; j < neighbourhoodSize;j++)
+                    {
+//                        cout<<"?"<<x<<" - "<<y<<endl;
+                        
+                        Vector2 closestTemp = closest.pos;
+                        closestTemp.x +=i;
+                        closestTemp.y +=j;
+                        
+                        Vector2 currentTemp = current;
+                        currentTemp.x +=i;
+                        currentTemp.y +=j;
+                                                
+                        currentTemp = oldTexture.wrapNotInBounds(currentTemp);
+                        closestTemp = sampleTexture.mirrorNotInBounds(closestTemp);
+                        
+//                        cout<<"currentTemp?"<<currentTemp.x<<" - "<<currentTemp.y<<endl;
+//                        cout<<"closestTemp?"<<closestTemp.x<<" - "<<closestTemp.y<<endl;
+                        
+                        
+//                        cout<<"?"<<x<<" - "<<y<<endl;
+                        #pragma omp critical
+                        {
+                            closestNeighbourhoods[currentTemp.xInt()][currentTemp.yInt()].push_back(closestTemp);
+//                            if(x==min && y== min)
+//                            {
+//                                    cout<<"closest?"<<closestNeighbourhoods[currentTemp.xInt()][currentTemp.yInt()].back().x<<" - "<<closestNeighbourhoods[currentTemp.xInt()][currentTemp.yInt()].back().y<<endl;
+//                            }
+//                            cout<<"size"<<closestNeighbourhoods[currentTemp.xInt()][currentTemp.yInt()].size()<<endl;
+                            
+//                            sampleTexture.findCandidates(closest.pos,closestTemp,oldTexture,current,neighbourhoodSizeIndex,quality, distancelist[currentTemp.xInt()][currentTemp.yInt()]);
+                        }
+                    }
+                }
+            }
+        }
+        cout<<"find closest"<<endl;
+//        #pragma omp parallel for private(closest,current) reduction(+:newDist) num_threads(8)
+        #pragma omp parallel for num_threads(8) 
+        for(int x = min;x<xmax ;x++)
+        {
+            for(int y = min; y< ymax;y++)
+            {
+                
+                
 //                cout<< "current x - "<<current.x<< " y - "<<current.y<<endl;
                 
                 //find the closest neighbourhood according to the coherence set created
-                closest = sampleTexture.findClosestNeighbourhood(oldTexture, current, neighbourhoodSizeIndex, quality);
 //                cout<< "Found closest"<<endl;
 //                cout<< "closest x - "<<closest.pos.x<< " y - "<<closest.pos.y<<endl;
                 //set the pixels value and pixel location according to the neighbourhood
@@ -429,56 +501,140 @@ IndexedTexture TextureSynthesis::discreetOptimization2(IndexedTexture & patchedT
                 
                 Pixel nextClosest = Pixel();
                 //loop through the neighbourhood
-                for(int i = -neighbourhoodSize; i < neighbourhoodSize ;i++)
-                {
-                    for(int j = -neighbourhoodSize; j < neighbourhoodSize;j++)
-                    {
-                        //the centre of the closest matching neighbourhood
-                        Vector2 closestTemp = closest.pos;
-                        closestTemp.x +=i;
-                        closestTemp.y +=j;
+//                for(int i = -neighbourhoodSize; i < neighbourhoodSize ;i++)
+//                {
+//                    for(int j = -neighbourhoodSize; j < neighbourhoodSize;j++)
+//                    {
+                        
+                        //offset form the the centre of the closest matching neighbourhood
+                        
                         
                         //the current position in the neighbourhood (of oldTexture)
-                        Vector2 currentTemp = current;
-                        currentTemp.x +=i;
-                        currentTemp.y +=j;
+                        Vector2 currentTemp = Vector2();
+                        currentTemp.x =x;
+                        currentTemp.y =y;
+                        sampleTexture.findCandidates(oldTexture,currentTemp,neighbourhoodSizeIndex,quality, distancelist[currentTemp.xInt()][currentTemp.yInt()]);
                         
-                        Vector2 samplePos = Vector2(i,j);
+//                        currentTemp = oldTexture.wrapNotInBounds(currentTemp);
                         
-                        //oldTexture = oldTexture.wrapNotInBounds(currentTemp, oldTexture)
+//                        Vector2 samplePos = Vector2(i,j);
                         
-                        if(oldTexture.isInBounds(currentTemp))
+//                        cout<< "closestTemp x - "<<closestTemp.x<< " y - "<<closestTemp.y<<endl;
+//                        cout<< "currentTemp x - "<<currentTemp.x<< " y - "<<currentTemp.y<<endl;
+                        
+                        
+                        
+//                      
+//                        Pixel closest = Pixel();
+//                        closest.dist = 1000000;
+                        
+                        Vector2 currentPoint = Vector2();
+                        int currentDist = 0;
+                        int lowestDist = 100000000;
+                        
+//                        cout<<"distancelist "<<distancelist[currentTemp.xInt()][currentTemp.yInt()].size()<<endl;
+                        
+//                        Vector2 closestPoint = Vector2();
+                        //loop through the candidate se;
+                        int count = 0;
+                        for(int t = 0;t<distancelist[currentTemp.xInt()][currentTemp.yInt()].size();t++)
                         {
-                            //find point that minimizes the energy from neighbourhood pixels
-                            nextClosest = sampleTexture.findClosestPoint(closest.pos,closestTemp,oldTexture,current,neighbourhoodSizeIndex,quality);
+//                            cout<< "count "<<closestNeighbourhoods[currentTemp.xInt()][currentTemp.yInt()].size()<<endl;
                             
                             
-                            if(nextClosest.dist<distance[currentTemp.xInt()][currentTemp.yInt()])
+//                            cout<<"distancelist "<<distancelist[currentTemp.xInt()][currentTemp.yInt()].size()<<endl;
+                            currentPoint = sampleTexture.mirrorNotInBounds(distancelist[currentTemp.xInt()][currentTemp.yInt()][t]);
+                            
+                            //get the neighbourhood distance
+                            for(int c = 0;c<closestNeighbourhoods[currentTemp.xInt()][currentTemp.yInt()].size();c++)
                             {
-                                #pragma omp critical
+                                Vector2 closestTemp = closestNeighbourhoods[currentTemp.xInt()][currentTemp.yInt()][c];
+                                
+                                closestTemp = sampleTexture.mirrorNotInBounds(closestTemp);
+//                                cout<< "closestTemp x - "<<closestTemp.x<< " y - "<<closestTemp.y<<endl;
+//                                currentDist += sampleTexture.euclideanDistanceSquared(closestTemp, sampleTexture, currentPoint);
+                                currentDist = sampleTexture.euclideanDistanceSquared(closestTemp, sampleTexture, currentPoint);
+                                
+                                if(currentDist < lowestDist)
                                 {
-//                                cout<< "nextClosest x - "<<nextClosest.pos.x<< " y - "<<nextClosest.pos.y<<endl;
-//                                cout<< "currentTemp x - "<<currentTemp.x<< " y - "<<currentTemp.y<<endl;
-                                    distance[currentTemp.xInt()][currentTemp.yInt()] = nextClosest.dist;
-                                    
-                                    newTexture.pixels[currentTemp.xInt()][currentTemp.yInt()] = sampleTexture.pixels[nextClosest.pos.xInt()][nextClosest.pos.yInt()];
-                                    
-                                    newTexture.pixelLocations[currentTemp.xInt()][currentTemp.yInt()] = nextClosest.pos;
-                                    
-//                                    int pp = neighbourhoodSize*2+1;
-                                    
-//                                    newTexture.pixels[currentTemp.xInt()+pp][currentTemp.yInt()+pp] = sampleTexture.pixels[closestTemp.xInt()][closestTemp.yInt()];
-                                    
-//                                    newTexture.pixelLocations[currentTemp.xInt()+pp][currentTemp.yInt()+pp] = closestTemp;
                                     
                                     
+                                    
+                                    
+    //                                closest.dist = currentDist;
+    //                                closest.pos = current;
+                                    #pragma omp critical
+                                    {
+//                                        cout<< "<<<<currentDist - "<<currentDist<< " lowestDist - "<<lowestDist<<endl;
+                                        lowestDist = currentDist;
+                                    //                                cout<< "nextClosest x - "<<nextClosest.pos.x<< " y - "<<nextClosest.pos.y<<endl;
+                                    //                                cout<< "currentTemp x - "<<currentTemp.x<< " y - "<<currentTemp.y<<endl;
+    //                                    distance[currentTemp.xInt()][currentTemp.yInt()] = nextClosest.dist;
+                                        
+                                        newTexture.pixels[currentTemp.xInt()][currentTemp.yInt()] = sampleTexture.pixels[closestTemp.xInt()][closestTemp.yInt()];
+                                        
+                                        newTexture.pixelLocations[currentTemp.xInt()][currentTemp.yInt()] = closestTemp;
+                                        
+                                    //                                    int pp = neighbourhoodSize*2+1;
+                                        
+                                    //                                    newTexture.pixels[currentTemp.xInt()+pp][currentTemp.yInt()+pp] = sampleTexture.pixels[closestTemp.xInt()][closestTemp.yInt()];
+                                        
+                                    //                                    newTexture.pixelLocations[currentTemp.xInt()+pp][currentTemp.yInt()+pp] = closestTemp;
+                                        
+                                        
+                                    }
                                 }
+                                currentDist = 0;
+                                
+//                                cout<<c<<endl;
+                                count++;
                             }
-                            
-                            
+//                            cout<< "count "<<count<<endl;
+//                            currentDist = sampleTexture.euclideanDistanceSquared(current, *this, testPoint);
+//                            currentDist = euclideanDistanceSquared(current, *this, testPoint);
+                            currentDist/=count;
+                            count = 0;
+                    //        cout<< "current x - "<<current.x<< " y - "<<current.y<<endl;
+                    //        cout<< "testPoint x - "<<testPoint.x<< " y - "<<testPoint.y<<endl;
+                    //        cout<< "currentDist - "<<currentDist<<endl;
+                    //        cout<< "Red 1 - "<<qRed(pixels[current.xInt()][current.yInt()])<< " 2 - "<<qRed(pixels[testPoint.xInt()][testPoint.yInt()])<<endl;
+                    //        cout<< "Green 1 - "<<qGreen(pixels[current.xInt()][current.yInt()])<< " 2 - "<<qGreen(pixels[testPoint.xInt()][testPoint.yInt()])<<endl;
+                    //        cout<< "Blue 1 - "<<qBlue(pixels[current.xInt()][current.yInt()])<< " 2 - "<<qBlue(pixels[testPoint.xInt()][testPoint.yInt()])<<endl;
+//                            cout<< "currentDist - "<<currentDist<< " lowestDist - "<<lowestDist<<endl;
+                            //check if its closer than the current model
+//                            if(currentDist < lowestDist)
+//                            {
+////                                closest.dist = currentDist;
+////                                closest.pos = current;
+//                                #pragma omp critical
+//                                {
+////                                    cout<< "<<<<currentDist - "<<currentDist<< " lowestDist - "<<lowestDist<<endl;
+//                                    lowestDist = currentDist;
+//                                //                                cout<< "nextClosest x - "<<nextClosest.pos.x<< " y - "<<nextClosest.pos.y<<endl;
+//                                //                                cout<< "currentTemp x - "<<currentTemp.x<< " y - "<<currentTemp.y<<endl;
+////                                    distance[currentTemp.xInt()][currentTemp.yInt()] = nextClosest.dist;
+//                                    if(x==min && y== min)
+//                                    {
+//                                            cout<<"currentPoint?"<<currentPoint.x<<" - "<<currentPoint.y<<endl;
+//                                    }
+//                                    newTexture.pixels[currentTemp.xInt()][currentTemp.yInt()] = sampleTexture.pixels[currentPoint.xInt()][currentPoint.yInt()];
+                                    
+//                                    newTexture.pixelLocations[currentTemp.xInt()][currentTemp.yInt()] = currentPoint;
+                                    
+//                                //                                    int pp = neighbourhoodSize*2+1;
+                                    
+//                                //                                    newTexture.pixels[currentTemp.xInt()+pp][currentTemp.yInt()+pp] = sampleTexture.pixels[closestTemp.xInt()][closestTemp.yInt()];
+                                    
+//                                //                                    newTexture.pixelLocations[currentTemp.xInt()+pp][currentTemp.yInt()+pp] = closestTemp;
+                                    
+                                    
+//                                }
+//                            }
+//                            currentDist = 0;
                         }
-                    }
-                }
+                        
+//                    }
+//                }
 //                if(x==0&&y==0)
 //                {
 //                    cout<< "closest x - "<<closest.pos.x<< " y - "<<closest.pos.y<<endl;
@@ -507,6 +663,8 @@ IndexedTexture TextureSynthesis::discreetOptimization2(IndexedTexture & patchedT
         oldDist = newDist;
         //set the old texture to be the new texture for iteration
         oldTexture = IndexedTexture(newTexture);
+        QImage image = newTexture.getImage();
+        dialog->setPreviewImage(image);
 //        if(n==1)
 //        {
 //            scaleAndDisplayImage(sizeScaledPatched,oldTexture, ui->label_5);
