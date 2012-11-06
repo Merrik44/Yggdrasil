@@ -57,11 +57,37 @@ void ApplyLoopSubvision( Mesh* model, int levels, QProgressDialog*  progBar)
     if( levels == 0)
         return;
 
+    if( model == NULL )
+        return;
+
+
+    model->RestoreMeshState();
+    model->ClearNeighourAndEdgeData();
+    model->ReconstructMeshDataStructure();
+    model->CalculateNormals();
+
     //    int noOfIters = model->triangles*pow(4, levels ) + model->quadss*pow(4, levels );
     //    int iterCount = 0;
     //    int updateCountDown = 0;
+    try {
+        LoopSubdivision(model, levels, progBar);
+    }
+    catch (std::bad_alloc) {
+        model->RestoreMeshState();
+        model->ClearNeighourAndEdgeData();
+        model->ReconstructMeshDataStructure();
+          cout << "insufficient memory to perfom subdivision" << endl;
+
+            // error handling ...
+    }
+
+    model->CalculateNormals();
 
 
+}
+
+void LoopSubdivision( Mesh* model, int levels, QProgressDialog*  progBar)
+{
     if(progBar != NULL )
     {
         progBar->setValue(5);
@@ -78,6 +104,12 @@ void ApplyLoopSubvision( Mesh* model, int levels, QProgressDialog*  progBar)
         {
             progBar->setValue(n*100/levels);
         }
+        model->ClearNeighourAndEdgeData();
+        model->ReconstructMeshDataStructure();
+
+
+        if(model->triangles.size()*4 > 7500000)         // insufficient memory for another subdivision step
+            return;
 
 
         int oldVerticesLength = vertices.size();
@@ -113,71 +145,6 @@ void ApplyLoopSubvision( Mesh* model, int levels, QProgressDialog*  progBar)
 
                 Vector2f midTexCoord = (A + B)/2.0f;
                 face->midTexCoords[a] = midTexCoord;
-                continue;
-
-                Vertex* vertA = face->vertices[a];
-                Vertex* vertB = face->vertices[b];
-
-
-
-
-                // ----- Find the adjacent face -----
-                Edge* edge = face->edges[a];
-                Face* adjFace = NULL;
-                if(edge->faces[0] == face) adjFace = edge->faces[1];
-                if(edge->faces[1] == face) adjFace = edge->faces[0];
-
-                if( adjFace == NULL )   // this is a boundars so split linearly
-                {
-                    Vector2f midTexCoord = (A + B)/2.0f;
-                    face->midTexCoords[a] = midTexCoord;
-                    continue;
-                }
-
-                int face2EdgeIndex = -1;
-                for( int d = 0; d < 3; d++ )
-                {
-                    // ----- Find the index of the shared edge -----
-                    if(adjFace->edges[d] == edge)
-                    {
-                        face2EdgeIndex = d;
-                    }
-                }
-
-                if( face2EdgeIndex == -1 )
-                {
-                    cout << "Shared edge not found: Thats no right..." << endl;
-                    // ---- split linearly ----
-                    Vector2f midTexCoord = (A + B)/2.0f;
-                    face->midTexCoords[a] = midTexCoord;
-                    continue;
-                }
-
-                // --- find corrospoding texture coords in opposite face ----
-                int a_2 = face2EdgeIndex;
-                int b_2 = (face2EdgeIndex+1)%3;
-                int c_2 = (face2EdgeIndex+2)%3;;
-
-                Vector2f A2  = face->texCoords[a_2];
-                Vector2f B2  = face->texCoords[b_2];
-                Vector2f C2  = face->texCoords[c_2];
-
-                // ----- for seams -----
-                // need to flip edge vertices around
-                if( A != B2 || B != A2 ) // seam
-                {
-                  //  AddLine( vertA->position, vertB->position, GREEN  );
-                    // ---- split linearly ----
-                    Vector2f midTexCoord = (A + B)/2.0f;
-                    face->midTexCoords[a] = midTexCoord;
-                    continue;
-                }
-
-
-                // ----- finally I can smoothly subdivide ----
-                Vector2f smoothedTexCoord = (A + B)*3.0f/8.0f + (C + C2)*1/8.0f;
-                face->midTexCoords[a] = smoothedTexCoord;
-
 
             }
 
@@ -307,11 +274,9 @@ void ApplyLoopSubvision( Mesh* model, int levels, QProgressDialog*  progBar)
 
         }
 
-        model->ClearNeighourAndEdgeData();
-        model->ReconstructMeshDataStructure();
+
 
     }
-    model->CalculateNormals();
 
     if(progBar != NULL )
         progBar->setValue(100);

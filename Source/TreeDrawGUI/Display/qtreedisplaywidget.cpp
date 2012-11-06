@@ -43,20 +43,29 @@ GLuint CreateGLTexture(const char * filename, int width, int height)
 {
     GLuint texture;
     QImage t;
-    QImage b;
+    QImage b(filename);
 
-    t = QGLWidget::convertToGLFormat( b );
     if ( !b.load( filename ) )
     {
         cout << "Texture could not be loaded: " << filename << endl;
         b = QImage( 32, 32, QImage::Format_RGB32);
         b.fill( Qt::white );
     }
+//    cout << filename<< endl;
+
+//       if(b.hasAlphaChannel() )
+//            cout << "has alpha" << endl;
+//       else
+//            cout << "no alpha" << endl;
+
+//       cout << QColor(b.pixel(0,0)).alpha() << endl;
 
     t = QGLWidget::convertToGLFormat( b );
+
+
     glGenTextures( 1, &texture );
     glBindTexture( GL_TEXTURE_2D, texture );
-    glTexImage2D( GL_TEXTURE_2D, 0, 3, t.width(), t.height(), 0, GL_RGBA, GL_UNSIGNED_BYTE, t.bits() );
+    glTexImage2D( GL_TEXTURE_2D, 0, GL_RGBA, t.width(), t.height(), 0, GL_RGBA, GL_UNSIGNED_BYTE, t.bits() );
     glTexParameteri( GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR );
     glTexParameteri( GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR );
     glEnable(GL_TEXTURE_2D);

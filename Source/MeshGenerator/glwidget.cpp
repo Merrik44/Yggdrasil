@@ -164,7 +164,7 @@ void GLWidget::setZRotation(int angle)
 void GLWidget::loadGLTextures()
 {
     QImage t;
-    QImage b;
+ QImage b;
 
     if ( !b.load( "../images/alphaTest.png", "PNG") )
     {
@@ -172,10 +172,10 @@ void GLWidget::loadGLTextures()
         b.fill( Qt::green );
     }
 
-    t = QGLWidget::convertToGLFormat( b );
 
+    t = QGLWidget::convertToGLFormat( b );
     glGenTextures( 1, &texture[0] );
-    glTexImage2D( GL_TEXTURE_2D, 0, 3, t.width(), t.height(), 0, GL_RGBA, GL_UNSIGNED_BYTE, t.bits() );
+    glTexImage2D( GL_TEXTURE_2D, 0, GL_RGBA, t.width(), t.height(), 0, GL_RGBA, GL_UNSIGNED_BYTE, t.bits() );
     glTexParameteri( GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR );
     glTexParameteri( GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR );
     glEnable(GL_TEXTURE_2D);
@@ -275,14 +275,7 @@ void GLWidget::setSubdivisionLevel( int level )
 {
 
     subdivisionLevel = level;
-    if( model == NULL )
-        return;
 
-
-    model->RestoreMeshState();
-    model->ClearNeighourAndEdgeData();
-    model->ReconstructMeshDataStructure();
-    model->CalculateNormals();
 
     ApplyLoopSubvision(model, level, NULL);
     updateGL();

@@ -1,7 +1,7 @@
 /****************************************************************************
 ** Meta object code from reading C++ file 'colourchooser.h'
 **
-** Created: Sun Nov 4 16:22:46 2012
+** Created: Mon Nov 5 21:27:27 2012
 **      by: The Qt Meta Object Compiler version 63 (Qt 4.8.1)
 **
 ** WARNING! All changes made in this file will be lost!

@@ -247,6 +247,8 @@ void Mesh::StoreMeshState()
 
 void Mesh::RestoreMeshState()
 {
+    //ClearNeighourAndEdgeData();
+
     if( verticesBackup.size() == 0)
         cout << "Unable to restor mesh, no state save" << endl;
 

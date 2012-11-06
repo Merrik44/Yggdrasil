@@ -58,8 +58,8 @@ MainWindow::MainWindow()
     foliageParameters = new FoliageParameters();
     connect(foliageParameters,SIGNAL(foliageChanged()),this,SLOT(foliageChanged()));
     displayWidget->setBarkTexture("./Resources/Textures/bark.jpg");
-    displayWidget->setLeafTexture("./Resources/Generated_Leaves/Leaf_Textures/default/default_top.png");
-
+   // displayWidget->setLeafTexture("./Resources/Generated_Leaves/Leaf_Textures/default/default_top.png");
+    displayWidget->setLeafTexture("./Resources/Generated_Leaves/Leaf_Textures/default/alphaTest.png");
 
 
 }
