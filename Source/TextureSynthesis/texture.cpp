@@ -6,17 +6,26 @@ using namespace std;
 
 Texture::~Texture()
 {
-//    for(int y = 0; y<size.height();y++)
+//    if(pixels)
 //    {
-//        delete[] pixels[y];
+//        cout<<"not NULL"<<endl;
+//        for(int x = 0; x<size.x;x++)
+//        {
+//            delete [] pixels[x];
+//        }
+//        delete [] pixels;
 //    }
-//    delete[] pixels;
+//    else
+//    {
+//        cout<<"NULL"<<endl;
+//    }
 //    std::cout<<"Patch deleted"<<std::endl;
 }
 
 Texture::Texture()
 {
-    size = Vector2(32,32);
+    size = Vector2D(32,32);
+    pixels = NULL;
     pixels = new QRgb*[(int)size.x];
     for(int x = 0; x<size.x;x++)
     {
@@ -29,9 +38,10 @@ Texture::Texture()
     }
 }
 
-Texture::Texture(Vector2 dimensions)
+Texture::Texture(Vector2D dimensions)
 {
-    size = Vector2(dimensions.x,dimensions.y);
+    pixels = NULL;
+    size = Vector2D(dimensions.x,dimensions.y);
     pixels = new QRgb*[(int)size.x];
     for(int x = 0; x<size.x;x++)
     {
@@ -46,9 +56,10 @@ Texture::Texture(Vector2 dimensions)
 
 Texture::Texture(QImage &imageInput)
 {
+    pixels = NULL;
     image = imageInput;
     
-    size = Vector2(image.width(),image.height());
+    size = Vector2D(image.width(),image.height());
         
     pixels = new QRgb*[(int)size.x];
     
@@ -67,8 +78,9 @@ Texture::Texture(QImage &imageInput)
     }
 }
 
-Texture::Texture(Vector2 startPoint, Vector2 dimensions, Texture &input)
+Texture::Texture(Vector2D startPoint, Vector2D dimensions, Texture &input)
 {
+    pixels = NULL;
     size = dimensions;
     
     
@@ -132,7 +144,7 @@ QImage Texture::getImage()
     return image;
 }
 
-bool Texture::isInBounds(Vector2& point)
+bool Texture::isInBounds(Vector2D& point)
 {
     if(point.x<0 || point.y<0)
     {
@@ -178,7 +190,7 @@ int Texture::euclideanDistanceSquared(Texture &t)
     
     return red + blue + green + alpha;
 }
-int Texture::euclideanDistanceSquared(Vector2 inputPoint, Texture &otherTexture, Vector2 otherPoint)
+int Texture::euclideanDistanceSquared(Vector2D inputPoint, Texture &otherTexture, Vector2D otherPoint)
 {
     int red = 0;
     int blue = 0;
@@ -197,7 +209,7 @@ int Texture::euclideanDistanceSquared(Vector2 inputPoint, Texture &otherTexture,
     return red + blue + green + alpha;
 }
 
-int Texture::euclideanDistanceSquaredNeighbourhood(Vector2 inputPoint, Texture& otherTexture,Vector2 otherPoint, int neighbourhoodSize)
+int Texture::euclideanDistanceSquaredNeighbourhood(Vector2D inputPoint, Texture& otherTexture,Vector2D otherPoint, int neighbourhoodSize)
 {
     //the total squared distance for each colour
     int red = 0;
@@ -214,8 +226,8 @@ int Texture::euclideanDistanceSquaredNeighbourhood(Vector2 inputPoint, Texture& 
     //    int totalpixels = (neighbourhoodSize*2+1)*(neighbourhoodSize*2+1);
     int totalpixels = 0;
     
-    Vector2 thisPos = Vector2();
-    Vector2 otherPos = Vector2();
+    Vector2D thisPos = Vector2D();
+    Vector2D otherPos = Vector2D();
     
     for(int x = -neighbourhoodSize;x<=neighbourhoodSize;x++)
     {
@@ -225,12 +237,12 @@ int Texture::euclideanDistanceSquaredNeighbourhood(Vector2 inputPoint, Texture& 
             thisPos.x = x+inputPoint.x;
             thisPos.y = y+inputPoint.y;
             
-            thisPos = mirrorNotInBounds(thisPos,size);
+            thisPos = mirrorNotInBounds(thisPos);
             
             otherPos.x = x+otherPoint.x;
             otherPos.y = y+otherPoint.y;
             
-            otherPos = mirrorNotInBounds(otherPos,otherTexture.size);
+            otherPos = otherTexture.mirrorNotInBounds(otherPos);
 //            if(inputPoint.x == 0 &&inputPoint.y==0 && otherPoint.x==1&&otherPoint.y==1)
 //            cout<<"ThisPos = "<<thisPos.x<<"  -  "<<thisPos.y<<endl;
 //            if(inputPoint.x == 0 &&inputPoint.y==0 && otherPoint.x==1&&otherPoint.y==1)
@@ -264,58 +276,124 @@ int Texture::euclideanDistanceSquaredNeighbourhood(Vector2 inputPoint, Texture& 
     return red + blue + green + alpha;
 }
 
-Vector2 Texture::mirrorNotInBounds(Vector2 & point, Vector2 & bounds)
+int Texture::euclideanDistanceSquaredNeighbourhoodWrap(Vector2D inputPoint, Texture& otherTexture,Vector2D otherPoint, int neighbourhoodSize)
 {
-    Vector2 temp = point;
+    //the total squared distance for each colour
+    int red = 0;
+    int blue = 0;
+    int green = 0;
+    int alpha = 0;
+//    if(inputPoint.x == 0 &&inputPoint.y==0 && otherPoint.x==1&&otherPoint.y==1)
+//    cout<<"RedTotalStart "<<red<<endl;
+//    if(inputPoint.x == 0 &&inputPoint.y==0 && otherPoint.x==1&&otherPoint.y==1)
+//    cout<<"inputPoint = "<<inputPoint.x<<"  -  "<<inputPoint.y<<endl;
+//    if(inputPoint.x == 0 &&inputPoint.y==0 && otherPoint.x==1&&otherPoint.y==1)
+//    cout<<"======================================================================"<<endl;
+    //the total number of pixels
+    //    int totalpixels = (neighbourhoodSize*2+1)*(neighbourhoodSize*2+1);
+    int totalpixels = 0;
+    
+    Vector2D thisPos = Vector2D();
+    Vector2D otherPos = Vector2D();
+    
+    for(int x = -neighbourhoodSize;x<=neighbourhoodSize;x++)
+    {
+        for(int y = -neighbourhoodSize; y<=neighbourhoodSize;y++)
+        {
+            
+            thisPos.x = x+inputPoint.x;
+            thisPos.y = y+inputPoint.y;
+            
+            thisPos = mirrorNotInBounds(thisPos);
+            
+            otherPos.x = x+otherPoint.x;
+            otherPos.y = y+otherPoint.y;
+            
+            otherPos = otherTexture.wrapNotInBounds(otherPos);
+//            if(inputPoint.x == 0 &&inputPoint.y==0 && otherPoint.x==1&&otherPoint.y==1)
+//            cout<<"ThisPos = "<<thisPos.x<<"  -  "<<thisPos.y<<endl;
+//            if(inputPoint.x == 0 &&inputPoint.y==0 && otherPoint.x==1&&otherPoint.y==1)
+//            cout<<"Red "<<qRed(pixels[(int)thisPos.x][(int)thisPos.y])<<"  -  "<<qRed(otherTexture.pixels[(int)otherPos.x][(int)otherPos.y])<<endl;
+            if(this->isInBounds(thisPos) && otherTexture.isInBounds(otherPos))
+            {
+                int distRed = (qRed(pixels[(int)thisPos.x][(int)thisPos.y]) - qRed(otherTexture.pixels[(int)otherPos.x][(int)otherPos.y]));
+                int distBlue = (qBlue(pixels[(int)thisPos.x][(int)thisPos.y]) - qBlue(otherTexture.pixels[(int)otherPos.x][(int)otherPos.y]));
+                int distGreen = (qGreen(pixels[(int)thisPos.x][(int)thisPos.y]) - qGreen(otherTexture.pixels[(int)otherPos.x][(int)otherPos.y]));
+                int distAlpha = (qAlpha(pixels[(int)thisPos.x][(int)thisPos.y]) - qAlpha(otherTexture.pixels[(int)otherPos.x][(int)otherPos.y]));
+//                cout<<">"<<thisPos.x<<"  -  "<<thisPos.y<<endl;
+//                cout<<">"<<thisPos.x<<"  -  "<<thisPos.y<<endl;
+                red += (distRed * distRed);
+                blue += (distBlue * distBlue);
+                green += (distGreen * distGreen);
+                alpha += (distAlpha * distAlpha);
+                totalpixels++;
+//                if(inputPoint.x == 0 &&inputPoint.y==0 && otherPoint.x==1&&otherPoint.y==1)
+//                cout<<"RedSum "<<red<<endl;
+            }
+        }
+    }
+    
+    red /= totalpixels;
+//    if(inputPoint.x == 0 &&inputPoint.y==0 && otherPoint.x==1&&otherPoint.y==1)
+//    cout<<"RedTotal "<<red<<endl;
+    blue /= totalpixels;
+    green /= totalpixels;
+    alpha /= totalpixels;
+//    return red + blue + green;
+    return red + blue + green + alpha;
+}
+Vector2D Texture::mirrorNotInBounds(Vector2D & point)
+{
+    Vector2D temp = point;
     
     if(point.x<0)
     {
         temp.x = -temp.x;
     }
-    else if(point.x>=bounds.x)
+    else if(point.x>=size.x)
     {
-        temp.x = bounds.x - 1 + (bounds.x - 1 - temp.x);
+        temp.x = size.x - 1 + (size.x - 1 - temp.x);
     }
     if(point.y<0)
     {
         temp.y = -temp.y;
     }
-    else if(point.y>=bounds.y)
+    else if(point.y>=size.y)
     {
-        temp.y = bounds.y - 1 + (bounds.y - 1 - temp.y);
+        temp.y = size.y - 1 + (size.y - 1 - temp.y);
     }
     
     return temp;
 }
-Vector2 Texture::wrapNotInBounds(Vector2 & point, Vector2 & bounds)
+Vector2D Texture::wrapNotInBounds(Vector2D & point)
 {
-    Vector2 temp = point;
+    Vector2D temp = point;
     
     if(point.x<0)
     {
-        temp.x = bounds.x + temp.x;
+        temp.x = size.x + temp.x;
     }
-    else if(point.x>=bounds.x)
+    else if(point.x>=size.x)
     {
-        temp.x = (temp.x - (bounds.x - 1));
+        temp.x = (temp.x - (size.x - 1));
     }
     if(point.y<0)
     {
-        temp.y = bounds.y + temp.y;
+        temp.y = size.y + temp.y;
     }
-    else if(point.y>=bounds.y)
+    else if(point.y>=size.y)
     {
-        temp.y = (temp.y - (bounds.y - 1));
+        temp.y = (temp.y - (size.y - 1));
     }
     
     return temp;
 }
-Vector2 Texture::findClosestNeighbourhood(Texture& otherTexture,Vector2& otherPoint, int neighbourhoodSize)
+Vector2D Texture::findClosestNeighbourhood(Texture& otherTexture,Vector2D& otherPoint, int neighbourhoodSize)
 {
-    Vector2 closest = Vector2();
+    Vector2D closest = Vector2D();
     int closestDist = 1000000;
     
-    Vector2 current = Vector2();
+    Vector2D current = Vector2D();
     int currentDist = 0;
     int neighbourhoodIncrement = (int)(neighbourhoodSize*2+1)/4;
     for(int x = 0;x< size.x;x+=neighbourhoodIncrement)
@@ -339,8 +417,10 @@ Vector2 Texture::findClosestNeighbourhood(Texture& otherTexture,Vector2& otherPo
 
 void Texture::halfSize()
 {
-    Vector2 sizeTemp = size;
+    Vector2D sizeTemp = size;
     sizeTemp/=2;
+    sizeTemp.x = (int) sizeTemp.x;
+    sizeTemp.y = (int) sizeTemp.y;
     QRgb** pixelsTemp = new QRgb*[(int)sizeTemp.x];
 //    Vector2** pixelLocationsTemp = new Vector2*[sizeTemp.xInt()];
     
@@ -349,20 +429,52 @@ void Texture::halfSize()
         pixelsTemp[x] = new QRgb[(int)sizeTemp.y];
 //        pixelLocationsTemp[x] = new Vector2[sizeTemp.yInt()];
     }
-    Vector2 temp = Vector2();
+    Vector2D temp = Vector2D();
     
     for(int y = 0; y<sizeTemp.y;y++)
     {
         for(int x = 0;x<sizeTemp.x;x++)
         {
-            int r = qRed(pixels[x][y]) + qRed(pixels[x+1][y])+qRed(pixels[x][y+1])+qRed(pixels[x+1][y+1]);
-            int g = qBlue(pixels[x][y]) + qBlue(pixels[x+1][y])+qBlue(pixels[x][y+1])+qBlue(pixels[x+1][y+1]);
-            int b = qGreen(pixels[x][y]) + qGreen(pixels[x+1][y])+qGreen(pixels[x][y+1])+qGreen(pixels[x+1][y+1]);
-            int a = qAlpha(pixels[x][y]) + qAlpha(pixels[x+1][y])+qAlpha(pixels[x][y+1])+qAlpha(pixels[x+1][y+1]);
-            r/=4;
-            g/=4;
-            b/=4;
-            a/=4;
+            int r = qRed(pixels[x][y]);
+            int g = qBlue(pixels[x][y]);
+            int b = qGreen(pixels[x][y]);
+            int a = qAlpha(pixels[x][y]);
+//            int r = qRed(pixels[x][y]) + qRed(pixels[x+1][y])+qRed(pixels[x][y+1])+qRed(pixels[x+1][y+1]);
+//            int g = qBlue(pixels[x][y]) + qBlue(pixels[x+1][y])+qBlue(pixels[x][y+1])+qBlue(pixels[x+1][y+1]);
+//            int b = qGreen(pixels[x][y]) + qGreen(pixels[x+1][y])+qGreen(pixels[x][y+1])+qGreen(pixels[x+1][y+1]);
+//            int a = qAlpha(pixels[x][y]) + qAlpha(pixels[x+1][y])+qAlpha(pixels[x][y+1])+qAlpha(pixels[x+1][y+1]);
+            int count = 1;
+//            cout<<"size"<<size.x<<"_"<<size.y<<endl;
+//            cout<<"pop"<<x<<"_"<<y<<endl;
+            if(x+1<size.x)
+            {
+                r += qRed(pixels[x+1][y]);
+                g += qBlue(pixels[x+1][y]);
+                b += qGreen(pixels[x+1][y]);
+                a += qAlpha(pixels[x+1][y]);
+                count++;
+            }
+            if(y+1<size.y)
+            {
+                r += qRed(pixels[x][y+1]);
+                g += qBlue(pixels[x][y+1]);
+                b += qGreen(pixels[x][y+1]);
+                a += qAlpha(pixels[x][y+1]);
+                count++;
+            }
+            if(x+1<size.x && y+1<size.y)
+            {
+                r += qRed(pixels[x+1][y+1]);
+                g += qBlue(pixels[x+1][y+1]);
+                b += qGreen(pixels[x+1][y+1]);
+                a += qAlpha(pixels[x+1][y+1]);
+                count++;
+            }
+            
+            r/=count;
+            g/=count;
+            b/=count;
+            a/=count;
             QRgb guassianBlurredPixel = qRgba(r,g,b,a);
             
 //                    Vector2 index = Vector2(temp.x*2+i,temp.y*2+j);

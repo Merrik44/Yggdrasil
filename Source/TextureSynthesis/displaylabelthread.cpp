@@ -7,8 +7,9 @@ DisplayLabelThread::DisplayLabelThread()
 {
     
 }
+
 //DisplayLabelThread::DisplayLabelThread()
-void DisplayLabelThread::slotSetLabel(Vector2 & sizeScaledPatched, QImage & texture, QLabel * label) 
+void DisplayLabelThread::slotSetLabel(Vector2D & sizeScaledPatched, QImage & texture, QLabel * label) 
 {
    //==============================Display Logic=========================================
    

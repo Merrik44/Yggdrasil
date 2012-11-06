@@ -18,12 +18,12 @@ class Texture
     public:
         ~Texture();
         Texture();
-        Texture(Vector2 dimensions);
+        Texture(Vector2D dimensions);
         Texture(QImage& imageInput);
-        Texture(Vector2 startPoint,Vector2 dimensions, Texture& patch);
+        Texture(Vector2D startPoint,Vector2D dimensions, Texture& patch);
         
         QRgb** pixels;
-        Vector2 size;
+        Vector2D size;
         QImage image;
         
         void clearPixelValues();
@@ -32,15 +32,18 @@ class Texture
         
         void createSets();
         
-        bool isInBounds(Vector2& point);
-        Vector2 mirrorNotInBounds(Vector2 & point, Vector2 & bounds);
-        Vector2 wrapNotInBounds(Vector2 & point, Vector2 & bounds);
+        bool isInBounds(Vector2D& point);
+        Vector2D mirrorNotInBounds(Vector2D & point);
+        Vector2D wrapNotInBounds(Vector2D & point);
         
         int euclideanDistanceSquared(Texture & texture);
-        int euclideanDistanceSquared(Vector2 inputPoint,Texture &otherTexture, Vector2 otherPoint);
-        int euclideanDistanceSquaredNeighbourhood(Vector2 inputPoint, Texture& otherTexture,Vector2 otherPoint, int neighbourhoodSize);
+        int euclideanDistanceSquared(Vector2D inputPoint,Texture &otherTexture, Vector2D otherPoint);
+        int euclideanDistanceSquaredNeighbourhood(Vector2D inputPoint, Texture& otherTexture,Vector2D otherPoint, int neighbourhoodSize);
         
-        Vector2 findClosestNeighbourhood(Texture& otherTexture,Vector2& otherPoint, int neighbourhoodSize);
+        int euclideanDistanceSquaredNeighbourhoodWrap(Vector2D inputPoint, Texture& otherTexture,Vector2D otherPoint, int neighbourhoodSize);
+        
+        
+        Vector2D findClosestNeighbourhood(Texture& otherTexture,Vector2D& otherPoint, int neighbourhoodSize);
         void halfSize();
         
 //        Texture& operator = (Texture);

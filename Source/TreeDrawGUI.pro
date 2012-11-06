@@ -4,6 +4,10 @@
 QT += core \
     gui
 QT += opengl
+
+QMAKE_CXXFLAGS += -fopenmp
+QMAKE_LFLAGS *= -fopenmp
+
 TARGET = TreeDrawGUI/TreeDrawGUI
 TEMPLATE = app
 SOURCES += TreeDrawGUI/main.cpp \
@@ -63,7 +67,8 @@ SOURCES += TreeDrawGUI/main.cpp \
     LeafGenerator/foliageparameters.cpp \
     LeafGenerator/foliagechooser.cpp \
     LeafGenerator/foliage.cpp \
-    LeafGenerator/colourchooser.cpp
+    LeafGenerator/colourchooser.cpp \
+    TextureSynthesis/displaylabelthread.cpp
 HEADERS += TreeDrawGUI/mainwindow.h \
     TreeDrawGUI/sketchwidget.h \
     TreeDrawGUI/branch.h \
@@ -123,7 +128,8 @@ HEADERS += TreeDrawGUI/mainwindow.h \
     LeafGenerator/foliageparameters.h \
     LeafGenerator/foliagechooser.h \
     LeafGenerator/foliage.h \
-    LeafGenerator/colourchooser.h
+    LeafGenerator/colourchooser.h \
+    TextureSynthesis/displaylabelthread.h
 
 INCLUDEPATH += /QTreeWidget/
 INCLUDEPATH += /TreeDrawGUI/

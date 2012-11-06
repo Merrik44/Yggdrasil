@@ -1,7 +1,7 @@
 /****************************************************************************
 ** Meta object code from reading C++ file 'mainwindow.h'
 **
-** Created: Mon Nov 5 21:27:09 2012
+** Created: Tue Nov 6 19:08:54 2012
 **      by: The Qt Meta Object Compiler version 63 (Qt 4.8.1)
 **
 ** WARNING! All changes made in this file will be lost!
@@ -23,7 +23,7 @@ static const uint qt_meta_data_MainWindow[] = {
        6,       // revision
        0,       // classname
        0,    0, // classinfo
-      34,   14, // methods
+      35,   14, // methods
        0,    0, // properties
        0,    0, // enums/sets
        0,    0, // constructors
@@ -65,6 +65,7 @@ static const uint qt_meta_data_MainWindow[] = {
      710,   11,   11,   11, 0x08,
      745,   11,   11,   11, 0x08,
      782,   11,   11,   11, 0x08,
+     799,   11,   11,   11, 0x08,
 
        0        // eod
 };
@@ -92,6 +93,7 @@ static const char qt_meta_stringdata_MainWindow[] = {
     "on_actionCreate_Leaves_triggered()\0"
     "on_actionFoliage_Options_triggered()\0"
     "foliageChanged()\0"
+    "on_actionSynthesise_a_Texture_triggered()\0"
 };
 
 void MainWindow::qt_static_metacall(QObject *_o, QMetaObject::Call _c, int _id, void **_a)
@@ -134,6 +136,7 @@ void MainWindow::qt_static_metacall(QObject *_o, QMetaObject::Call _c, int _id, 
         case 31: _t->on_actionCreate_Leaves_triggered(); break;
         case 32: _t->on_actionFoliage_Options_triggered(); break;
         case 33: _t->foliageChanged(); break;
+        case 34: _t->on_actionSynthesise_a_Texture_triggered(); break;
         default: ;
         }
     }
@@ -171,9 +174,9 @@ int MainWindow::qt_metacall(QMetaObject::Call _c, int _id, void **_a)
     if (_id < 0)
         return _id;
     if (_c == QMetaObject::InvokeMetaMethod) {
-        if (_id < 34)
+        if (_id < 35)
             qt_static_metacall(this, _c, _id, _a);
-        _id -= 34;
+        _id -= 35;
     }
     return _id;
 }

@@ -1,17 +1,17 @@
 /****************************************************************************
 ** Meta object code from reading C++ file 'texturesynthesisdialog.h'
 **
-** Created: Tue Nov 6 19:08:59 2012
-**      by: The Qt Meta Object Compiler version 63 (Qt 4.8.1)
+** Created: Tue Nov 6 17:20:47 2012
+**      by: The Qt Meta Object Compiler version 62 (Qt 4.7.4)
 **
 ** WARNING! All changes made in this file will be lost!
 *****************************************************************************/
 
-#include "TextureSynthesis/texturesynthesisdialog.h"
+#include "../texturesynthesisdialog.h"
 #if !defined(Q_MOC_OUTPUT_REVISION)
 #error "The header file 'texturesynthesisdialog.h' doesn't include <QObject>."
-#elif Q_MOC_OUTPUT_REVISION != 63
-#error "This file was generated using the moc from 4.8.1. It"
+#elif Q_MOC_OUTPUT_REVISION != 62
+#error "This file was generated using the moc from 4.7.4. It"
 #error "cannot be used with the include files from this version of Qt."
 #error "(The moc has changed too much.)"
 #endif
@@ -20,7 +20,7 @@ QT_BEGIN_MOC_NAMESPACE
 static const uint qt_meta_data_TextureSynthesisDialog[] = {
 
  // content:
-       6,       // revision
+       5,       // revision
        0,       // classname
        0,    0, // classinfo
        4,   14, // methods
@@ -47,28 +47,9 @@ static const char qt_meta_stringdata_TextureSynthesisDialog[] = {
     "on_spinBox_4_valueChanged(int)\0"
 };
 
-void TextureSynthesisDialog::qt_static_metacall(QObject *_o, QMetaObject::Call _c, int _id, void **_a)
-{
-    if (_c == QMetaObject::InvokeMetaMethod) {
-        Q_ASSERT(staticMetaObject.cast(_o));
-        TextureSynthesisDialog *_t = static_cast<TextureSynthesisDialog *>(_o);
-        switch (_id) {
-        case 0: _t->on_pushButton_released(); break;
-        case 1: _t->on_pushButton_4_released(); break;
-        case 2: _t->on_pushButton_2_released(); break;
-        case 3: _t->on_spinBox_4_valueChanged((*reinterpret_cast< int(*)>(_a[1]))); break;
-        default: ;
-        }
-    }
-}
-
-const QMetaObjectExtraData TextureSynthesisDialog::staticMetaObjectExtraData = {
-    0,  qt_static_metacall 
-};
-
 const QMetaObject TextureSynthesisDialog::staticMetaObject = {
     { &QDialog::staticMetaObject, qt_meta_stringdata_TextureSynthesisDialog,
-      qt_meta_data_TextureSynthesisDialog, &staticMetaObjectExtraData }
+      qt_meta_data_TextureSynthesisDialog, 0 }
 };
 
 #ifdef Q_NO_DATA_RELOCATION
@@ -94,8 +75,13 @@ int TextureSynthesisDialog::qt_metacall(QMetaObject::Call _c, int _id, void **_a
     if (_id < 0)
         return _id;
     if (_c == QMetaObject::InvokeMetaMethod) {
-        if (_id < 4)
-            qt_static_metacall(this, _c, _id, _a);
+        switch (_id) {
+        case 0: on_pushButton_released(); break;
+        case 1: on_pushButton_4_released(); break;
+        case 2: on_pushButton_2_released(); break;
+        case 3: on_spinBox_4_valueChanged((*reinterpret_cast< int(*)>(_a[1]))); break;
+        default: ;
+        }
         _id -= 4;
     }
     return _id;

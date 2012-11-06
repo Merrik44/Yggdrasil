@@ -6,12 +6,12 @@ class IndexedTexture : public Texture
 {
 public:
     IndexedTexture();
-    IndexedTexture(Vector2 dimensions);
+    IndexedTexture(Vector2D dimensions);
     IndexedTexture(QImage& imageInput);
     IndexedTexture(const IndexedTexture & imageInput);
-    IndexedTexture(Vector2 startPoint,Vector2 dimensions, Texture& input);
+    IndexedTexture(Vector2D startPoint,Vector2D dimensions, Texture& input);
         
-    Vector2 ** pixelLocations;
+    Vector2D ** pixelLocations;
     Texture* inputTexture;
     
     void createBlankImageIndex();

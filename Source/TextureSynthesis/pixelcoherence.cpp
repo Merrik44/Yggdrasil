@@ -9,20 +9,20 @@ using namespace std;
 PixelCoherence::PixelCoherence()
 {
     neighbourPosDim = 11;
-    neighbourPos = new Vector2*[1];
-    neighbourPos[0] = new Vector2[neighbourPosDim];
+    neighbourPos = new Vector2D*[1];
+    neighbourPos[0] = new Vector2D[neighbourPosDim];
     
 }
-PixelCoherence::PixelCoherence(CoherentTexture& sampleTexture, Vector2 pos, std::vector<int>* neighbourhood_Sizes)
+PixelCoherence::PixelCoherence(CoherentTexture& sampleTexture, Vector2D pos, std::vector<int>* neighbourhood_Sizes)
 {
     
     //---------------------------------creates an array of 11 coherent pixels for each pixel for each neighbourhood size--------------------------------
     neighbourhoodSizes = neighbourhood_Sizes;
     neighbourPosDim = 11;
-    neighbourPos = new Vector2*[neighbourhoodSizes->size()];
+    neighbourPos = new Vector2D*[neighbourhoodSizes->size()];
     for(int x = 0; x<neighbourhoodSizes->size();x++)
     {
-        neighbourPos[x] = new Vector2[neighbourPosDim];
+        neighbourPos[x] = new Vector2D[neighbourPosDim];
     }
     //---------------------------------end---------------------------------
     //the pixels position
@@ -50,9 +50,9 @@ PixelCoherence::PixelCoherence(CoherentTexture& sampleTexture, Vector2 pos, std:
             for(int y = start;y<endY;y+=incrementValue)
             {
         //                cout<<"-"<<x<<"  -  "<<y<<endl;
-                int dist = sampleTexture.euclideanDistanceSquaredNeighbourhood(pixelPos, sampleTexture, Vector2(x,y),(*neighbourhoodSizes)[i]);
+                int dist = sampleTexture.euclideanDistanceSquaredNeighbourhood(pixelPos, sampleTexture, Vector2D(x,y),(*neighbourhoodSizes)[i]);
         //                cout<<"-"<<x<<"  -  "<<y<<endl;
-                Pixel p = Pixel(Vector2(x,y),dist);
+                Pixel p = Pixel(Vector2D(x,y),dist);
                 pq.push(p);
             }
         }
@@ -60,6 +60,7 @@ PixelCoherence::PixelCoherence(CoherentTexture& sampleTexture, Vector2 pos, std:
         //cout<<"Pixelpos- "<<pixelPos.x<<"  -  "<<pixelPos.y<<endl;
         for(int t = 0; t<neighbourPosDim;t++)
         {
+//            cout<<"dist- "<<((Pixel)pq.top()).dist<<endl;
             neighbourPos[i][t] = ((Pixel)pq.top()).pos;
             //cout<<" pos- "<<neighbourPos[t].x<<"  -  "<<neighbourPos[t].y<<endl;
             pq.pop();
@@ -67,15 +68,15 @@ PixelCoherence::PixelCoherence(CoherentTexture& sampleTexture, Vector2 pos, std:
     }
 }
 
-PixelCoherence::PixelCoherence(CoherentTexture& sampleTexture, PixelCoherence& lowResCoherence,Vector2 pos, std::vector<int>* neighbourhood_Sizes)
+PixelCoherence::PixelCoherence(CoherentTexture& sampleTexture, PixelCoherence& lowResCoherence,Vector2D pos, std::vector<int>* neighbourhood_Sizes)
 {
     //---------------------------------creates an array of 11 coherent pixels for each pixel for each neighbourhood size--------------------------------
     neighbourhoodSizes = neighbourhood_Sizes;
     neighbourPosDim = 11;
-    neighbourPos = new Vector2*[neighbourhoodSizes->size()];
+    neighbourPos = new Vector2D*[neighbourhoodSizes->size()];
     for(int x = 0; x<neighbourhoodSizes->size();x++)
     {
-        neighbourPos[x] = new Vector2[neighbourPosDim];
+        neighbourPos[x] = new Vector2D[neighbourPosDim];
     }
     
     //---------------------------------end---------------------------------
@@ -96,22 +97,26 @@ PixelCoherence::PixelCoherence(CoherentTexture& sampleTexture, PixelCoherence& l
         
         for(int i =0;i<neighbourhoodSizes->size();i++)
         {
+//            cout<<"  1-  "<<i<<endl;
             int index = i-1;
             
             if(index<0)
                 index = 0;
-                
+//            cout<<"  2-  "<<i<<endl;
+//            cout<<"  2-  "<<lowResCoherence.neighbourPosDim<<endl;
+//            cout<<"  22-  "<<i<<endl;
             for(int t = 0;t<lowResCoherence.neighbourPosDim;t++)
             {
-    //            cout<<"  -  "<<i<<endl;
+//                cout<<"  3-  "<<i<<endl;
     //            if(pos.x ==0&&pos.y ==0)
     //                cout<<"low "<<lowResCoherence.neighbourPos[i].x<<"  -  "<<lowResCoherence.neighbourPos[i].y<<endl;
-                Vector2 coherencePoint = lowResCoherence.neighbourPos[index][t];
+                Vector2D coherencePoint = lowResCoherence.neighbourPos[index][t];
+//                cout<<"  =  "<<i<<endl;
                 for(int x = 0;x<2;x++)
                 {
                     for(int y = 0;y<2;y++)
                     {
-                        Vector2 closestPoint = coherencePoint;
+                        Vector2D closestPoint = coherencePoint;
                         closestPoint*=2;
                         closestPoint.x +=x;
                         closestPoint.y +=y;
@@ -144,5 +149,6 @@ PixelCoherence::PixelCoherence(CoherentTexture& sampleTexture, PixelCoherence& l
             }
         }        
 //    }
+//        cout<<"----------------------------------------------------------"<<endl;
 //        cout<<pos.x<<"  -  "<<pos.y<<endl;
 }

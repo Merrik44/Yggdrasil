@@ -138,13 +138,13 @@ LeafModel::LeafModel( QList<QVector2D*>* edges, QPointF* root,
     showMessage(QString("Creating Textures"));
     topTexture = new QImage(size,size, QImage::Format_ARGB32);
     bottomTexture = new QImage(size,size, QImage::Format_ARGB32);
-    topTexture->fill(QColor(0,0,0,0));
-    bottomTexture->fill(QColor(0,0,0,0));
+    topTexture->fill(QColor(0,0,0,0).rgba());
+    bottomTexture->fill(QColor(0,0,0,0).rgba());
 
     topBumpMap = new QImage(size,size, QImage::Format_ARGB32);
     bottomBumpMap  = new QImage(size,size, QImage::Format_ARGB32);
-    topBumpMap ->fill(QColor(0,0,0,0));
-    bottomBumpMap ->fill(QColor(0,0,0,0));
+    topBumpMap ->fill(QColor(0,0,0,0).rgba());
+    bottomBumpMap ->fill(QColor(0,0,0,0).rgba());
 
     drawPetiole(topTexture);
     drawTexture(topTexture, baseColour, altColour);
@@ -1527,7 +1527,7 @@ void LeafModel::drawDebugGrid(QPointF *p)
     int x = p->toPoint().x()/gridSize;
     int y = p->toPoint().y()/gridSize;
     QImage image = QImage(gridCount,gridCount,QImage::Format_ARGB32);
-    image.fill(QColor(255,255,255));
+    image.fill(QColor(255,255,255).rgba());
 
 
     for(int i=0; i< gridCount; i++)
@@ -1636,7 +1636,7 @@ QImage* LeafModel::fromSpeckled(QImage* image, QColor altColor, int intensity)
 QImage* LeafModel::drawVeinsOutline(QString name)
 {
     QImage* veinImage = new QImage(size,size,QImage::Format_ARGB32);
-    veinImage->fill(QColor(0,0,0,0));
+    veinImage->fill(QColor(0,0,0,0).rgba());
     fillTexture(veinImage, QColor(255,255,255,255));
     QListIterator<QVector2D*> edgesIt(*edges);
     //First, draw in vector edges
@@ -1711,10 +1711,10 @@ void LeafModel::createBumpMaps()
     QColor depth = QColor(64,0,0,255);
     float max = (2/(float)128)*pow(256,2);
     depth.setRedF(0);
-    topBumpMap->fill(QColor(0,0,0,0));
+    topBumpMap->fill(QColor(0,0,0,0).rgba());
     topBumpMap = fillTexture(topBumpMap,depth);
     depth.setRedF(bump);
-    bottomBumpMap->fill(QColor(0,0,0,0));
+    bottomBumpMap->fill(QColor(0,0,0,0).rgba());
     bottomBumpMap = fillTexture(bottomBumpMap,depth);
 
     depth.setRedF(bump/3);
